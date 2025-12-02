@@ -38,6 +38,22 @@
       box-shadow: 0 6px 18px rgba(0,0,0,0.15);
     }
 
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .sksa-logo {
+      height: 52px;
+      width: 52px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #ffffff;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.25);
+      cursor: pointer;
+    }
+
     header h1 {
       font-size: 1.6rem;
       margin: 0;
@@ -121,6 +137,7 @@
 
     input[type="text"],
     input[type="number"],
+    input[type="date"],
     select,
     textarea {
       width: 100%;
@@ -135,6 +152,7 @@
 
     input[type="text"]:focus,
     input[type="number"]:focus,
+    input[type="date"]:focus,
     select:focus,
     textarea:focus {
       border-color: #00796b;
@@ -249,6 +267,32 @@
       background: #f1f4fb;
     }
 
+    .tab-row {
+      margin-bottom: 10px;
+      display: inline-flex;
+      padding: 4px;
+      background: #e3f2fd;
+      border-radius: 999px;
+      gap: 4px;
+    }
+
+    .tab-btn {
+      border: none;
+      background: transparent;
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      font-weight: 500;
+      color: #455a64;
+    }
+
+    .tab-btn.active {
+      background: #00796b;
+      color: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
@@ -307,14 +351,79 @@
       color: #78909c;
       padding-top: 4px;
     }
+
+    /* Modal login admin */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal-card {
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 20px 22px 18px;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    }
+
+    .modal-card h2 {
+      margin: 0 0 6px 0;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #212121;
+    }
+
+    .modal-card p {
+      margin: 0 0 14px 0;
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    .modal-buttons {
+      margin-top: 14px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .btn-modal-cancel {
+      border-radius: 999px;
+      border: none;
+      padding: 7px 16px;
+      background: #eceff1;
+      color: #37474f;
+      font-size: 0.86rem;
+      cursor: pointer;
+    }
+
+    .btn-modal-primary {
+      border-radius: 999px;
+      border: none;
+      padding: 7px 18px;
+      background: linear-gradient(135deg,#0062ff,#0041c4);
+      color: #fff;
+      font-size: 0.86rem;
+      font-weight: 500;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
 <div class="app-shell">
   <header>
-    <div>
-      <h1>Rekod Pemantauan Kelas SKSA</h1>
-      <small>Untuk kegunaan guru memantau kehadiran & sahsiah murid secara harian.</small>
+    <div class="header-left">
+      <!-- Logo (klik untuk login admin) -->
+      <img id="sksaLogo" class="sksa-logo" src="https://imgur.com/AfsVtVG.png" alt="Logo SKSA" title="Klik untuk log masuk admin" />
+      <div>
+        <h1>Rekod Pemantauan Kelas SKSA</h1>
+        <small>Untuk kegunaan guru memantau kehadiran & sahsiah murid secara harian.</small>
+      </div>
     </div>
     <div class="meta">
       <span id="currentDate">Tarikh: -</span>
@@ -324,178 +433,218 @@
     </div>
   </header>
 
+  <!-- Tabs -->
+  <div class="tab-row">
+    <button id="tabGuru" class="tab-btn active">Guru</button>
+    <button id="tabAdmin" class="tab-btn" style="display:none;">Admin</button>
+  </div>
+
   <main>
-    <!-- MAKLUMAT KELAS -->
-    <section class="card">
-      <div class="card-title">Maklumat Kelas</div>
-      <div class="form-grid">
-        <div>
-          <label class="required">Nama Guru</label>
-          <input type="text" id="namaGuru" placeholder="Contoh: Cikgu Sufian" />
-        </div>
-        <div>
-          <label class="required">Kelas</label>
-          <select id="kelas">
-            <option value="">Sila Pilih</option>
-            <option value="1B">1B</option>
-            <option value="1C">1C</option>
-            <option value="1G">1G</option>
-            <option value="2B">2B</option>
-            <option value="2C">2C</option>
-            <option value="2G">2G</option>
-            <option value="3B">3B</option>
-            <option value="3C">3C</option>
-            <option value="3G">3G</option>
-            <option value="4B">4B</option>
-            <option value="4C">4C</option>
-            <option value="4G">4G</option>
-            <option value="5B">5B</option>
-            <option value="5C">5C</option>
-            <option value="5G">5G</option>
-            <option value="6B">6B</option>
-            <option value="6C">6C</option>
-            <option value="6G">6G</option>
-          </select>
-        </div>
-        <div>
-          <label class="required">Tempat</label>
-          <select id="tempat">
-            <option value="">Sila Pilih</option>
-            <option value="KELAS">KELAS</option>
-            <option value="MAKMAL KOMPUTER">MAKMAL KOMPUTER</option>
-            <option value="KANTIN">KANTIN</option>
-            <option value="SURAU">SURAU</option>
-            <option value="DEWAN">DEWAN</option>
-            <option value="BILIK JQAF">BILIK JQAF</option>
-            <option value="BILIK MUZIK">BILIK MUZIK</option>
-            <option value="LAIN-LAIN">LAIN-LAIN</option>
-          </select>
-        </div>
-        <div>
-          <label class="required">Jumlah Murid Semasa</label>
-          <input type="number" id="jumlahMurid" min="0" placeholder="Contoh: 28" />
-        </div>
-        <div>
-          <label>Masa & Waktu (auto)</label>
-          <div class="badges-row">
-            <span class="readonly-pill"><strong>Tarikh:</strong> <span id="pillTarikh">-</span></span>
-            <span class="readonly-pill"><strong>Waktu:</strong> <span id="pillWaktu">-</span></span>
+    <!-- PAPARAN GURU -->
+    <div id="guruView">
+      <!-- MAKLUMAT KELAS -->
+      <section class="card">
+        <div class="card-title">Maklumat Kelas</div>
+        <div class="form-grid">
+          <div>
+            <label class="required">Nama Guru</label>
+            <input type="text" id="namaGuru" placeholder="Contoh: Cikgu Sufian" />
           </div>
-          <div class="badges-row">
-            <span class="badge" id="badgeRange">Julat masa: -</span>
-            <span class="badge" id="badgeNow">Masa semasa: -</span>
+          <div>
+            <label class="required">Kelas</label>
+            <select id="kelas">
+              <option value="">Sila Pilih</option>
+              <option value="1B">1B</option>
+              <option value="1C">1C</option>
+              <option value="1G">1G</option>
+              <option value="2B">2B</option>
+              <option value="2C">2C</option>
+              <option value="2G">2G</option>
+              <option value="3B">3B</option>
+              <option value="3C">3C</option>
+              <option value="3G">3G</option>
+              <option value="4B">4B</option>
+              <option value="4C">4C</option>
+              <option value="4G">4G</option>
+              <option value="5B">5B</option>
+              <option value="5C">5C</option>
+              <option value="5G">5G</option>
+              <option value="6B">6B</option>
+              <option value="6C">6C</option>
+              <option value="6G">6G</option>
+            </select>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SAHSIAH (optional, collapsible) -->
-    <section class="card">
-      <div class="card-title sahsiah-header" id="sahsiahHeader">
-        <span>Maklumat Sahsiah Murid</span>
-        <span id="sahsiahToggleIcon" class="toggle-icon">▾</span>
-      </div>
-
-      <div id="sahsiahBody" style="display:none;">
-        <div class="toggle-row">
-          <button type="button" class="toggle-btn active" id="btnGood">Amalan Baik</button>
-          <button type="button" class="toggle-btn" id="btnBad">Kesalahan Disiplin</button>
-        </div>
-
-        <!-- Amalan Baik -->
-        <div id="panelGood">
-          <div class="form-grid">
-            <div>
-              <label class="required">Kategori Amalan Baik</label>
-              <select id="amalanBaik">
-                <option value="">Sila Pilih</option>
-                <option value="Adab dan Berbudi Bahasa">ADAB DAN BERBUDI BAHASA</option>
-                <option value="Akhlak Mulia">AKHLAK MULIA</option>
-                <option value="Kebersihan Diri & Persekitaran">KEBERSIHAN DIRI & PERSEKITARAN</option>
-                <option value="Keselamatan Diri">KESELAMATAN DIRI</option>
-              </select>
+          <div>
+            <label class="required">Tempat</label>
+            <select id="tempat">
+              <option value="">Sila Pilih</option>
+              <option value="KELAS">KELAS</option>
+              <option value="MAKMAL KOMPUTER">MAKMAL KOMPUTER</option>
+              <option value="KANTIN">KANTIN</option>
+              <option value="SURAU">SURAU</option>
+              <option value="DEWAN">DEWAN</option>
+              <option value="BILIK JQAF">BILIK JQAF</option>
+              <option value="BILIK MUZIK">BILIK MUZIK</option>
+              <option value="LAIN-LAIN">LAIN-LAIN</option>
+            </select>
+          </div>
+          <div>
+            <label class="required">Jumlah Murid Semasa</label>
+            <input type="number" id="jumlahMurid" min="0" placeholder="Contoh: 28" />
+          </div>
+          <div>
+            <label>Masa & Waktu (auto)</label>
+            <div class="badges-row">
+              <span class="readonly-pill"><strong>Tarikh:</strong> <span id="pillTarikh">-</span></span>
+              <span class="readonly-pill"><strong>Waktu:</strong> <span id="pillWaktu">-</span></span>
             </div>
-            <div>
-              <label>Perincian Amalan</label>
-              <select id="perincianAmalan">
-                <option value="">Sila Pilih</option>
-                <option value="Menghargai Diri">MENGHARGAI DIRI</option>
-                <option value="Menghormati Guru & Rakan">MENGHORMATI GURU & RAKAN</option>
-                <option value="Berkelakuan Sopan">BERKELAKUAN SOPAN</option>
-                <option value="Menjaga Kebersihan Kelas">MENJAGA KEBERSIHAN KELAS</option>
-                <option value="Menjalankan Tugas yang Diamanahkan">MENJALANKAN TUGAS YANG DIAMANAHKAN</option>
-              </select>
+            <div class="badges-row">
+              <span class="badge" id="badgeRange">Julat masa: -</span>
+              <span class="badge" id="badgeNow">Masa semasa: -</span>
             </div>
           </div>
-          <div style="margin-top:8px;">
-            <label>Keterangan Amalan</label>
-            <textarea id="keteranganAmalan" placeholder="Contoh: Menolong rakan yang kesusahan tanpa diminta."></textarea>
+        </div>
+      </section>
+
+      <!-- SAHSIAH (optional, collapsible) -->
+      <section class="card">
+        <div class="card-title sahsiah-header" id="sahsiahHeader">
+          <span>Maklumat Sahsiah Murid</span>
+          <span id="sahsiahToggleIcon" class="toggle-icon">▾</span>
+        </div>
+
+        <div id="sahsiahBody" style="display:none;">
+          <div class="toggle-row">
+            <button type="button" class="toggle-btn active" id="btnGood">Amalan Baik</button>
+            <button type="button" class="toggle-btn" id="btnBad">Kesalahan Disiplin</button>
+          </div>
+
+          <!-- Amalan Baik -->
+          <div id="panelGood">
+            <div class="form-grid">
+              <div>
+                <label class="required">Kategori Amalan Baik</label>
+                <select id="amalanBaik">
+                  <option value="">Sila Pilih</option>
+                  <option value="Adab dan Berbudi Bahasa">ADAB DAN BERBUDI BAHASA</option>
+                  <option value="Akhlak Mulia">AKHLAK MULIA</option>
+                  <option value="Kebersihan Diri & Persekitaran">KEBERSIHAN DIRI & PERSEKITARAN</option>
+                  <option value="Keselamatan Diri">KESELAMATAN DIRI</option>
+                </select>
+              </div>
+              <div>
+                <label>Perincian Amalan</label>
+                <select id="perincianAmalan">
+                  <option value="">Sila Pilih</option>
+                  <option value="Menghargai Diri">MENGHARGAI DIRI</option>
+                  <option value="Menghormati Guru & Rakan">MENGHORMATI GURU & RAKAN</option>
+                  <option value="Berkelakuan Sopan">BERKELAKUAN SOPAN</option>
+                  <option value="Menjaga Kebersihan Kelas">MENJAGA KEBERSIHAN KELAS</option>
+                  <option value="Menjalankan Tugas yang Diamanahkan">MENJALANKAN TUGAS YANG DIAMANAHKAN</option>
+                </select>
+              </div>
+            </div>
+            <div style="margin-top:8px;">
+              <label>Keterangan Amalan</label>
+              <textarea id="keteranganAmalan" placeholder="Contoh: Menolong rakan yang kesusahan tanpa diminta."></textarea>
+            </div>
+          </div>
+
+          <!-- Kesalahan Disiplin -->
+          <div id="panelBad" style="display:none;">
+            <div class="form-grid">
+              <div>
+                <label class="required">Kategori Kes</label>
+                <select id="kategoriKes">
+                  <option value="">Sila Pilih</option>
+                  <option value="Barang Larangan">BARANG LARANGAN</option>
+                  <option value="Kekemasan Diri">KEKEMASAN DIRI</option>
+                  <option value="Kenakalan">KENAKALAN</option>
+                  <option value="Ponteng / Lewat Hadir">PONTENG / LEWAT HADIR</option>
+                  <option value="Kes Khas">KES KHAS</option>
+                  <option value="Kesalahan Asrama">KESALAHAN ASRAMA</option>
+                </select>
+              </div>
+              <div>
+                <label>Punca / Ringkasan Salah Laku</label>
+                <input type="text" id="puncaKes" placeholder="Contoh: Membawa telefon bimbit tanpa kebenaran." />
+              </div>
+            </div>
+            <div style="margin-top:8px;">
+              <label>Keterangan Kes</label>
+              <textarea id="keteranganKes" placeholder="Contoh: Didapati menggunakan telefon bimbit di dalam kelas."></textarea>
+            </div>
           </div>
         </div>
 
-        <!-- Kesalahan Disiplin -->
-        <div id="panelBad" style="display:none;">
-          <div class="form-grid">
-            <div>
-              <label class="required">Kategori Kes</label>
-              <select id="kategoriKes">
-                <option value="">Sila Pilih</option>
-                <option value="Barang Larangan">BARANG LARANGAN</option>
-                <option value="Kekemasan Diri">KEKEMASAN DIRI</option>
-                <option value="Kenakalan">KENAKALAN</option>
-                <option value="Ponteng / Lewat Hadir">PONTENG / LEWAT HADIR</option>
-                <option value="Kes Khas">KES KHAS</option>
-                <option value="Kesalahan Asrama">KESALAHAN ASRAMA</option>
-              </select>
-            </div>
-            <div>
-              <label>Punca / Ringkasan Salah Laku</label>
-              <input type="text" id="puncaKes" placeholder="Contoh: Membawa telefon bimbit tanpa kebenaran." />
-            </div>
+        <div class="btn-row">
+          <button type="button" class="btn-secondary" id="btnClearForm">Reset Borang</button>
+          <button type="button" class="btn-primary" id="btnSave">
+            <span>Rekodkan</span>
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <!-- PAPARAN ADMIN -->
+    <div id="adminView" style="display:none;">
+      <section class="card">
+        <div class="card-title">Panel Admin</div>
+        <div class="form-grid">
+          <div>
+            <label class="required">Tarikh Rekod</label>
+            <input type="date" id="adminTarikh" />
           </div>
-          <div style="margin-top:8px;">
-            <label>Keterangan Kes</label>
-            <textarea id="keteranganKes" placeholder="Contoh: Didapati menggunakan telefon bimbit di dalam kelas."></textarea>
+          <div>
+            <label>&nbsp;</label>
+            <button type="button" class="btn-primary" id="btnAdminLoad">Lihat Rekod</button>
           </div>
         </div>
-      </div>
+        <small>Admin boleh pilih tarikh untuk melihat rekod pemantauan bagi satu hari.</small>
+      </section>
 
-      <div class="btn-row">
-        <button type="button" class="btn-secondary" id="btnClearForm">Reset Borang</button>
-        <button type="button" class="btn-primary" id="btnSave">
-          <span>Rekodkan</span>
-        </button>
-      </div>
-    </section>
-
-    <!-- SENARAI REKOD (disembunyikan dari guru) -->
-    <section class="card" id="rekodCard" style="display:none;">
-      <div class="card-title">Senarai Rekod Hari Ini</div>
-      <div id="summaryInfo" class="empty-state">
-        Tiada rekod lagi untuk hari ini.
-      </div>
-      <div class="table-wrapper" id="tableWrapper" style="display:none;">
-        <table>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Tarikh</th>
-              <th>Waktu</th>
-              <th>Masa Rekod</th>
-              <th>Guru</th>
-              <th>Kelas</th>
-              <th>Tempat</th>
-              <th>Jumlah Murid</th>
-              <th>Jenis</th>
-              <th>Kategori / Perincian</th>
-              <th>Keterangan</th>
-            </tr>
-          </thead>
-          <tbody id="rekodTableBody"></tbody>
-        </table>
-      </div>
-    </section>
+      <section class="card">
+        <div class="card-title">Rekod Harian</div>
+        <div id="summaryInfo" class="empty-state">
+          Tiada rekod untuk tarikh yang dipilih.
+        </div>
+        <div class="table-wrapper" id="tableWrapper" style="display:none;">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Tarikh</th>
+                <th>Waktu</th>
+                <th>Masa Rekod</th>
+                <th>Guru</th>
+                <th>Kelas</th>
+                <th>Tempat</th>
+                <th>Jumlah Murid</th>
+                <th>Jenis</th>
+                <th>Kategori / Perincian</th>
+                <th>Keterangan</th>
+              </tr>
+            </thead>
+            <tbody id="rekodTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
   </main>
+</div>
+
+<!-- Modal Log Masuk Admin -->
+<div id="adminModal" class="modal-backdrop" style="display:none;">
+  <div class="modal-card">
+    <h2>Log Masuk Admin</h2>
+    <p>Masukkan kata laluan admin untuk mengakses tab Admin.</p>
+    <label for="adminPasswordInput" style="font-size:0.85rem;font-weight:500;margin-bottom:3px;">Kata Laluan</label>
+    <input type="password" id="adminPasswordInput" placeholder="Masukkan kata laluan" />
+    <div class="modal-buttons">
+      <button type="button" class="btn-modal-cancel" id="btnAdminCancel">Batal</button>
+      <button type="button" class="btn-modal-primary" id="btnAdminSubmit">Log Masuk</button>
+    </div>
+  </div>
 </div>
 
 <!-- Firebase v8 (global namespace) -->
@@ -551,12 +700,9 @@
     return null;
   }
 
-  let todayTarikh = formatDate(new Date());
-
   function updateDateTimeUI() {
     const now = new Date();
     const tarikh = formatDate(now);
-    todayTarikh = tarikh; // sentiasa update
     const day = dayNames[now.getDay()];
     const timeStr = formatTime(now);
     const period = getCurrentPeriod(now);
@@ -589,7 +735,7 @@
 
   sahsiahHeader.addEventListener("click", toggleSahsiah);
 
-  // ---------- TOGGLE GOOD / BAD ----------
+  // ---------- TOGGLE GOOD / BAD (dalam panel sahsiah) ----------
   const btnGood = document.getElementById("btnGood");
   const btnBad = document.getElementById("btnBad");
   const panelGood = document.getElementById("panelGood");
@@ -612,7 +758,6 @@
   btnGood.addEventListener("click", () => setMode("good"));
   btnBad.addEventListener("click", () => setMode("bad"));
 
-  // Adakah cikgu isi apa-apa data sahsiah?
   function hasSahsiahData() {
     const amalan = document.getElementById("amalanBaik").value;
     const perincian = document.getElementById("perincianAmalan").value;
@@ -623,37 +768,34 @@
     return !!(amalan || perincian || ketAmalan || kategoriKes || punca || ketKes);
   }
 
-  // ---------- PAPARAN JADUAL (hide dari UI tapi masih berfungsi) ----------
+  // ---------- PAPARAN JADUAL (Panel Admin) ----------
   function renderTable(records) {
     const tbody = document.getElementById("rekodTableBody");
     const wrapper = document.getElementById("tableWrapper");
     const summary = document.getElementById("summaryInfo");
 
-    if (!tbody) return;
-
     tbody.innerHTML = "";
 
     if (!records || records.length === 0) {
-      if (wrapper) wrapper.style.display = "none";
-      if (summary) summary.textContent = "Tiada rekod lagi untuk hari ini.";
+      wrapper.style.display = "none";
+      summary.textContent = "Tiada rekod untuk tarikh yang dipilih.";
       return;
     }
 
     records.sort((a, b) => (a.masaRekod || "").localeCompare(b.masaRekod || ""));
 
-    if (wrapper) wrapper.style.display = "block";
-    if (summary) summary.textContent = `Jumlah rekod untuk ${todayTarikh}: ${records.length}`;
+    wrapper.style.display = "block";
+    summary.textContent = `Jumlah rekod: ${records.length}`;
 
     records.forEach((rec, index) => {
       const tr = document.createElement("tr");
 
-      const jenis = rec.jenis;
       let jenisLabel = "-";
       let jenisClass = "";
-      if (jenis === "baik") {
+      if (rec.jenis === "baik") {
         jenisLabel = "Amalan Baik";
         jenisClass = "pill-good";
-      } else if (jenis === "jahat") {
+      } else if (rec.jenis === "jahat") {
         jenisLabel = "Kesalahan";
         jenisClass = "pill-bad";
       }
@@ -686,7 +828,7 @@
     });
   }
 
-  // ---------- BUTANG & SIMPAN REKOD ----------
+  // ---------- BUTANG & SIMPAN REKOD (GURU) ----------
   const btnSave = document.getElementById("btnSave");
   const btnClearForm = document.getElementById("btnClearForm");
 
@@ -783,12 +925,103 @@
       });
   });
 
+  // ---------- TAB GURU / ADMIN ----------
+  const tabGuru = document.getElementById("tabGuru");
+  const tabAdmin = document.getElementById("tabAdmin");
+  const guruView = document.getElementById("guruView");
+  const adminView = document.getElementById("adminView");
+  let isAdmin = false;
+
+  function setTab(tab) {
+    if (tab === "guru") {
+      tabGuru.classList.add("active");
+      tabAdmin.classList.remove("active");
+      guruView.style.display = "block";
+      adminView.style.display = "none";
+    } else {
+      tabGuru.classList.remove("active");
+      tabAdmin.classList.add("active");
+      guruView.style.display = "none";
+      adminView.style.display = "block";
+    }
+  }
+
+  tabGuru.addEventListener("click", () => setTab("guru"));
+  tabAdmin.addEventListener("click", () => {
+    if (isAdmin) setTab("admin");
+  });
+
+  // ---------- LOGIN ADMIN (klik logo) ----------
+  const ADMIN_PASSWORD = "sksaadmin"; // tukar sini kalau nak kata laluan lain
+
+  const logoEl = document.getElementById("sksaLogo");
+  const adminModal = document.getElementById("adminModal");
+  const adminPwInput = document.getElementById("adminPasswordInput");
+  const btnAdminCancel = document.getElementById("btnAdminCancel");
+  const btnAdminSubmit = document.getElementById("btnAdminSubmit");
+
+  function openAdminModal() {
+    adminModal.style.display = "flex";
+    adminPwInput.value = "";
+    adminPwInput.focus();
+  }
+
+  function closeAdminModal() {
+    adminModal.style.display = "none";
+  }
+
+  logoEl.addEventListener("click", openAdminModal);
+  btnAdminCancel.addEventListener("click", closeAdminModal);
+
+  btnAdminSubmit.addEventListener("click", () => {
+    const pw = adminPwInput.value;
+    if (pw === ADMIN_PASSWORD) {
+      isAdmin = true;
+      tabAdmin.style.display = "inline-block";
+      closeAdminModal();
+      setTab("admin");
+      // set tarikh default hari ini dalam input tarikh admin
+      const today = new Date();
+      const iso = today.toISOString().slice(0,10); // yyyy-mm-dd
+      document.getElementById("adminTarikh").value = iso;
+      loadAdminForDate(formatDate(today));
+      alert("Log masuk admin berjaya.");
+    } else {
+      alert("Kata laluan salah.");
+      adminPwInput.focus();
+    }
+  });
+
+  // ---------- PANEL ADMIN: PILIH TARIKH ----------
+  const adminTarikhInput = document.getElementById("adminTarikh");
+  const btnAdminLoad = document.getElementById("btnAdminLoad");
+
+  function inputDateToKey(value) {
+    // dari yyyy-mm-dd ke dd/mm/yyyy
+    const parts = value.split("-");
+    if (parts.length !== 3) return "";
+    const [yyyy, mm, dd] = parts;
+    return `${dd}/${mm}/${yyyy}`;
+  }
+
+  function loadAdminForDate(tarikhKey) {
+    if (!tarikhKey) return;
+    unsubscribeTodayRecords();
+    subscribeToTodayRecords(tarikhKey, renderTable);
+  }
+
+  btnAdminLoad.addEventListener("click", () => {
+    if (!adminTarikhInput.value) {
+      alert("Sila pilih tarikh rekod.");
+      return;
+    }
+    const key = inputDateToKey(adminTarikhInput.value);
+    loadAdminForDate(key);
+  });
+
   // ---------- INIT ----------
   updateDateTimeUI();
   setInterval(updateDateTimeUI, 30000);
-
-  // Listener rekod hari ini (walaupun UI jadual hidden)
-  subscribeToTodayRecords(todayTarikh, renderTable);
 </script>
 </body>
 </html>
