@@ -321,8 +321,42 @@
           <input type="text" id="namaGuru" placeholder="Contoh: Cikgu Sufian" />
         </div>
         <div>
-          <label class="required">Tempat / Kelas</label>
-          <input type="text" id="tempat" placeholder="Contoh: 4 Bestari / Makmal Komputer" />
+          <label class="required">Kelas</label>
+          <select id="kelas">
+            <option value="">Sila Pilih</option>
+            <option value="1B">1B</option>
+            <option value="1C">1C</option>
+            <option value="1G">1G</option>
+            <option value="2B">2B</option>
+            <option value="2C">2C</option>
+            <option value="2G">2G</option>
+            <option value="3B">3B</option>
+            <option value="3C">3C</option>
+            <option value="3G">3G</option>
+            <option value="4B">4B</option>
+            <option value="4C">4C</option>
+            <option value="4G">4G</option>
+            <option value="5B">5B</option>
+            <option value="5C">5C</option>
+            <option value="5G">5G</option>
+            <option value="6B">6B</option>
+            <option value="6C">6C</option>
+            <option value="6G">6G</option>
+          </select>
+        </div>
+        <div>
+          <label class="required">Tempat</label>
+          <select id="tempat">
+            <option value="">Sila Pilih</option>
+            <option value="KELAS">KELAS</option>
+            <option value="MAKMAL KOMPUTER">MAKMAL KOMPUTER</option>
+            <option value="KANTIN">KANTIN</option>
+            <option value="SURAU">SURAU</option>
+            <option value="DEWAN">DEWAN</option>
+            <option value="BILIK JQAF">BILIK JQAF</option>
+            <option value="BILIK MUZIK">BILIK MUZIK</option>
+            <option value="LAIN-LAIN">LAIN-LAIN</option>
+          </select>
         </div>
         <div>
           <label class="required">Jumlah Murid Semasa</label>
@@ -431,7 +465,8 @@
               <th>Waktu</th>
               <th>Masa Rekod</th>
               <th>Guru</th>
-              <th>Tempat / Kelas</th>
+              <th>Kelas</th>
+              <th>Tempat</th>
               <th>Jumlah Murid</th>
               <th>Jenis</th>
               <th>Kategori / Perincian</th>
@@ -545,7 +580,7 @@
   btnGood.addEventListener("click", () => setMode("good"));
   btnBad.addEventListener("click", () => setMode("bad"));
 
-  // ---------- RENDER TABLE DARIPADA FIREBASE ----------
+  // ---------- PAPARAN JADUAL ----------
   function renderTable(records) {
     const tbody = document.getElementById("rekodTableBody");
     const wrapper = document.getElementById("tableWrapper");
@@ -578,6 +613,7 @@
         <td>${rec.waktu || "-"}</td>
         <td>${rec.masaRekod || "-"}</td>
         <td>${rec.namaGuru || "-"}</td>
+        <td>${rec.kelas || "-"}</td>
         <td>${rec.tempat || "-"}</td>
         <td>${rec.jumlahMurid ?? "-"}</td>
         <td></td>
@@ -585,7 +621,7 @@
         <td>${rec.keterangan || "-"}</td>
       `;
 
-      tr.children[7].appendChild(jenisPill);
+      tr.children[8].appendChild(jenisPill);
       tbody.appendChild(tr);
     });
   }
@@ -596,6 +632,7 @@
 
   function clearForm() {
     document.getElementById("namaGuru").value = "";
+    document.getElementById("kelas").value = "";
     document.getElementById("tempat").value = "";
     document.getElementById("jumlahMurid").value = "";
 
@@ -612,11 +649,12 @@
 
   btnSave.addEventListener("click", () => {
     const namaGuru = document.getElementById("namaGuru").value.trim();
-    const tempat = document.getElementById("tempat").value.trim();
+    const kelas = document.getElementById("kelas").value;
+    const tempat = document.getElementById("tempat").value;
     const jumlahMurid = document.getElementById("jumlahMurid").value;
 
-    if (!namaGuru || !tempat || jumlahMurid === "") {
-      alert("Sila lengkapkan Nama Guru, Tempat/Kelas dan Jumlah Murid.");
+    if (!namaGuru || !kelas || !tempat || jumlahMurid === "") {
+      alert("Sila lengkapkan Nama Guru, Kelas, Tempat dan Jumlah Murid.");
       return;
     }
 
@@ -660,6 +698,7 @@
       waktu,
       masaRekod,
       namaGuru,
+      kelas,
       tempat,
       jumlahMurid: Number(jumlahMurid),
       jenis,
@@ -671,7 +710,7 @@
       .then(() => {
         alert("Rekod berjaya disimpan ke Firebase.");
         clearForm();
-        // paparan akan auto update melalui listener subscribeTodayRecords
+        // paparan akan auto update melalui listener subscribeToTodayRecords
       })
       .catch((err) => {
         console.error(err);
