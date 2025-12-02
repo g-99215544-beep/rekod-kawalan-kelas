@@ -74,6 +74,19 @@
       padding-left: 8px;
     }
 
+    .sahsiah-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .sahsiah-header .toggle-icon {
+      font-size: 1.1rem;
+      margin-left: 10px;
+    }
+
     .form-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -376,69 +389,74 @@
       </div>
     </section>
 
-    <!-- SAHSIAH -->
+    <!-- SAHSIAH (optional, collapsible) -->
     <section class="card">
-      <div class="card-title">Maklumat Sahsiah Murid</div>
-
-      <div class="toggle-row">
-        <button type="button" class="toggle-btn active" id="btnGood">Amalan Baik</button>
-        <button type="button" class="toggle-btn" id="btnBad">Kesalahan Disiplin</button>
+      <div class="card-title sahsiah-header" id="sahsiahHeader">
+        <span>Maklumat Sahsiah Murid</span>
+        <span id="sahsiahToggleIcon" class="toggle-icon">▾</span>
       </div>
 
-      <!-- Amalan Baik -->
-      <div id="panelGood">
-        <div class="form-grid">
-          <div>
-            <label class="required">Kategori Amalan Baik</label>
-            <select id="amalanBaik">
-              <option value="">Sila Pilih</option>
-              <option value="Adab dan Berbudi Bahasa">ADAB DAN BERBUDI BAHASA</option>
-              <option value="Akhlak Mulia">AKHLAK MULIA</option>
-              <option value="Kebersihan Diri & Persekitaran">KEBERSIHAN DIRI & PERSEKITARAN</option>
-              <option value="Keselamatan Diri">KESELAMATAN DIRI</option>
-            </select>
-          </div>
-          <div>
-            <label>Perincian Amalan</label>
-            <select id="perincianAmalan">
-              <option value="">Sila Pilih</option>
-              <option value="Menghargai Diri">MENGHARGAI DIRI</option>
-              <option value="Menghormati Guru & Rakan">MENGHORMATI GURU & RAKAN</option>
-              <option value="Berkelakuan Sopan">BERKELAKUAN SOPAN</option>
-              <option value="Menjaga Kebersihan Kelas">MENJAGA KEBERSIHAN KELAS</option>
-              <option value="Menjalankan Tugas yang Diamanahkan">MENJALANKAN TUGAS YANG DIAMANAHKAN</option>
-            </select>
-          </div>
+      <div id="sahsiahBody" style="display:none;">
+        <div class="toggle-row">
+          <button type="button" class="toggle-btn active" id="btnGood">Amalan Baik</button>
+          <button type="button" class="toggle-btn" id="btnBad">Kesalahan Disiplin</button>
         </div>
-        <div style="margin-top:8px;">
-          <label>Keterangan Amalan</label>
-          <textarea id="keteranganAmalan" placeholder="Contoh: Menolong rakan yang kesusahan tanpa diminta."></textarea>
-        </div>
-      </div>
 
-      <!-- Kesalahan Disiplin -->
-      <div id="panelBad" style="display:none;">
-        <div class="form-grid">
-          <div>
-            <label class="required">Kategori Kes</label>
-            <select id="kategoriKes">
-              <option value="">Sila Pilih</option>
-              <option value="Barang Larangan">BARANG LARANGAN</option>
-              <option value="Kekemasan Diri">KEKEMASAN DIRI</option>
-              <option value="Kenakalan">KENAKALAN</option>
-              <option value="Ponteng / Lewat Hadir">PONTENG / LEWAT HADIR</option>
-              <option value="Kes Khas">KES KHAS</option>
-              <option value="Kesalahan Asrama">KESALAHAN ASRAMA</option>
-            </select>
+        <!-- Amalan Baik -->
+        <div id="panelGood">
+          <div class="form-grid">
+            <div>
+              <label class="required">Kategori Amalan Baik</label>
+              <select id="amalanBaik">
+                <option value="">Sila Pilih</option>
+                <option value="Adab dan Berbudi Bahasa">ADAB DAN BERBUDI BAHASA</option>
+                <option value="Akhlak Mulia">AKHLAK MULIA</option>
+                <option value="Kebersihan Diri & Persekitaran">KEBERSIHAN DIRI & PERSEKITARAN</option>
+                <option value="Keselamatan Diri">KESELAMATAN DIRI</option>
+              </select>
+            </div>
+            <div>
+              <label>Perincian Amalan</label>
+              <select id="perincianAmalan">
+                <option value="">Sila Pilih</option>
+                <option value="Menghargai Diri">MENGHARGAI DIRI</option>
+                <option value="Menghormati Guru & Rakan">MENGHORMATI GURU & RAKAN</option>
+                <option value="Berkelakuan Sopan">BERKELAKUAN SOPAN</option>
+                <option value="Menjaga Kebersihan Kelas">MENJAGA KEBERSIHAN KELAS</option>
+                <option value="Menjalankan Tugas yang Diamanahkan">MENJALANKAN TUGAS YANG DIAMANAHKAN</option>
+              </select>
+            </div>
           </div>
-          <div>
-            <label>Punca / Ringkasan Salah Laku</label>
-            <input type="text" id="puncaKes" placeholder="Contoh: Membawa telefon bimbit tanpa kebenaran." />
+          <div style="margin-top:8px;">
+            <label>Keterangan Amalan</label>
+            <textarea id="keteranganAmalan" placeholder="Contoh: Menolong rakan yang kesusahan tanpa diminta."></textarea>
           </div>
         </div>
-        <div style="margin-top:8px;">
-          <label>Keterangan Kes</label>
-          <textarea id="keteranganKes" placeholder="Contoh: Didapati menggunakan telefon bimbit di dalam kelas."></textarea>
+
+        <!-- Kesalahan Disiplin -->
+        <div id="panelBad" style="display:none;">
+          <div class="form-grid">
+            <div>
+              <label class="required">Kategori Kes</label>
+              <select id="kategoriKes">
+                <option value="">Sila Pilih</option>
+                <option value="Barang Larangan">BARANG LARANGAN</option>
+                <option value="Kekemasan Diri">KEKEMASAN DIRI</option>
+                <option value="Kenakalan">KENAKALAN</option>
+                <option value="Ponteng / Lewat Hadir">PONTENG / LEWAT HADIR</option>
+                <option value="Kes Khas">KES KHAS</option>
+                <option value="Kesalahan Asrama">KESALAHAN ASRAMA</option>
+              </select>
+            </div>
+            <div>
+              <label>Punca / Ringkasan Salah Laku</label>
+              <input type="text" id="puncaKes" placeholder="Contoh: Membawa telefon bimbit tanpa kebenaran." />
+            </div>
+          </div>
+          <div style="margin-top:8px;">
+            <label>Keterangan Kes</label>
+            <textarea id="keteranganKes" placeholder="Contoh: Didapati menggunakan telefon bimbit di dalam kelas."></textarea>
+          </div>
         </div>
       </div>
 
@@ -450,9 +468,9 @@
       </div>
     </section>
 
-    <!-- SENARAI REKOD -->
-    <section class="card">
-      <div class="card-title">Senarai Rekod Hari Ini (dibaca daripada Firebase)</div>
+    <!-- SENARAI REKOD (disembunyikan dari guru) -->
+    <section class="card" id="rekodCard" style="display:none;">
+      <div class="card-title">Senarai Rekod Hari Ini</div>
       <div id="summaryInfo" class="empty-state">
         Tiada rekod lagi untuk hari ini.
       </div>
@@ -557,6 +575,20 @@
     document.getElementById("badgeNow").textContent = `Masa semasa: ${timeStr}`;
   }
 
+  // ---------- SAHSIAH COLLAPSE ----------
+  const sahsiahHeader = document.getElementById("sahsiahHeader");
+  const sahsiahBody = document.getElementById("sahsiahBody");
+  const sahsiahToggleIcon = document.getElementById("sahsiahToggleIcon");
+  let sahsiahExpanded = false;
+
+  function toggleSahsiah() {
+    sahsiahExpanded = !sahsiahExpanded;
+    sahsiahBody.style.display = sahsiahExpanded ? "block" : "none";
+    sahsiahToggleIcon.textContent = sahsiahExpanded ? "▴" : "▾";
+  }
+
+  sahsiahHeader.addEventListener("click", toggleSahsiah);
+
   // ---------- TOGGLE GOOD / BAD ----------
   const btnGood = document.getElementById("btnGood");
   const btnBad = document.getElementById("btnBad");
@@ -580,32 +612,51 @@
   btnGood.addEventListener("click", () => setMode("good"));
   btnBad.addEventListener("click", () => setMode("bad"));
 
-  // ---------- PAPARAN JADUAL ----------
+  // Adakah cikgu isi apa-apa data sahsiah?
+  function hasSahsiahData() {
+    const amalan = document.getElementById("amalanBaik").value;
+    const perincian = document.getElementById("perincianAmalan").value;
+    const ketAmalan = document.getElementById("keteranganAmalan").value.trim();
+    const kategoriKes = document.getElementById("kategoriKes").value;
+    const punca = document.getElementById("puncaKes").value.trim();
+    const ketKes = document.getElementById("keteranganKes").value.trim();
+    return !!(amalan || perincian || ketAmalan || kategoriKes || punca || ketKes);
+  }
+
+  // ---------- PAPARAN JADUAL (hide dari UI tapi masih berfungsi) ----------
   function renderTable(records) {
     const tbody = document.getElementById("rekodTableBody");
     const wrapper = document.getElementById("tableWrapper");
     const summary = document.getElementById("summaryInfo");
 
+    if (!tbody) return;
+
     tbody.innerHTML = "";
 
     if (!records || records.length === 0) {
-      wrapper.style.display = "none";
-      summary.textContent = "Tiada rekod lagi untuk hari ini.";
+      if (wrapper) wrapper.style.display = "none";
+      if (summary) summary.textContent = "Tiada rekod lagi untuk hari ini.";
       return;
     }
 
-    // susun ikut masa rekod
     records.sort((a, b) => (a.masaRekod || "").localeCompare(b.masaRekod || ""));
 
-    wrapper.style.display = "block";
-    summary.textContent = `Jumlah rekod untuk ${todayTarikh}: ${records.length}`;
+    if (wrapper) wrapper.style.display = "block";
+    if (summary) summary.textContent = `Jumlah rekod untuk ${todayTarikh}: ${records.length}`;
 
     records.forEach((rec, index) => {
       const tr = document.createElement("tr");
 
-      const jenisPill = document.createElement("span");
-      jenisPill.textContent = rec.jenis === "baik" ? "Amalan Baik" : "Kesalahan";
-      jenisPill.className = rec.jenis === "baik" ? "pill-good" : "pill-bad";
+      const jenis = rec.jenis;
+      let jenisLabel = "-";
+      let jenisClass = "";
+      if (jenis === "baik") {
+        jenisLabel = "Amalan Baik";
+        jenisClass = "pill-good";
+      } else if (jenis === "jahat") {
+        jenisLabel = "Kesalahan";
+        jenisClass = "pill-bad";
+      }
 
       tr.innerHTML = `
         <td>${index + 1}</td>
@@ -621,7 +672,16 @@
         <td>${rec.keterangan || "-"}</td>
       `;
 
-      tr.children[8].appendChild(jenisPill);
+      const jenisCell = tr.children[8];
+      if (jenisClass) {
+        const pill = document.createElement("span");
+        pill.textContent = jenisLabel;
+        pill.className = jenisClass;
+        jenisCell.appendChild(pill);
+      } else {
+        jenisCell.textContent = "-";
+      }
+
       tbody.appendChild(tr);
     });
   }
@@ -664,33 +724,39 @@
     const period = getCurrentPeriod(now);
     const waktu = period ? period.code : "Luar Waktu PdP";
 
-    const isGoodMode = btnGood.classList.contains("active");
-    let jenis, kategori, keterangan;
+    let jenis = null;
+    let kategori = "";
+    let keterangan = "";
 
-    if (isGoodMode) {
-      const amalan = document.getElementById("amalanBaik").value;
-      if (!amalan) {
-        alert("Sila pilih kategori Amalan Baik.");
-        return;
+    const adaSahsiah = hasSahsiahData();
+
+    if (adaSahsiah) {
+      const isGoodMode = btnGood.classList.contains("active");
+      if (isGoodMode) {
+        const amalan = document.getElementById("amalanBaik").value;
+        if (!amalan) {
+          alert("Sila pilih kategori Amalan Baik atau kosongkan semua maklumat sahsiah jika tidak mahu lapor.");
+          return;
+        }
+        const perincian = document.getElementById("perincianAmalan").value;
+        const ket = document.getElementById("keteranganAmalan").value.trim();
+
+        jenis = "baik";
+        kategori = perincian ? `${amalan} - ${perincian}` : amalan;
+        keterangan = ket;
+      } else {
+        const kategoriKes = document.getElementById("kategoriKes").value;
+        if (!kategoriKes) {
+          alert("Sila pilih Kategori Kes atau kosongkan semua maklumat sahsiah jika tidak mahu lapor.");
+          return;
+        }
+        const punca = document.getElementById("puncaKes").value.trim();
+        const ketKes = document.getElementById("keteranganKes").value.trim();
+
+        jenis = "jahat";
+        kategori = kategoriKes;
+        keterangan = [punca, ketKes].filter(Boolean).join(" | ");
       }
-      const perincian = document.getElementById("perincianAmalan").value;
-      const ket = document.getElementById("keteranganAmalan").value.trim();
-
-      jenis = "baik";
-      kategori = perincian ? `${amalan} - ${perincian}` : amalan;
-      keterangan = ket;
-    } else {
-      const kategoriKes = document.getElementById("kategoriKes").value;
-      if (!kategoriKes) {
-        alert("Sila pilih Kategori Kes.");
-        return;
-      }
-      const punca = document.getElementById("puncaKes").value.trim();
-      const ketKes = document.getElementById("keteranganKes").value.trim();
-
-      jenis = "jahat";
-      kategori = kategoriKes;
-      keterangan = [punca, ketKes].filter(Boolean).join(" | ");
     }
 
     const newRecord = {
@@ -710,7 +776,6 @@
       .then(() => {
         alert("Rekod berjaya disimpan ke Firebase.");
         clearForm();
-        // paparan akan auto update melalui listener subscribeToTodayRecords
       })
       .catch((err) => {
         console.error(err);
@@ -722,7 +787,7 @@
   updateDateTimeUI();
   setInterval(updateDateTimeUI, 30000);
 
-  // mula dengar rekod hari ini
+  // Listener rekod hari ini (walaupun UI jadual hidden)
   subscribeToTodayRecords(todayTarikh, renderTable);
 </script>
 </body>
