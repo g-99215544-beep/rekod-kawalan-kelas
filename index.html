@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <title>Rekod Pemantauan Kelas SKSA</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- Font -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     * {
@@ -14,125 +13,120 @@
 
     body {
       margin: 0;
-      background: #f3f6fb;
-      color: #12324b;
+      background: #e5ecf4;
+      color: #0f172a;
     }
 
     .app-shell {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 16px;
+      max-width: 480px;
+      margin: 12px auto 24px;
+      padding: 8px;
     }
 
-    header {
-      background: linear-gradient(135deg, #00796b, #00a79d);
-      color: #fff;
-      padding: 16px 20px;
-      border-radius: 16px;
-      margin-bottom: 18px;
+    .app-card {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 18px 18px 20px;
+      box-shadow: 0 10px 30px rgba(15,23,42,0.18);
+    }
+
+    .logo-wrap {
       display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
+      flex-direction: column;
       align-items: center;
-      gap: 8px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+      margin-bottom: 12px;
     }
 
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .sksa-logo {
-      height: 52px;
-      width: 52px;
+    .logo-wrap img {
+      width: 80px;
+      height: 80px;
       border-radius: 50%;
       object-fit: cover;
-      background: #ffffff;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.25);
       cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.25);
     }
 
-    header h1 {
-      font-size: 1.6rem;
-      margin: 0;
+    .logo-wrap h1 {
+      margin: 10px 0 0;
+      text-align: center;
+      font-size: 1.2rem;
+      letter-spacing: 0.04em;
       font-weight: 600;
     }
 
-    header .meta {
-      text-align: right;
-      font-size: 0.9rem;
-      line-height: 1.4;
-    }
-
-    .meta span {
-      display: block;
-    }
-
-    main {
-      display: grid;
-      gap: 16px;
-    }
-
-    .card {
-      background: #fff;
-      border-radius: 14px;
-      padding: 16px 18px 18px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    }
-
-    .card-title {
-      font-size: 1.05rem;
-      font-weight: 600;
-      margin-bottom: 10px;
-      border-left: 4px solid #00796b;
-      padding-left: 8px;
-    }
-
-    .sahsiah-header {
+    .status-row {
       display: flex;
+      justify-content: center;
+      gap: 10px;
+      font-size: 0.85rem;
+      color: #4b5563;
+      margin-top: 6px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .status-pill {
+      display: inline-flex;
       align-items: center;
-      justify-content: space-between;
+      gap: 4px;
+    }
+
+    .status-pill span.icon {
+      font-size: 0.95rem;
+    }
+
+    .tab-row {
+      display: inline-flex;
+      border-radius: 999px;
+      padding: 3px;
+      background: #e5f3ec;
+      margin-bottom: 14px;
+    }
+
+    .tab-btn {
+      border: none;
+      background: transparent;
+      padding: 6px 20px;
+      border-radius: 999px;
+      font-size: 0.85rem;
       cursor: pointer;
-      user-select: none;
+      font-weight: 500;
+      color: #166534;
     }
 
-    .sahsiah-header .toggle-icon {
-      font-size: 1.1rem;
-      margin-left: 10px;
+    .tab-btn.active {
+      background: #059669;
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(5,150,105,0.45);
     }
 
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px 18px;
+    .input-card {
+      background: #f9fafb;
+      border-radius: 16px;
+      padding: 14px 12px 14px;
+      border: 1px solid #e5e7eb;
     }
 
-    @media (max-width: 768px) {
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      header .meta {
-        text-align: left;
-      }
+    .field {
+      margin-bottom: 10px;
     }
 
     label {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 500;
       display: block;
       margin-bottom: 3px;
+      color: #4b5563;
     }
 
     .required::after {
       content: " *";
-      color: #e53935;
+      color: #e11d48;
       font-weight: 600;
+    }
+
+    .label-icon {
+      margin-right: 4px;
     }
 
     input[type="text"],
@@ -141,13 +135,13 @@
     select,
     textarea {
       width: 100%;
-      border-radius: 8px;
-      border: 1px solid #cfd8e3;
-      padding: 7px 9px;
+      border-radius: 10px;
+      border: 1px solid #d1d5db;
+      padding: 8px 10px;
       font-size: 0.9rem;
       outline: none;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
-      background: #fdfdfd;
+      background: #ffffff;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
     }
 
     input[type="text"]:focus,
@@ -155,9 +149,8 @@
     input[type="date"]:focus,
     select:focus,
     textarea:focus {
-      border-color: #00796b;
-      box-shadow: 0 0 0 2px rgba(0,121,107,0.18);
-      background: #ffffff;
+      border-color: #059669;
+      box-shadow: 0 0 0 2px rgba(34,197,94,0.35);
     }
 
     textarea {
@@ -165,40 +158,36 @@
       min-height: 70px;
     }
 
-    .readonly-pill {
-      padding: 6px 10px;
+    .btn-submit {
+      margin-top: 8px;
+      width: 100%;
+      border: none;
       border-radius: 999px;
-      background: #e0f2f1;
-      font-size: 0.9rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      margin-right: 8px;
-      margin-top: 4px;
-    }
-
-    .readonly-pill strong {
+      padding: 10px 16px;
+      font-size: 0.95rem;
       font-weight: 600;
+      letter-spacing: 0.04em;
+      background: #047857;
+      color: #ffffff;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(4,120,87,0.45);
     }
 
-    .badges-row {
-      margin-top: 4px;
+    .btn-submit:hover {
+      filter: brightness(1.03);
     }
 
-    .badge {
-      display: inline-block;
-      padding: 3px 8px;
-      border-radius: 999px;
-      font-size: 0.7rem;
-      background: #e3f2fd;
-      color: #1565c0;
-      margin-right: 4px;
-      margin-top: 3px;
+    .section-title {
+      margin-top: 16px;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #111827;
     }
 
     .toggle-row {
       display: inline-flex;
-      background: #edf2fb;
+      background: #e5e7eb;
       border-radius: 999px;
       padding: 3px;
       margin-bottom: 10px;
@@ -207,156 +196,101 @@
     .toggle-btn {
       border: none;
       background: transparent;
-      padding: 6px 14px;
+      padding: 5px 14px;
       border-radius: 999px;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       cursor: pointer;
       font-weight: 500;
-      color: #455a64;
-      min-width: 120px;
+      color: #374151;
     }
 
     .toggle-btn.active {
-      background: #00796b;
-      color: #fff;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.18);
-    }
-
-    .toggle-btn:not(.active):hover {
-      background: rgba(0,0,0,0.03);
-    }
-
-    .btn-row {
-      margin-top: 10px;
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-
-    .btn-primary {
-      border: none;
-      background: linear-gradient(135deg, #00796b, #00a79d);
-      color: #fff;
-      padding: 8px 18px;
-      border-radius: 999px;
-      font-size: 0.9rem;
-      font-weight: 500;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.12);
-    }
-
-    .btn-primary:hover {
-      filter: brightness(1.05);
+      background: #2563eb;
+      color: #ffffff;
+      box-shadow: 0 1px 4px rgba(37,99,235,0.4);
     }
 
     .btn-secondary {
-      border: 1px solid #cfd8e3;
+      border: 1px solid #d1d5db;
       background: #ffffff;
-      color: #455a64;
+      color: #374151;
       padding: 7px 14px;
       border-radius: 999px;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       cursor: pointer;
     }
 
-    .btn-secondary:hover {
-      background: #f1f4fb;
+    .btn-row {
+      margin-top: 8px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      flex-wrap: wrap;
     }
 
-    .tab-row {
-      margin-bottom: 10px;
-      display: inline-flex;
-      padding: 4px;
-      background: #e3f2fd;
-      border-radius: 999px;
-      gap: 4px;
-    }
-
-    .tab-btn {
-      border: none;
-      background: transparent;
-      padding: 6px 16px;
-      border-radius: 999px;
-      font-size: 0.85rem;
-      cursor: pointer;
-      font-weight: 500;
-      color: #455a64;
-    }
-
-    .tab-btn.active {
-      background: #00796b;
-      color: #fff;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.18);
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.82rem;
-    }
-
-    thead {
-      background: #00796b;
-      color: #fff;
-    }
-
-    th, td {
-      padding: 6px 8px;
-      border-bottom: 1px solid #e0e6f0;
-      vertical-align: top;
-      text-align: left;
-    }
-
-    th {
-      position: sticky;
-      top: 0;
-      z-index: 1;
-    }
-
-    tbody tr:nth-child(even) {
-      background: #f7fafc;
+    /* Admin view */
+    #adminView {
+      margin-top: 10px;
     }
 
     .table-wrapper {
       max-height: 340px;
       overflow: auto;
       margin-top: 8px;
-      border-radius: 10px;
-      border: 1px solid #e0e6f0;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.78rem;
+    }
+
+    thead {
+      background: #047857;
+      color: #ffffff;
+    }
+
+    th, td {
+      padding: 6px 6px;
+      border-bottom: 1px solid #e5e7eb;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    tbody tr:nth-child(even) {
+      background: #f9fafb;
     }
 
     .pill-good {
-      background: #e8f5e9;
-      color: #2e7d32;
-      padding: 3px 7px;
+      background: #e0f2fe;
+      color: #0369a1;
+      padding: 2px 6px;
       border-radius: 999px;
+      font-size: 0.7rem;
       font-weight: 500;
-      font-size: 0.75rem;
     }
     .pill-bad {
-      background: #ffebee;
-      color: #c62828;
-      padding: 3px 7px;
+      background: #fee2e2;
+      color: #b91c1c;
+      padding: 2px 6px;
       border-radius: 999px;
+      font-size: 0.7rem;
       font-weight: 500;
-      font-size: 0.75rem;
     }
 
     .empty-state {
-      font-size: 0.86rem;
-      color: #78909c;
-      padding-top: 4px;
+      font-size: 0.8rem;
+      color: #6b7280;
+      margin-top: 4px;
     }
 
     /* Modal login admin */
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.35);
+      background: rgba(15,23,42,0.45);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -368,21 +302,21 @@
       border-radius: 18px;
       padding: 20px 22px 18px;
       width: 100%;
-      max-width: 380px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+      max-width: 360px;
+      box-shadow: 0 18px 40px rgba(15,23,42,0.45);
     }
 
     .modal-card h2 {
       margin: 0 0 6px 0;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       font-weight: 600;
-      color: #212121;
+      color: #111827;
     }
 
     .modal-card p {
       margin: 0 0 14px 0;
-      font-size: 0.9rem;
-      color: #555;
+      font-size: 0.85rem;
+      color: #4b5563;
     }
 
     .modal-buttons {
@@ -396,9 +330,9 @@
       border-radius: 999px;
       border: none;
       padding: 7px 16px;
-      background: #eceff1;
-      color: #37474f;
-      font-size: 0.86rem;
+      background: #e5e7eb;
+      color: #374151;
+      font-size: 0.82rem;
       cursor: pointer;
     }
 
@@ -406,9 +340,9 @@
       border-radius: 999px;
       border: none;
       padding: 7px 18px;
-      background: linear-gradient(135deg,#0062ff,#0041c4);
+      background: linear-gradient(135deg,#2563eb,#1d4ed8);
       color: #fff;
-      font-size: 0.86rem;
+      font-size: 0.82rem;
       font-weight: 500;
       cursor: pointer;
     }
@@ -416,221 +350,201 @@
 </head>
 <body>
 <div class="app-shell">
-  <header>
-    <div class="header-left">
-      <!-- Logo (klik untuk login admin) -->
-      <img id="sksaLogo" class="sksa-logo" src="https://imgur.com/AfsVtVG.png" alt="Logo SKSA" title="Klik untuk log masuk admin" />
-      <div>
-        <h1>Rekod Pemantauan Kelas SKSA</h1>
-        <small>Untuk kegunaan guru memantau kehadiran & sahsiah murid secara harian.</small>
+  <div class="app-card">
+    <!-- Header + logo -->
+    <div class="logo-wrap">
+      <img id="sksaLogo" src="https://imgur.com/AfsVtVG.png" alt="Logo SKSA" title="Klik untuk log masuk admin" />
+      <h1>REKOD PEMANTAUAN KELAS SKSA</h1>
+    </div>
+
+    <!-- Tarikh / Masa / Waktu -->
+    <div class="status-row">
+      <div class="status-pill">
+        <span class="icon">📅</span>
+        <span id="headerTarikh">--/--/----</span>
+      </div>
+      <div class="status-pill">
+        <span class="icon">⏰</span>
+        <span id="headerMasa">--:--:--</span>
+      </div>
+      <div class="status-pill">
+        <span>•</span>
+        <span id="headerWaktu">Luar Waktu PdP</span>
       </div>
     </div>
-    <div class="meta">
-      <span id="currentDate">Tarikh: -</span>
-      <span id="currentDay">Hari: -</span>
-      <span id="currentTime">Masa: -</span>
-      <span id="currentPeriod">Waktu: -</span>
+
+    <!-- Tabs -->
+    <div class="tab-row">
+      <button id="tabGuru" class="tab-btn active">GURU</button>
+      <button id="tabAdmin" class="tab-btn" style="display:none;">ADMIN</button>
     </div>
-  </header>
 
-  <!-- Tabs -->
-  <div class="tab-row">
-    <button id="tabGuru" class="tab-btn active">Guru</button>
-    <button id="tabAdmin" class="tab-btn" style="display:none;">Admin</button>
-  </div>
-
-  <main>
     <!-- PAPARAN GURU -->
     <div id="guruView">
-      <!-- MAKLUMAT KELAS -->
-      <section class="card">
-        <div class="card-title">Maklumat Kelas</div>
-        <div class="form-grid">
-          <div>
-            <label class="required">Nama Guru</label>
-            <input type="text" id="namaGuru" placeholder="Contoh: Cikgu Sufian" />
-          </div>
-          <div>
-            <label class="required">Kelas</label>
-            <select id="kelas">
-              <option value="">Sila Pilih</option>
-              <option value="1B">1B</option>
-              <option value="1C">1C</option>
-              <option value="1G">1G</option>
-              <option value="2B">2B</option>
-              <option value="2C">2C</option>
-              <option value="2G">2G</option>
-              <option value="3B">3B</option>
-              <option value="3C">3C</option>
-              <option value="3G">3G</option>
-              <option value="4B">4B</option>
-              <option value="4C">4C</option>
-              <option value="4G">4G</option>
-              <option value="5B">5B</option>
-              <option value="5C">5C</option>
-              <option value="5G">5G</option>
-              <option value="6B">6B</option>
-              <option value="6C">6C</option>
-              <option value="6G">6G</option>
-            </select>
-          </div>
-          <div>
-            <label class="required">Tempat</label>
-            <select id="tempat">
-              <option value="">Sila Pilih</option>
-              <option value="KELAS">KELAS</option>
-              <option value="MAKMAL KOMPUTER">MAKMAL KOMPUTER</option>
-              <option value="KANTIN">KANTIN</option>
-              <option value="SURAU">SURAU</option>
-              <option value="DEWAN">DEWAN</option>
-              <option value="BILIK JQAF">BILIK JQAF</option>
-              <option value="BILIK MUZIK">BILIK MUZIK</option>
-              <option value="LAIN-LAIN">LAIN-LAIN</option>
-            </select>
-          </div>
-          <div>
-            <label class="required">Jumlah Murid Semasa</label>
-            <input type="number" id="jumlahMurid" min="0" placeholder="Contoh: 28" />
-          </div>
-          <div>
-            <label>Masa & Waktu (auto)</label>
-            <div class="badges-row">
-              <span class="readonly-pill"><strong>Tarikh:</strong> <span id="pillTarikh">-</span></span>
-              <span class="readonly-pill"><strong>Waktu:</strong> <span id="pillWaktu">-</span></span>
-            </div>
-            <div class="badges-row">
-              <span class="badge" id="badgeRange">Julat masa: -</span>
-              <span class="badge" id="badgeNow">Masa semasa: -</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- SAHSIAH (optional, collapsible) -->
-      <section class="card">
-        <div class="card-title sahsiah-header" id="sahsiahHeader">
-          <span>Maklumat Sahsiah Murid</span>
-          <span id="sahsiahToggleIcon" class="toggle-icon">▾</span>
+      <div class="input-card">
+        <div class="field">
+          <label class="required"><span class="label-icon">👩‍🏫</span>Nama Guru</label>
+          <input type="text" id="namaGuru" placeholder="Contoh: Cikgu Sufian" />
         </div>
 
-        <div id="sahsiahBody" style="display:none;">
-          <div class="toggle-row">
-            <button type="button" class="toggle-btn active" id="btnGood">Amalan Baik</button>
-            <button type="button" class="toggle-btn" id="btnBad">Kesalahan Disiplin</button>
-          </div>
+        <div class="field">
+          <label class="required"><span class="label-icon">🏫</span>Kelas</label>
+          <select id="kelas">
+            <option value="">Sila Pilih</option>
+            <option value="1B">1B</option>
+            <option value="1C">1C</option>
+            <option value="1G">1G</option>
+            <option value="2B">2B</option>
+            <option value="2C">2C</option>
+            <option value="2G">2G</option>
+            <option value="3B">3B</option>
+            <option value="3C">3C</option>
+            <option value="3G">3G</option>
+            <option value="4B">4B</option>
+            <option value="4C">4C</option>
+            <option value="4G">4G</option>
+            <option value="5B">5B</option>
+            <option value="5C">5C</option>
+            <option value="5G">5G</option>
+            <option value="6B">6B</option>
+            <option value="6C">6C</option>
+            <option value="6G">6G</option>
+          </select>
+        </div>
 
-          <!-- Amalan Baik -->
-          <div id="panelGood">
-            <div class="form-grid">
-              <div>
-                <label class="required">Kategori Amalan Baik</label>
-                <select id="amalanBaik">
-                  <option value="">Sila Pilih</option>
-                  <option value="Adab dan Berbudi Bahasa">ADAB DAN BERBUDI BAHASA</option>
-                  <option value="Akhlak Mulia">AKHLAK MULIA</option>
-                  <option value="Kebersihan Diri & Persekitaran">KEBERSIHAN DIRI & PERSEKITARAN</option>
-                  <option value="Keselamatan Diri">KESELAMATAN DIRI</option>
-                </select>
-              </div>
-              <div>
-                <label>Perincian Amalan</label>
-                <select id="perincianAmalan">
-                  <option value="">Sila Pilih</option>
-                  <option value="Menghargai Diri">MENGHARGAI DIRI</option>
-                  <option value="Menghormati Guru & Rakan">MENGHORMATI GURU & RAKAN</option>
-                  <option value="Berkelakuan Sopan">BERKELAKUAN SOPAN</option>
-                  <option value="Menjaga Kebersihan Kelas">MENJAGA KEBERSIHAN KELAS</option>
-                  <option value="Menjalankan Tugas yang Diamanahkan">MENJALANKAN TUGAS YANG DIAMANAHKAN</option>
-                </select>
-              </div>
-            </div>
-            <div style="margin-top:8px;">
-              <label>Keterangan Amalan</label>
-              <textarea id="keteranganAmalan" placeholder="Contoh: Menolong rakan yang kesusahan tanpa diminta."></textarea>
-            </div>
-          </div>
+        <div class="field">
+          <label class="required"><span class="label-icon">📍</span>Tempat</label>
+          <select id="tempat">
+            <option value="">Sila Pilih</option>
+            <option value="KELAS">KELAS</option>
+            <option value="MAKMAL KOMPUTER">MAKMAL KOMPUTER</option>
+            <option value="KANTIN">KANTIN</option>
+            <option value="SURAU">SURAU</option>
+            <option value="DEWAN">DEWAN</option>
+            <option value="BILIK JQAF">BILIK JQAF</option>
+            <option value="BILIK MUZIK">BILIK MUZIK</option>
+            <option value="LAIN-LAIN">LAIN-LAIN</option>
+          </select>
+        </div>
 
-          <!-- Kesalahan Disiplin -->
-          <div id="panelBad" style="display:none;">
-            <div class="form-grid">
-              <div>
-                <label class="required">Kategori Kes</label>
-                <select id="kategoriKes">
-                  <option value="">Sila Pilih</option>
-                  <option value="Barang Larangan">BARANG LARANGAN</option>
-                  <option value="Kekemasan Diri">KEKEMASAN DIRI</option>
-                  <option value="Kenakalan">KENAKALAN</option>
-                  <option value="Ponteng / Lewat Hadir">PONTENG / LEWAT HADIR</option>
-                  <option value="Kes Khas">KES KHAS</option>
-                  <option value="Kesalahan Asrama">KESALAHAN ASRAMA</option>
-                </select>
-              </div>
-              <div>
-                <label>Punca / Ringkasan Salah Laku</label>
-                <input type="text" id="puncaKes" placeholder="Contoh: Membawa telefon bimbit tanpa kebenaran." />
-              </div>
-            </div>
-            <div style="margin-top:8px;">
-              <label>Keterangan Kes</label>
-              <textarea id="keteranganKes" placeholder="Contoh: Didapati menggunakan telefon bimbit di dalam kelas."></textarea>
-            </div>
+        <div class="field">
+          <label class="required"><span class="label-icon">👥</span>Jumlah Murid</label>
+          <input type="number" id="jumlahMurid" min="0" placeholder="Contoh: 28" />
+        </div>
+
+        <button class="btn-submit" id="btnSave">HANTAR</button>
+      </div>
+
+      <!-- SAHSIAH (scroll ke bawah) -->
+      <div class="section-title">Maklumat Sahsiah Murid (tidak wajib)</div>
+      <div class="input-card">
+        <div class="field">
+          <label><span class="label-icon">🧒</span>Nama Murid</label>
+          <input type="text" id="namaMurid" placeholder="Contoh: Ahmad Fitri" />
+        </div>
+
+        <div class="toggle-row">
+          <button type="button" class="toggle-btn active" id="btnGood">Amalan Baik</button>
+          <button type="button" class="toggle-btn" id="btnBad">Kesalahan Disiplin</button>
+        </div>
+
+        <!-- Amalan Baik -->
+        <div id="panelGood">
+          <div class="field">
+            <label>Kategori Amalan Baik</label>
+            <select id="amalanBaik">
+              <option value="">Sila Pilih</option>
+              <option value="Adab dan Berbudi Bahasa">ADAB DAN BERBUDI BAHASA</option>
+              <option value="Akhlak Mulia">AKHLAK MULIA</option>
+              <option value="Kebersihan Diri & Persekitaran">KEBERSIHAN DIRI & PERSEKITARAN</option>
+              <option value="Keselamatan Diri">KESELAMATAN DIRI</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Perincian Amalan</label>
+            <select id="perincianAmalan">
+              <option value="">Sila Pilih</option>
+              <option value="Menghargai Diri">MENGHARGAI DIRI</option>
+              <option value="Menghormati Guru & Rakan">MENGHORMATI GURU & RAKAN</option>
+              <option value="Berkelakuan Sopan">BERKELAKUAN SOPAN</option>
+              <option value="Menjaga Kebersihan Kelas">MENJAGA KEBERSIHAN KELAS</option>
+              <option value="Menjalankan Tugas yang Diamanahkan">MENJALANKAN TUGAS YANG DIAMANAHKAN</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Keterangan Amalan</label>
+            <textarea id="keteranganAmalan" placeholder="Contoh: Menolong rakan yang kesusahan tanpa diminta."></textarea>
+          </div>
+        </div>
+
+        <!-- Kesalahan Disiplin -->
+        <div id="panelBad" style="display:none;">
+          <div class="field">
+            <label>Kategori Kes</label>
+            <select id="kategoriKes">
+              <option value="">Sila Pilih</option>
+              <option value="Barang Larangan">BARANG LARANGAN</option>
+              <option value="Kekemasan Diri">KEKEMASAN DIRI</option>
+              <option value="Kenakalan">KENAKALAN</option>
+              <option value="Ponteng / Lewat Hadir">PONTENG / LEWAT HADIR</option>
+              <option value="Kes Khas">KES KHAS</option>
+              <option value="Kesalahan Asrama">KESALAHAN ASRAMA</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Punca / Ringkasan Salah Laku</label>
+            <input type="text" id="puncaKes" placeholder="Contoh: Membawa telefon bimbit tanpa kebenaran." />
+          </div>
+          <div class="field">
+            <label>Keterangan Kes</label>
+            <textarea id="keteranganKes" placeholder="Contoh: Didapati menggunakan telefon bimbit di dalam kelas."></textarea>
           </div>
         </div>
 
         <div class="btn-row">
-          <button type="button" class="btn-secondary" id="btnClearForm">Reset Borang</button>
-          <button type="button" class="btn-primary" id="btnSave">
-            <span>Rekodkan</span>
-          </button>
+          <button type="button" class="btn-secondary" id="btnClearForm">Reset Semua</button>
         </div>
-      </section>
+      </div>
     </div>
 
     <!-- PAPARAN ADMIN -->
     <div id="adminView" style="display:none;">
-      <section class="card">
-        <div class="card-title">Panel Admin</div>
-        <div class="form-grid">
-          <div>
-            <label class="required">Tarikh Rekod</label>
-            <input type="date" id="adminTarikh" />
-          </div>
-          <div>
-            <label>&nbsp;</label>
-            <button type="button" class="btn-primary" id="btnAdminLoad">Lihat Rekod</button>
-          </div>
+      <div class="section-title">Panel Admin</div>
+      <div class="input-card">
+        <div class="field">
+          <label class="required">Tarikh Rekod</label>
+          <input type="date" id="adminTarikh" />
         </div>
-        <small>Admin boleh pilih tarikh untuk melihat rekod pemantauan bagi satu hari.</small>
-      </section>
-
-      <section class="card">
-        <div class="card-title">Rekod Harian</div>
+        <button class="btn-submit" style="margin-top:4px;" id="btnAdminLoad">LIHAT REKOD</button>
         <div id="summaryInfo" class="empty-state">
           Tiada rekod untuk tarikh yang dipilih.
         </div>
-        <div class="table-wrapper" id="tableWrapper" style="display:none;">
-          <table>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Tarikh</th>
-                <th>Waktu</th>
-                <th>Masa Rekod</th>
-                <th>Guru</th>
-                <th>Kelas</th>
-                <th>Tempat</th>
-                <th>Jumlah Murid</th>
-                <th>Jenis</th>
-                <th>Kategori / Perincian</th>
-                <th>Keterangan</th>
-              </tr>
-            </thead>
-            <tbody id="rekodTableBody"></tbody>
-          </table>
-        </div>
-      </section>
+      </div>
+
+      <div class="section-title">Rekod Harian</div>
+      <div class="table-wrapper" id="tableWrapper" style="display:none;">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Tarikh</th>
+              <th>Waktu</th>
+              <th>Masa Rekod</th>
+              <th>Guru</th>
+              <th>Kelas</th>
+              <th>Tempat</th>
+              <th>Jumlah</th>
+              <th>Nama Murid</th>
+              <th>Jenis</th>
+              <th>Kategori / Perincian</th>
+              <th>Keterangan</th>
+            </tr>
+          </thead>
+          <tbody id="rekodTableBody"></tbody>
+        </table>
+      </div>
     </div>
-  </main>
+  </div>
 </div>
 
 <!-- Modal Log Masuk Admin -->
@@ -638,7 +552,7 @@
   <div class="modal-card">
     <h2>Log Masuk Admin</h2>
     <p>Masukkan kata laluan admin untuk mengakses tab Admin.</p>
-    <label for="adminPasswordInput" style="font-size:0.85rem;font-weight:500;margin-bottom:3px;">Kata Laluan</label>
+    <label for="adminPasswordInput" style="font-size:0.8rem;font-weight:500;margin-bottom:3px;">Kata Laluan</label>
     <input type="password" id="adminPasswordInput" placeholder="Masukkan kata laluan" />
     <div class="modal-buttons">
       <button type="button" class="btn-modal-cancel" id="btnAdminCancel">Batal</button>
@@ -647,13 +561,13 @@
   </div>
 </div>
 
-<!-- Firebase v8 (global namespace) -->
+<!-- Firebase v8 -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 <script src="database.js"></script>
 
 <script>
-  // ---------- UTIL TARIKH & WAKTU ----------
+  // ------- Util tarikh & waktu -------
   const dayNames = ["Ahad","Isnin","Selasa","Rabu","Khamis","Jumaat","Sabtu"];
 
   const periods = [
@@ -703,39 +617,16 @@
   function updateDateTimeUI() {
     const now = new Date();
     const tarikh = formatDate(now);
-    const day = dayNames[now.getDay()];
     const timeStr = formatTime(now);
     const period = getCurrentPeriod(now);
+    const periodText = period ? period.code : "Luar Waktu PdP";
 
-    const periodText = period ? `${period.code}` : "Luar Waktu PdP";
-    const rangeText = period ? `${period.start} - ${period.end}` : "-";
-
-    document.getElementById("currentDate").textContent = `Tarikh: ${tarikh}`;
-    document.getElementById("currentDay").textContent = `Hari: ${day}`;
-    document.getElementById("currentTime").textContent = `Masa: ${timeStr}`;
-    document.getElementById("currentPeriod").textContent = `Waktu: ${periodText}`;
-
-    document.getElementById("pillTarikh").textContent = tarikh;
-    document.getElementById("pillWaktu").textContent = periodText;
-    document.getElementById("badgeRange").textContent = `Julat masa: ${rangeText}`;
-    document.getElementById("badgeNow").textContent = `Masa semasa: ${timeStr}`;
+    document.getElementById("headerTarikh").textContent = tarikh;
+    document.getElementById("headerMasa").textContent = timeStr;
+    document.getElementById("headerWaktu").textContent = periodText;
   }
 
-  // ---------- SAHSIAH COLLAPSE ----------
-  const sahsiahHeader = document.getElementById("sahsiahHeader");
-  const sahsiahBody = document.getElementById("sahsiahBody");
-  const sahsiahToggleIcon = document.getElementById("sahsiahToggleIcon");
-  let sahsiahExpanded = false;
-
-  function toggleSahsiah() {
-    sahsiahExpanded = !sahsiahExpanded;
-    sahsiahBody.style.display = sahsiahExpanded ? "block" : "none";
-    sahsiahToggleIcon.textContent = sahsiahExpanded ? "▴" : "▾";
-  }
-
-  sahsiahHeader.addEventListener("click", toggleSahsiah);
-
-  // ---------- TOGGLE GOOD / BAD (dalam panel sahsiah) ----------
+  // ------- Sahsiah toggle -------
   const btnGood = document.getElementById("btnGood");
   const btnBad = document.getElementById("btnBad");
   const panelGood = document.getElementById("panelGood");
@@ -759,16 +650,17 @@
   btnBad.addEventListener("click", () => setMode("bad"));
 
   function hasSahsiahData() {
+    const namaMurid = document.getElementById("namaMurid").value.trim();
     const amalan = document.getElementById("amalanBaik").value;
     const perincian = document.getElementById("perincianAmalan").value;
     const ketAmalan = document.getElementById("keteranganAmalan").value.trim();
     const kategoriKes = document.getElementById("kategoriKes").value;
     const punca = document.getElementById("puncaKes").value.trim();
     const ketKes = document.getElementById("keteranganKes").value.trim();
-    return !!(amalan || perincian || ketAmalan || kategoriKes || punca || ketKes);
+    return !!(namaMurid || amalan || perincian || ketAmalan || kategoriKes || punca || ketKes);
   }
 
-  // ---------- PAPARAN JADUAL (Panel Admin) ----------
+  // ------- Paparan jadual (Admin) -------
   function renderTable(records) {
     const tbody = document.getElementById("rekodTableBody");
     const wrapper = document.getElementById("tableWrapper");
@@ -809,12 +701,13 @@
         <td>${rec.kelas || "-"}</td>
         <td>${rec.tempat || "-"}</td>
         <td>${rec.jumlahMurid ?? "-"}</td>
+        <td>${rec.namaMurid || "-"}</td>
         <td></td>
         <td>${rec.kategori || "-"}</td>
         <td>${rec.keterangan || "-"}</td>
       `;
 
-      const jenisCell = tr.children[8];
+      const jenisCell = tr.children[9];
       if (jenisClass) {
         const pill = document.createElement("span");
         pill.textContent = jenisLabel;
@@ -828,7 +721,7 @@
     });
   }
 
-  // ---------- BUTANG & SIMPAN REKOD (GURU) ----------
+  // ------- Simpan rekod (Guru) -------
   const btnSave = document.getElementById("btnSave");
   const btnClearForm = document.getElementById("btnClearForm");
 
@@ -838,10 +731,10 @@
     document.getElementById("tempat").value = "";
     document.getElementById("jumlahMurid").value = "";
 
+    document.getElementById("namaMurid").value = "";
     document.getElementById("amalanBaik").value = "";
     document.getElementById("perincianAmalan").value = "";
     document.getElementById("keteranganAmalan").value = "";
-
     document.getElementById("kategoriKes").value = "";
     document.getElementById("puncaKes").value = "";
     document.getElementById("keteranganKes").value = "";
@@ -869,10 +762,16 @@
     let jenis = null;
     let kategori = "";
     let keterangan = "";
-
+    let namaMurid = "";
     const adaSahsiah = hasSahsiahData();
 
     if (adaSahsiah) {
+      namaMurid = document.getElementById("namaMurid").value.trim();
+      if (!namaMurid) {
+        alert("Sila isi Nama Murid jika mahu rekod sahsiah murid.");
+        return;
+      }
+
       const isGoodMode = btnGood.classList.contains("active");
       if (isGoodMode) {
         const amalan = document.getElementById("amalanBaik").value;
@@ -909,6 +808,7 @@
       kelas,
       tempat,
       jumlahMurid: Number(jumlahMurid),
+      namaMurid: namaMurid || null,
       jenis,
       kategori,
       keterangan
@@ -925,7 +825,7 @@
       });
   });
 
-  // ---------- TAB GURU / ADMIN ----------
+  // ------- Tab Guru / Admin -------
   const tabGuru = document.getElementById("tabGuru");
   const tabAdmin = document.getElementById("tabAdmin");
   const guruView = document.getElementById("guruView");
@@ -951,8 +851,8 @@
     if (isAdmin) setTab("admin");
   });
 
-  // ---------- LOGIN ADMIN (klik logo) ----------
-  const ADMIN_PASSWORD = "sksaadmin"; // tukar sini kalau nak kata laluan lain
+  // ------- Login Admin (klik logo) -------
+  const ADMIN_PASSWORD = "admin123";   // kata laluan admin
 
   const logoEl = document.getElementById("sksaLogo");
   const adminModal = document.getElementById("adminModal");
@@ -973,35 +873,16 @@
   logoEl.addEventListener("click", openAdminModal);
   btnAdminCancel.addEventListener("click", closeAdminModal);
 
-  btnAdminSubmit.addEventListener("click", () => {
-    const pw = adminPwInput.value;
-    if (pw === ADMIN_PASSWORD) {
-      isAdmin = true;
-      tabAdmin.style.display = "inline-block";
-      closeAdminModal();
-      setTab("admin");
-      // set tarikh default hari ini dalam input tarikh admin
-      const today = new Date();
-      const iso = today.toISOString().slice(0,10); // yyyy-mm-dd
-      document.getElementById("adminTarikh").value = iso;
-      loadAdminForDate(formatDate(today));
-      alert("Log masuk admin berjaya.");
-    } else {
-      alert("Kata laluan salah.");
-      adminPwInput.focus();
-    }
-  });
+  function isoToday() {
+    const d = new Date();
+    return d.toISOString().slice(0,10);
+  }
 
-  // ---------- PANEL ADMIN: PILIH TARIKH ----------
-  const adminTarikhInput = document.getElementById("adminTarikh");
-  const btnAdminLoad = document.getElementById("btnAdminLoad");
-
-  function inputDateToKey(value) {
-    // dari yyyy-mm-dd ke dd/mm/yyyy
-    const parts = value.split("-");
+  function dateInputToKey(val) {
+    const parts = val.split("-");
     if (parts.length !== 3) return "";
-    const [yyyy, mm, dd] = parts;
-    return `${dd}/${mm}/${yyyy}`;
+    const [y,m,d] = parts;
+    return `${d}/${m}/${y}`;
   }
 
   function loadAdminForDate(tarikhKey) {
@@ -1010,16 +891,39 @@
     subscribeToTodayRecords(tarikhKey, renderTable);
   }
 
+  btnAdminSubmit.addEventListener("click", () => {
+    const pw = adminPwInput.value;
+    if (pw === ADMIN_PASSWORD) {
+      isAdmin = true;
+      tabAdmin.style.display = "inline-block";
+      closeAdminModal();
+      setTab("admin");
+      const todayIso = isoToday();
+      const adminTarikhInput = document.getElementById("adminTarikh");
+      adminTarikhInput.value = todayIso;
+      const key = dateInputToKey(todayIso);
+      loadAdminForDate(key);
+      alert("Log masuk admin berjaya.");
+    } else {
+      alert("Kata laluan salah.");
+      adminPwInput.focus();
+    }
+  });
+
+  // ------- Panel Admin: pilih tarikh -------
+  const adminTarikhInput = document.getElementById("adminTarikh");
+  const btnAdminLoad = document.getElementById("btnAdminLoad");
+
   btnAdminLoad.addEventListener("click", () => {
     if (!adminTarikhInput.value) {
       alert("Sila pilih tarikh rekod.");
       return;
     }
-    const key = inputDateToKey(adminTarikhInput.value);
+    const key = dateInputToKey(adminTarikhInput.value);
     loadAdminForDate(key);
   });
 
-  // ---------- INIT ----------
+  // ------- Init -------
   updateDateTimeUI();
   setInterval(updateDateTimeUI, 30000);
 </script>
