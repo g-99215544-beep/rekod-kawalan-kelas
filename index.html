@@ -4,7 +4,14 @@
   <meta charset="UTF-8" />
   <title>Rekod Pemantauan Kelas SKSA</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Font -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <!-- Font Awesome untuk ikon -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
   <style>
     * {
       box-sizing: border-box;
@@ -71,8 +78,14 @@
       gap: 4px;
     }
 
-    .status-pill span.icon {
-      font-size: 0.95rem;
+    .status-pill i {
+      font-size: 0.9rem;
+      color: #4b5563;
+    }
+
+    .status-dot {
+      font-size: 0.9rem;
+      color: #6b7280;
     }
 
     .tab-row {
@@ -126,7 +139,8 @@
     }
 
     .label-icon {
-      margin-right: 4px;
+      margin-right: 6px;
+      color: #4b5563;
     }
 
     input[type="text"],
@@ -360,15 +374,15 @@
     <!-- Tarikh / Masa / Waktu -->
     <div class="status-row">
       <div class="status-pill">
-        <span class="icon">📅</span>
+        <i class="fa-regular fa-calendar-days"></i>
         <span id="headerTarikh">--/--/----</span>
       </div>
       <div class="status-pill">
-        <span class="icon">⏰</span>
+        <i class="fa-regular fa-clock"></i>
         <span id="headerMasa">--:--:--</span>
       </div>
       <div class="status-pill">
-        <span>•</span>
+        <span class="status-dot">•</span>
         <span id="headerWaktu">Luar Waktu PdP</span>
       </div>
     </div>
@@ -383,12 +397,12 @@
     <div id="guruView">
       <div class="input-card">
         <div class="field">
-          <label class="required"><span class="label-icon">👩‍🏫</span>Nama Guru</label>
+          <label class="required"><i class="fa-solid fa-user label-icon"></i>Nama Guru</label>
           <input type="text" id="namaGuru" placeholder="Contoh: Cikgu Sufian" />
         </div>
 
         <div class="field">
-          <label class="required"><span class="label-icon">🏫</span>Kelas</label>
+          <label class="required"><i class="fa-solid fa-school label-icon"></i>Kelas</label>
           <select id="kelas">
             <option value="">Sila Pilih</option>
             <option value="1B">1B</option>
@@ -413,7 +427,7 @@
         </div>
 
         <div class="field">
-          <label class="required"><span class="label-icon">📍</span>Tempat</label>
+          <label class="required"><i class="fa-solid fa-location-dot label-icon"></i>Tempat</label>
           <select id="tempat">
             <option value="">Sila Pilih</option>
             <option value="KELAS">KELAS</option>
@@ -428,7 +442,7 @@
         </div>
 
         <div class="field">
-          <label class="required"><span class="label-icon">👥</span>Jumlah Murid</label>
+          <label class="required"><i class="fa-solid fa-users label-icon"></i>Jumlah Murid</label>
           <input type="number" id="jumlahMurid" min="0" placeholder="Contoh: 28" />
         </div>
 
@@ -439,7 +453,7 @@
       <div class="section-title">Maklumat Sahsiah Murid (tidak wajib)</div>
       <div class="input-card">
         <div class="field">
-          <label><span class="label-icon">🧒</span>Nama Murid</label>
+          <label><i class="fa-solid fa-child label-icon"></i>Nama Murid</label>
           <input type="text" id="namaMurid" placeholder="Contoh: Ahmad Fitri" />
         </div>
 
@@ -456,7 +470,7 @@
               <option value="">Sila Pilih</option>
               <option value="Adab dan Berbudi Bahasa">ADAB DAN BERBUDI BAHASA</option>
               <option value="Akhlak Mulia">AKHLAK MULIA</option>
-              <option value="Kebersihan Diri & Persekitaran">KEBERSIHAN DIRI & PERSEKITARAN</option>
+              <option value="Kebersihan Diri &amp; Persekitaran">KEBERSIHAN DIRI &amp; PERSEKITARAN</option>
               <option value="Keselamatan Diri">KESELAMATAN DIRI</option>
             </select>
           </div>
@@ -465,7 +479,7 @@
             <select id="perincianAmalan">
               <option value="">Sila Pilih</option>
               <option value="Menghargai Diri">MENGHARGAI DIRI</option>
-              <option value="Menghormati Guru & Rakan">MENGHORMATI GURU & RAKAN</option>
+              <option value="Menghormati Guru &amp; Rakan">MENGHORMATI GURU &amp; RAKAN</option>
               <option value="Berkelakuan Sopan">BERKELAKUAN SOPAN</option>
               <option value="Menjaga Kebersihan Kelas">MENJAGA KEBERSIHAN KELAS</option>
               <option value="Menjalankan Tugas yang Diamanahkan">MENJALANKAN TUGAS YANG DIAMANAHKAN</option>
@@ -568,8 +582,6 @@
 
 <script>
   // ------- Util tarikh & waktu -------
-  const dayNames = ["Ahad","Isnin","Selasa","Rabu","Khamis","Jumaat","Sabtu"];
-
   const periods = [
     { code: "W1", start: "07:40", end: "08:10" },
     { code: "W2", start: "08:10", end: "08:40" },
@@ -589,21 +601,18 @@
     const [h, m] = str.split(":").map(Number);
     return h * 60 + m;
   }
-
   function formatDate(d) {
     const dd = String(d.getDate()).padStart(2, "0");
     const mm = String(d.getMonth() + 1).padStart(2, "0");
     const yyyy = d.getFullYear();
     return `${dd}/${mm}/${yyyy}`;
   }
-
   function formatTime(d) {
     const hh = String(d.getHours()).padStart(2, "0");
     const mm = String(d.getMinutes()).padStart(2, "0");
     const ss = String(d.getSeconds()).padStart(2, "0");
     return `${hh}:${mm}:${ss}`;
   }
-
   function getCurrentPeriod(now) {
     const minutesNow = now.getHours() * 60 + now.getMinutes();
     for (const p of periods) {
@@ -852,7 +861,7 @@
   });
 
   // ------- Login Admin (klik logo) -------
-  const ADMIN_PASSWORD = "admin123";   // kata laluan admin
+  const ADMIN_PASSWORD = "admin123";
 
   const logoEl = document.getElementById("sksaLogo");
   const adminModal = document.getElementById("adminModal");
@@ -865,7 +874,6 @@
     adminPwInput.value = "";
     adminPwInput.focus();
   }
-
   function closeAdminModal() {
     adminModal.style.display = "none";
   }
@@ -877,14 +885,12 @@
     const d = new Date();
     return d.toISOString().slice(0,10);
   }
-
   function dateInputToKey(val) {
     const parts = val.split("-");
     if (parts.length !== 3) return "";
     const [y,m,d] = parts;
     return `${d}/${m}/${y}`;
   }
-
   function loadAdminForDate(tarikhKey) {
     if (!tarikhKey) return;
     unsubscribeTodayRecords();
