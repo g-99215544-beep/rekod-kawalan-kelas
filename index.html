@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <title>Rekod Pemantauan Kelas SKSA</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #f3f6fb;
+      color: #12324b;
+    }
+
+    .app-shell {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    header {
+      background: linear-gradient(135deg, #00796b, #00a79d);
+      color: #fff;
+      padding: 16px 20px;
+      border-radius: 16px;
+      margin-bottom: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+    }
+
+    header h1 {
+      font-size: 1.6rem;
+      margin: 0;
+      font-weight: 600;
+    }
+
+    header .meta {
+      text-align: right;
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    .meta span {
+      display: block;
+    }
+
+    main {
+      display: grid;
+      gap: 16px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 16px 18px 18px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      border-left: 4px solid #00796b;
+      padding-left: 8px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px 18px;
+    }
+
+    @media (max-width: 768px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      header .meta {
+        text-align: left;
+      }
+    }
+
+    label {
+      font-size: 0.85rem;
+      font-weight: 500;
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    .required::after {
+      content: " *";
+      color: #e53935;
+      font-weight: 600;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select,
+    textarea {
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid #cfd8e3;
+      padding: 7px 9px;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+      background: #fdfdfd;
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    select:focus,
+    textarea:focus {
+      border-color: #00796b;
+      box-shadow: 0 0 0 2px rgba(0,121,107,0.18);
+      background: #ffffff;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 70px;
+    }
+
+    .readonly-pill {
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #e0f2f1;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-right: 8px;
+      margin-top: 4px;
+    }
+
+    .readonly-pill strong {
+      font-weight: 600;
+    }
+
+    .badges-row {
+      margin-top: 4px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      background: #e3f2fd;
+      color: #1565c0;
+      margin-right: 4px;
+      margin-top: 3px;
+    }
+
+    .toggle-row {
+      display: inline-flex;
+      background: #edf2fb;
+      border-radius: 999px;
+      padding: 3px;
+      margin-bottom: 10px;
+    }
+
+    .toggle-btn {
+      border: none;
+      background: transparent;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      font-weight: 500;
+      color: #455a64;
+      min-width: 120px;
+    }
+
+    .toggle-btn.active {
+      background: #00796b;
+      color: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+    }
+
+    .toggle-btn:not(.active):hover {
+      background: rgba(0,0,0,0.03);
+    }
+
+    .btn-row {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .btn-primary {
+      border: none;
+      background: linear-gradient(135deg, #00796b, #00a79d);
+      color: #fff;
+      padding: 8px 18px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.05);
+    }
+
+    .btn-secondary {
+      border: 1px solid #cfd8e3;
+      background: #ffffff;
+      color: #455a64;
+      padding: 7px 14px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    .btn-secondary:hover {
+      background: #f1f4fb;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+
+    thead {
+      background: #00796b;
+      color: #fff;
+    }
+
+    th, td {
+      padding: 6px 8px;
+      border-bottom: 1px solid #e0e6f0;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    tbody tr:nth-child(even) {
+      background: #f7fafc;
+    }
+
+    .table-wrapper {
+      max-height: 340px;
+      overflow: auto;
+      margin-top: 8px;
+      border-radius: 10px;
+      border: 1px solid #e0e6f0;
+    }
+
+    .pill-good {
+      background: #e8f5e9;
+      color: #2e7d32;
+      padding: 3px 7px;
+      border-radius: 999px;
+      font-weight: 500;
+      font-size: 0.75rem;
+    }
+    .pill-bad {
+      background: #ffebee;
+      color: #c62828;
+      padding: 3px 7px;
+      border-radius: 999px;
+      font-weight: 500;
+      font-size: 0.75rem;
+    }
+
+    .empty-state {
+      font-size: 0.86rem;
+      color: #78909c;
+      padding-top: 4px;
+    }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+  <header>
+    <div>
+      <h1>Rekod Pemantauan Kelas SKSA</h1>
+      <small>Untuk kegunaan guru memantau kehadiran & sahsiah murid secara harian.</small>
+    </div>
+    <div class="meta">
+      <span id="currentDate">Tarikh: -</span>
+      <span id="currentDay">Hari: -</span>
+      <span id="currentTime">Masa: -</span>
+      <span id="currentPeriod">Waktu: -</span>
+    </div>
+  </header>
+
+  <main>
+    <!-- MAKLUMAT KELAS -->
+    <section class="card">
+      <div class="card-title">Maklumat Kelas</div>
+      <div class="form-grid">
+        <div>
+          <label class="required">Nama Guru</label>
+          <input type="text" id="namaGuru" placeholder="Contoh: Cikgu Sufian" />
+        </div>
+        <div>
+          <label class="required">Tempat / Kelas</label>
+          <input type="text" id="tempat" placeholder="Contoh: 4 Bestari / Makmal Komputer" />
+        </div>
+        <div>
+          <label class="required">Jumlah Murid Semasa</label>
+          <input type="number" id="jumlahMurid" min="0" placeholder="Contoh: 28" />
+        </div>
+        <div>
+          <label>Masa & Waktu (auto)</label>
+          <div class="badges-row">
+            <span class="readonly-pill"><strong>Tarikh:</strong> <span id="pillTarikh">-</span></span>
+            <span class="readonly-pill"><strong>Waktu:</strong> <span id="pillWaktu">-</span></span>
+          </div>
+          <div class="badges-row">
+            <span class="badge" id="badgeRange">Julat masa: -</span>
+            <span class="badge" id="badgeNow">Masa semasa: -</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SAHSIAH -->
+    <section class="card">
+      <div class="card-title">Maklumat Sahsiah Murid</div>
+
+      <div class="toggle-row">
+        <button type="button" class="toggle-btn active" id="btnGood">Amalan Baik</button>
+        <button type="button" class="toggle-btn" id="btnBad">Kesalahan Disiplin</button>
+      </div>
+
+      <!-- Amalan Baik -->
+      <div id="panelGood">
+        <div class="form-grid">
+          <div>
+            <label class="required">Kategori Amalan Baik</label>
+            <select id="amalanBaik">
+              <option value="">Sila Pilih</option>
+              <option value="Adab dan Berbudi Bahasa">ADAB DAN BERBUDI BAHASA</option>
+              <option value="Akhlak Mulia">AKHLAK MULIA</option>
+              <option value="Kebersihan Diri & Persekitaran">KEBERSIHAN DIRI & PERSEKITARAN</option>
+              <option value="Keselamatan Diri">KESELAMATAN DIRI</option>
+            </select>
+          </div>
+          <div>
+            <label>Perincian Amalan</label>
+            <select id="perincianAmalan">
+              <option value="">Sila Pilih</option>
+              <option value="Menghargai Diri">MENGHARGAI DIRI</option>
+              <option value="Menghormati Guru & Rakan">MENGHORMATI GURU & RAKAN</option>
+              <option value="Berkelakuan Sopan">BERKELAKUAN SOPAN</option>
+              <option value="Menjaga Kebersihan Kelas">MENJAGA KEBERSIHAN KELAS</option>
+              <option value="Menjalankan Tugas yang Diamanahkan">MENJALANKAN TUGAS YANG DIAMANAHKAN</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-top:8px;">
+          <label>Keterangan Amalan</label>
+          <textarea id="keteranganAmalan" placeholder="Contoh: Menolong rakan yang kesusahan tanpa diminta."></textarea>
+        </div>
+      </div>
+
+      <!-- Kesalahan Disiplin -->
+      <div id="panelBad" style="display:none;">
+        <div class="form-grid">
+          <div>
+            <label class="required">Kategori Kes</label>
+            <select id="kategoriKes">
+              <option value="">Sila Pilih</option>
+              <option value="Barang Larangan">BARANG LARANGAN</option>
+              <option value="Kekemasan Diri">KEKEMASAN DIRI</option>
+              <option value="Kenakalan">KENAKALAN</option>
+              <option value="Ponteng / Lewat Hadir">PONTENG / LEWAT HADIR</option>
+              <option value="Kes Khas">KES KHAS</option>
+              <option value="Kesalahan Asrama">KESALAHAN ASRAMA</option>
+            </select>
+          </div>
+          <div>
+            <label>Punca / Ringkasan Salah Laku</label>
+            <input type="text" id="puncaKes" placeholder="Contoh: Membawa telefon bimbit tanpa kebenaran." />
+          </div>
+        </div>
+        <div style="margin-top:8px;">
+          <label>Keterangan Kes</label>
+          <textarea id="keteranganKes" placeholder="Contoh: Didapati menggunakan telefon bimbit di dalam kelas."></textarea>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button type="button" class="btn-secondary" id="btnClearForm">Reset Borang</button>
+        <button type="button" class="btn-primary" id="btnSave">
+          <span>Rekodkan</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- SENARAI REKOD -->
+    <section class="card">
+      <div class="card-title">Senarai Rekod Hari Ini (dibaca daripada Firebase)</div>
+      <div id="summaryInfo" class="empty-state">
+        Tiada rekod lagi untuk hari ini.
+      </div>
+      <div class="table-wrapper" id="tableWrapper" style="display:none;">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Tarikh</th>
+              <th>Waktu</th>
+              <th>Masa Rekod</th>
+              <th>Guru</th>
+              <th>Tempat / Kelas</th>
+              <th>Jumlah Murid</th>
+              <th>Jenis</th>
+              <th>Kategori / Perincian</th>
+              <th>Keterangan</th>
+            </tr>
+          </thead>
+          <tbody id="rekodTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- Firebase v8 (global namespace) -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="database.js"></script>
+
+<script>
+  // ---------- UTIL TARIKH & WAKTU ----------
+  const dayNames = ["Ahad","Isnin","Selasa","Rabu","Khamis","Jumaat","Sabtu"];
+
+  const periods = [
+    { code: "W1", start: "07:40", end: "08:10" },
+    { code: "W2", start: "08:10", end: "08:40" },
+    { code: "W3", start: "08:40", end: "09:10" },
+    { code: "W4", start: "09:10", end: "09:40" },
+    { code: "W5", start: "09:40", end: "10:10" },
+    { code: "W6", start: "10:10", end: "10:40" },
+    { code: "W7", start: "10:40", end: "11:10" },
+    { code: "W8", start: "11:10", end: "11:40" },
+    { code: "W9", start: "11:40", end: "12:10" },
+    { code: "W10", start: "12:10", end: "12:40" },
+    { code: "W11", start: "12:40", end: "13:10" },
+    { code: "W12", start: "13:10", end: "13:40" }
+  ];
+
+  function timeToMinutes(str) {
+    const [h, m] = str.split(":").map(Number);
+    return h * 60 + m;
+  }
+
+  function formatDate(d) {
+    const dd = String(d.getDate()).padStart(2, "0");
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const yyyy = d.getFullYear();
+    return `${dd}/${mm}/${yyyy}`;
+  }
+
+  function formatTime(d) {
+    const hh = String(d.getHours()).padStart(2, "0");
+    const mm = String(d.getMinutes()).padStart(2, "0");
+    const ss = String(d.getSeconds()).padStart(2, "0");
+    return `${hh}:${mm}:${ss}`;
+  }
+
+  function getCurrentPeriod(now) {
+    const minutesNow = now.getHours() * 60 + now.getMinutes();
+    for (const p of periods) {
+      const start = timeToMinutes(p.start);
+      const end = timeToMinutes(p.end);
+      if (minutesNow >= start && minutesNow < end) return p;
+    }
+    return null;
+  }
+
+  let todayTarikh = formatDate(new Date());
+
+  function updateDateTimeUI() {
+    const now = new Date();
+    const tarikh = formatDate(now);
+    todayTarikh = tarikh; // sentiasa update
+    const day = dayNames[now.getDay()];
+    const timeStr = formatTime(now);
+    const period = getCurrentPeriod(now);
+
+    const periodText = period ? `${period.code}` : "Luar Waktu PdP";
+    const rangeText = period ? `${period.start} - ${period.end}` : "-";
+
+    document.getElementById("currentDate").textContent = `Tarikh: ${tarikh}`;
+    document.getElementById("currentDay").textContent = `Hari: ${day}`;
+    document.getElementById("currentTime").textContent = `Masa: ${timeStr}`;
+    document.getElementById("currentPeriod").textContent = `Waktu: ${periodText}`;
+
+    document.getElementById("pillTarikh").textContent = tarikh;
+    document.getElementById("pillWaktu").textContent = periodText;
+    document.getElementById("badgeRange").textContent = `Julat masa: ${rangeText}`;
+    document.getElementById("badgeNow").textContent = `Masa semasa: ${timeStr}`;
+  }
+
+  // ---------- TOGGLE GOOD / BAD ----------
+  const btnGood = document.getElementById("btnGood");
+  const btnBad = document.getElementById("btnBad");
+  const panelGood = document.getElementById("panelGood");
+  const panelBad = document.getElementById("panelBad");
+
+  function setMode(mode) {
+    if (mode === "good") {
+      btnGood.classList.add("active");
+      btnBad.classList.remove("active");
+      panelGood.style.display = "block";
+      panelBad.style.display = "none";
+    } else {
+      btnGood.classList.remove("active");
+      btnBad.classList.add("active");
+      panelGood.style.display = "none";
+      panelBad.style.display = "block";
+    }
+  }
+
+  btnGood.addEventListener("click", () => setMode("good"));
+  btnBad.addEventListener("click", () => setMode("bad"));
+
+  // ---------- RENDER TABLE DARIPADA FIREBASE ----------
+  function renderTable(records) {
+    const tbody = document.getElementById("rekodTableBody");
+    const wrapper = document.getElementById("tableWrapper");
+    const summary = document.getElementById("summaryInfo");
+
+    tbody.innerHTML = "";
+
+    if (!records || records.length === 0) {
+      wrapper.style.display = "none";
+      summary.textContent = "Tiada rekod lagi untuk hari ini.";
+      return;
+    }
+
+    // susun ikut masa rekod
+    records.sort((a, b) => (a.masaRekod || "").localeCompare(b.masaRekod || ""));
+
+    wrapper.style.display = "block";
+    summary.textContent = `Jumlah rekod untuk ${todayTarikh}: ${records.length}`;
+
+    records.forEach((rec, index) => {
+      const tr = document.createElement("tr");
+
+      const jenisPill = document.createElement("span");
+      jenisPill.textContent = rec.jenis === "baik" ? "Amalan Baik" : "Kesalahan";
+      jenisPill.className = rec.jenis === "baik" ? "pill-good" : "pill-bad";
+
+      tr.innerHTML = `
+        <td>${index + 1}</td>
+        <td>${rec.tarikh || "-"}</td>
+        <td>${rec.waktu || "-"}</td>
+        <td>${rec.masaRekod || "-"}</td>
+        <td>${rec.namaGuru || "-"}</td>
+        <td>${rec.tempat || "-"}</td>
+        <td>${rec.jumlahMurid ?? "-"}</td>
+        <td></td>
+        <td>${rec.kategori || "-"}</td>
+        <td>${rec.keterangan || "-"}</td>
+      `;
+
+      tr.children[7].appendChild(jenisPill);
+      tbody.appendChild(tr);
+    });
+  }
+
+  // ---------- BUTANG & SIMPAN REKOD ----------
+  const btnSave = document.getElementById("btnSave");
+  const btnClearForm = document.getElementById("btnClearForm");
+
+  function clearForm() {
+    document.getElementById("namaGuru").value = "";
+    document.getElementById("tempat").value = "";
+    document.getElementById("jumlahMurid").value = "";
+
+    document.getElementById("amalanBaik").value = "";
+    document.getElementById("perincianAmalan").value = "";
+    document.getElementById("keteranganAmalan").value = "";
+
+    document.getElementById("kategoriKes").value = "";
+    document.getElementById("puncaKes").value = "";
+    document.getElementById("keteranganKes").value = "";
+  }
+
+  btnClearForm.addEventListener("click", clearForm);
+
+  btnSave.addEventListener("click", () => {
+    const namaGuru = document.getElementById("namaGuru").value.trim();
+    const tempat = document.getElementById("tempat").value.trim();
+    const jumlahMurid = document.getElementById("jumlahMurid").value;
+
+    if (!namaGuru || !tempat || jumlahMurid === "") {
+      alert("Sila lengkapkan Nama Guru, Tempat/Kelas dan Jumlah Murid.");
+      return;
+    }
+
+    const now = new Date();
+    const tarikh = formatDate(now);
+    const masaRekod = formatTime(now);
+    const period = getCurrentPeriod(now);
+    const waktu = period ? period.code : "Luar Waktu PdP";
+
+    const isGoodMode = btnGood.classList.contains("active");
+    let jenis, kategori, keterangan;
+
+    if (isGoodMode) {
+      const amalan = document.getElementById("amalanBaik").value;
+      if (!amalan) {
+        alert("Sila pilih kategori Amalan Baik.");
+        return;
+      }
+      const perincian = document.getElementById("perincianAmalan").value;
+      const ket = document.getElementById("keteranganAmalan").value.trim();
+
+      jenis = "baik";
+      kategori = perincian ? `${amalan} - ${perincian}` : amalan;
+      keterangan = ket;
+    } else {
+      const kategoriKes = document.getElementById("kategoriKes").value;
+      if (!kategoriKes) {
+        alert("Sila pilih Kategori Kes.");
+        return;
+      }
+      const punca = document.getElementById("puncaKes").value.trim();
+      const ketKes = document.getElementById("keteranganKes").value.trim();
+
+      jenis = "jahat";
+      kategori = kategoriKes;
+      keterangan = [punca, ketKes].filter(Boolean).join(" | ");
+    }
+
+    const newRecord = {
+      tarikh,
+      waktu,
+      masaRekod,
+      namaGuru,
+      tempat,
+      jumlahMurid: Number(jumlahMurid),
+      jenis,
+      kategori,
+      keterangan
+    };
+
+    saveRecordToFirebase(newRecord)
+      .then(() => {
+        alert("Rekod berjaya disimpan ke Firebase.");
+        clearForm();
+        // paparan akan auto update melalui listener subscribeTodayRecords
+      })
+      .catch((err) => {
+        console.error(err);
+        alert("Gagal simpan rekod. Sila cuba lagi.");
+      });
+  });
+
+  // ---------- INIT ----------
+  updateDateTimeUI();
+  setInterval(updateDateTimeUI, 30000);
+
+  // mula dengar rekod hari ini
+  subscribeToTodayRecords(todayTarikh, renderTable);
+</script>
+</body>
+</html>
