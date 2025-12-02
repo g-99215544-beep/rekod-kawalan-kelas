@@ -6,11 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <!-- Font -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <!-- Font Awesome untuk ikon -->
-  <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-        integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
   <style>
     * {
@@ -78,9 +73,10 @@
       gap: 4px;
     }
 
-    .status-pill i {
-      font-size: 0.9rem;
-      color: #4b5563;
+    .status-icon-img {
+      width: 16px;
+      height: 16px;
+      object-fit: contain;
     }
 
     .status-dot {
@@ -127,20 +123,24 @@
     label {
       font-size: 0.8rem;
       font-weight: 500;
-      display: block;
+      display: flex;
+      align-items: center;
       margin-bottom: 3px;
       color: #4b5563;
+      gap: 6px;
     }
 
     .required::after {
       content: " *";
       color: #e11d48;
       font-weight: 600;
+      margin-left: 2px;
     }
 
-    .label-icon {
-      margin-right: 6px;
-      color: #4b5563;
+    .label-icon-img {
+      width: 16px;
+      height: 16px;
+      object-fit: contain;
     }
 
     input[type="text"],
@@ -374,11 +374,11 @@
     <!-- Tarikh / Masa / Waktu -->
     <div class="status-row">
       <div class="status-pill">
-        <i class="fa-regular fa-calendar-days"></i>
+        <img class="status-icon-img" src="https://imgur.com/p4rqpOr.png" alt="Tarikh">
         <span id="headerTarikh">--/--/----</span>
       </div>
       <div class="status-pill">
-        <i class="fa-regular fa-clock"></i>
+        <img class="status-icon-img" src="https://imgur.com/H6XKq7O.png" alt="Jam">
         <span id="headerMasa">--:--:--</span>
       </div>
       <div class="status-pill">
@@ -397,12 +397,18 @@
     <div id="guruView">
       <div class="input-card">
         <div class="field">
-          <label class="required"><i class="fa-solid fa-user label-icon"></i>Nama Guru</label>
+          <label class="required">
+            <img class="label-icon-img" src="https://imgur.com/dEjU58n.png" alt="">
+            <span>Nama Guru</span>
+          </label>
           <input type="text" id="namaGuru" placeholder="Contoh: Cikgu Sufian" />
         </div>
 
         <div class="field">
-          <label class="required"><i class="fa-solid fa-school label-icon"></i>Kelas</label>
+          <label class="required">
+            <img class="label-icon-img" src="https://imgur.com/yxBskv3.png" alt="">
+            <span>Kelas</span>
+          </label>
           <select id="kelas">
             <option value="">Sila Pilih</option>
             <option value="1B">1B</option>
@@ -427,7 +433,10 @@
         </div>
 
         <div class="field">
-          <label class="required"><i class="fa-solid fa-location-dot label-icon"></i>Tempat</label>
+          <label class="required">
+            <img class="label-icon-img" src="https://imgur.com/pondLTX.png" alt="">
+            <span>Tempat</span>
+          </label>
           <select id="tempat">
             <option value="">Sila Pilih</option>
             <option value="KELAS">KELAS</option>
@@ -442,7 +451,10 @@
         </div>
 
         <div class="field">
-          <label class="required"><i class="fa-solid fa-users label-icon"></i>Jumlah Murid</label>
+          <label class="required">
+            <img class="label-icon-img" src="https://imgur.com/TE6EXnr.png" alt="">
+            <span>Jumlah Murid</span>
+          </label>
           <input type="number" id="jumlahMurid" min="0" placeholder="Contoh: 28" />
         </div>
 
@@ -453,7 +465,9 @@
       <div class="section-title">Maklumat Sahsiah Murid (tidak wajib)</div>
       <div class="input-card">
         <div class="field">
-          <label><i class="fa-solid fa-child label-icon"></i>Nama Murid</label>
+          <label>
+            <span>Nama Murid</span>
+          </label>
           <input type="text" id="namaMurid" placeholder="Contoh: Ahmad Fitri" />
         </div>
 
