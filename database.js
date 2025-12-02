@@ -24,7 +24,7 @@ function saveRecordToFirebase(record) {
   return ref.push(record);
 }
 
-// Dengar semua rekod untuk tarikh tertentu (contoh: hari ini)
+// Dengar semua rekod untuk tarikh tertentu
 function subscribeToTodayRecords(tarikh, callback) {
   const query = db
     .ref("rekod_pemantauan")
@@ -43,7 +43,7 @@ function subscribeToTodayRecords(tarikh, callback) {
   });
 }
 
-// Optional: hentikan listener jika perlu
+// Hentikan semua listener (guna bila tukar tarikh)
 function unsubscribeTodayRecords() {
   db.ref("rekod_pemantauan").off();
 }
