@@ -1,5 +1,4 @@
 // database.js
-// Konfigurasi Firebase yang tuan beri
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyDbCgDz2vK2BZUpwM3iDWJcPQSptVcNkv4",
@@ -44,7 +43,7 @@ function subscribeToTodayRecords(tarikh, callback) {
   });
 }
 
-// Optional: kalau perlu hentikan listener kemudian
+// Optional: hentikan listener jika perlu
 function unsubscribeTodayRecords() {
   db.ref("rekod_pemantauan").off();
 }
