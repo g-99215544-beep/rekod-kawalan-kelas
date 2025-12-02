@@ -228,6 +228,34 @@
       flex-wrap: wrap;
     }
 
+    /* Jumlah murid + kehadiran */
+    .inline-count {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .inline-count input {
+      flex: 1 1 auto;
+    }
+
+    .kehadiran-ratio {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #047857;
+      white-space: nowrap;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #ecfdf5;
+      border: 1px solid #bbf7d0;
+    }
+
+    .kehadiran-subtext {
+      margin-top: 3px;
+      font-size: 0.75rem;
+      color: #6b7280;
+    }
+
     /* Semak Rekod table */
     .table-wrapper {
       max-height: 340px;
@@ -446,7 +474,13 @@
 
         <div class="field">
           <label class="required"><span class="label-icon">👥</span>Jumlah Murid</label>
-          <input type="number" id="jumlahMurid" min="0" placeholder="Contoh: 28" />
+          <div class="inline-count">
+            <input type="number" id="jumlahMurid" min="0" placeholder="Contoh: 28" />
+            <span id="kehadiranRatio" class="kehadiran-ratio">/ -</span>
+          </div>
+          <div id="kehadiranSubtext" class="kehadiran-subtext">
+            Kehadiran hari ini: -
+          </div>
         </div>
 
         <button class="btn-submit" id="btnSave">HANTAR</button>
@@ -526,15 +560,39 @@
 
     <!-- TAB 2: SEMAK REKOD -->
     <div id="semakView" style="display:none;">
-      <div class="section-title">Semak Rekod Mengikut Tarikh</div>
+      <div class="section-title">Semak Rekod Mengikut Tarikh & Kelas</div>
       <div class="input-card">
         <div class="field">
           <label class="required">Tarikh</label>
           <input type="date" id="semakTarikh" />
         </div>
+        <div class="field">
+          <label class="required">Kelas</label>
+          <select id="semakKelas">
+            <option value="">Sila Pilih</option>
+            <option value="1B">1B</option>
+            <option value="1C">1C</option>
+            <option value="1G">1G</option>
+            <option value="2B">2B</option>
+            <option value="2C">2C</option>
+            <option value="2G">2G</option>
+            <option value="3B">3B</option>
+            <option value="3C">3C</option>
+            <option value="3G">3G</option>
+            <option value="4B">4B</option>
+            <option value="4C">4C</option>
+            <option value="4G">4G</option>
+            <option value="5B">5B</option>
+            <option value="5C">5C</option>
+            <option value="5G">5G</option>
+            <option value="6B">6B</option>
+            <option value="6C">6C</option>
+            <option value="6G">6G</option>
+          </select>
+        </div>
         <button class="btn-submit" style="margin-top:4px;" id="btnSemakLoad">SEMAK REKOD</button>
         <div id="semakSummary" class="empty-state">
-          Sila pilih tarikh untuk semak rekod.
+          Sila pilih tarikh dan kelas untuk semak rekod.
         </div>
       </div>
 
@@ -686,6 +744,9 @@
     document.getElementById("kategoriKes").value = "";
     document.getElementById("puncaKes").value = "";
     document.getElementById("keteranganKes").value = "";
+
+    // Reset paparan kehadiran panel jumlah murid
+    updateKehadiranInfo();
   }
 
   btnClearForm.addEventListener("click", clearForm);
@@ -798,6 +859,7 @@
 
   // ------- Semak Rekod (jadual W1-W12) -------
   const semakTarikhInput = document.getElementById("semakTarikh");
+  const semakKelasSelect = document.getElementById("semakKelas");
   const btnSemakLoad = document.getElementById("btnSemakLoad");
   const semakSummary = document.getElementById("semakSummary");
   const semakTableWrapper = document.getElementById("semakTableWrapper");
@@ -849,21 +911,26 @@
     semakDetailCard.style.display = "block";
   }
 
-  function renderSemak(records, tarikhKey) {
-    if (!records || records.length === 0) {
-      semakSummary.textContent = `Tiada rekod untuk tarikh ${tarikhKey}.`;
+  function renderSemak(records, tarikhKey, kelasFilter) {
+    const filtered = kelasFilter
+      ? records.filter(r => r.kelas === kelasFilter)
+      : records;
+
+    if (!filtered || filtered.length === 0) {
+      semakSummary.textContent = kelasFilter
+        ? `Tiada rekod untuk tarikh ${tarikhKey} bagi kelas ${kelasFilter}.`
+        : `Tiada rekod untuk tarikh ${tarikhKey}.`;
       semakTableWrapper.style.display = "none";
       semakDetailCard.style.display = "none";
       return;
     }
 
     semakSummary.textContent =
-      `Tarikh ${tarikhKey} – jumlah rekod: ${records.length}. Klik nama guru di jadual untuk lihat butiran.`;
+      `Tarikh ${tarikhKey}, kelas ${kelasFilter} – jumlah rekod: ${filtered.length}. Klik nama guru di jadual untuk lihat butiran.`;
 
-    // Map waktu -> array rekod
     const map = {};
     periods.forEach(p => map[p.code] = []);
-    records.forEach(r => {
+    filtered.forEach(r => {
       if (r.waktu && map[r.waktu]) {
         map[r.waktu].push(r);
       }
@@ -871,7 +938,6 @@
 
     buildHeadRow();
 
-    // Satu baris, setiap sel mengandungi senarai nama guru (chips)
     semakBodyRow.innerHTML = "";
     periods.forEach(p => {
       const td = document.createElement("td");
@@ -894,19 +960,24 @@
     semakTableWrapper.style.display = "block";
   }
 
-  function loadSemakForDate(tarikhKey) {
+  function loadSemakForDate(tarikhKey, kelasFilter) {
     if (!tarikhKey) return;
+    semakDetailCard.style.display = "none";
+    semakTableWrapper.style.display = "none";
+    semakSummary.textContent = "Memuatkan rekod...";
     unsubscribeTodayRecords();
-    subscribeToTodayRecords(tarikhKey, (records) => renderSemak(records, tarikhKey));
+    subscribeToTodayRecords(tarikhKey, (records) =>
+      renderSemak(records, tarikhKey, kelasFilter)
+    );
   }
 
   btnSemakLoad.addEventListener("click", () => {
-    if (!semakTarikhInput.value) {
-      alert("Sila pilih tarikh rekod.");
+    if (!semakTarikhInput.value || !semakKelasSelect.value) {
+      alert("Sila pilih tarikh dan kelas sebelum semak rekod.");
       return;
     }
     const key = dateInputToKey(semakTarikhInput.value);
-    loadSemakForDate(key);
+    loadSemakForDate(key, semakKelasSelect.value);
   });
 
   // ------- Login Admin (klik logo, password admin123) -------
@@ -942,9 +1013,53 @@
     }
   });
 
+  // ------- Kehadiran harian (diambil dari modul kehadiran murid) -------
+  const kehadiranRatioEl = document.getElementById("kehadiranRatio");
+  const kehadiranSubtextEl = document.getElementById("kehadiranSubtext");
+  const kelasSelect = document.getElementById("kelas");
+
+  function getTodayAttendanceKey() {
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth() + 1).padStart(2, "0");
+    const d = String(now.getDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`; // format sama dengan modul kehadiran murid
+  }
+
+  function updateKehadiranInfo() {
+    const kelas = kelasSelect.value;
+    if (!kelas) {
+      kehadiranRatioEl.textContent = "/ -";
+      kehadiranSubtextEl.textContent = "Kehadiran hari ini: -";
+      return;
+    }
+    const dateKey = getTodayAttendanceKey();
+    getAttendanceForClass(dateKey, kelas)
+      .then((data) => {
+        if (data && typeof data.present === "number" && typeof data.total === "number") {
+          // Papar: (jumlah murid semasa) / present
+          kehadiranRatioEl.textContent = `/ ${data.present}`;
+          kehadiranSubtextEl.textContent =
+            `Kehadiran hari ini: ${data.present}/${data.total} hadir`;
+        } else {
+          kehadiranRatioEl.textContent = "/ -";
+          kehadiranSubtextEl.textContent =
+            "Kehadiran hari ini: Tiada rekod kehadiran untuk kelas ini.";
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        kehadiranRatioEl.textContent = "/ ?";
+        kehadiranSubtextEl.textContent = "Gagal memuatkan data kehadiran.";
+      });
+  }
+
+  kelasSelect.addEventListener("change", updateKehadiranInfo);
+
   // ------- Init -------
   updateDateTimeUI();
   setInterval(updateDateTimeUI, 30000);
+  updateKehadiranInfo();
 </script>
 </body>
 </html>
