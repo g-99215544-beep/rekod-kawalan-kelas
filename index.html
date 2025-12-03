@@ -351,6 +351,57 @@
       font-weight: 500;
       cursor: pointer;
     }
+
+    /* Multi-select Nama Murid */
+    .multi-select {
+      position: relative;
+    }
+    .multi-select input[readonly] {
+      cursor: pointer;
+      background-color: #eef2ff;
+    }
+    .multi-dropdown {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: calc(100% + 4px);
+      background: #ffffff;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 10px 25px rgba(15,23,42,0.18);
+      max-height: 260px;
+      overflow: auto;
+      z-index: 40;
+      padding: 6px 8px 8px;
+    }
+    .multi-option-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      padding: 3px 2px;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    .multi-option-row input {
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+    .multi-option-row span {
+      flex: 1;
+      line-height: 1.25;
+    }
+    .multi-footer {
+      margin-top: 4px;
+      font-size: 0.7rem;
+      color: #6b7280;
+      border-top: 1px dashed #e5e7eb;
+      padding-top: 4px;
+    }
+    .multi-empty {
+      font-size: 0.8rem;
+      color: #6b7280;
+      padding: 4px 2px;
+    }
   </style>
 </head>
 <body>
@@ -462,7 +513,15 @@
       <div class="input-card">
         <div class="field">
           <label>Nama Murid</label>
-          <input type="text" id="namaMurid" placeholder="Contoh: Ahmad Fitri" />
+          <div class="multi-select" id="namaMuridWrapper">
+            <input type="text" id="namaMuridDisplay" placeholder="Pilih murid yang terlibat" readonly />
+            <div id="namaMuridDropdown" class="multi-dropdown" style="display:none;">
+              <div id="namaMuridOptions" class="multi-options"></div>
+              <div class="multi-footer">
+                * Senarai murid berdasarkan kelas yang dipilih.
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="toggle-row">
@@ -683,15 +742,82 @@
   btnGood.addEventListener("click", () => setMode("good"));
   btnBad.addEventListener("click", () => setMode("bad"));
 
+  // ------- Multi-select Nama Murid -------
+  const kelasSelect = document.getElementById("kelas");
+  const namaMuridDisplay = document.getElementById("namaMuridDisplay");
+  const namaMuridDropdown = document.getElementById("namaMuridDropdown");
+  const namaMuridOptions = document.getElementById("namaMuridOptions");
+  const namaMuridWrapper = document.getElementById("namaMuridWrapper");
+  let selectedMurids = [];
+
+  function updateNamaMuridDisplay() {
+    if (selectedMurids.length === 0) {
+      namaMuridDisplay.value = "";
+    } else if (selectedMurids.length <= 2) {
+      namaMuridDisplay.value = selectedMurids.join(", ");
+    } else {
+      namaMuridDisplay.value = `${selectedMurids.length} murid dipilih`;
+    }
+  }
+
+  function rebuildNamaMuridOptions() {
+    selectedMurids = [];
+    updateNamaMuridDisplay();
+    namaMuridOptions.innerHTML = "";
+    const kelasVal = kelasSelect.value;
+    if (!kelasVal || !window.classData || !classData[kelasVal]) {
+      namaMuridOptions.innerHTML =
+        '<div class="multi-empty">Sila pilih kelas terlebih dahulu.</div>';
+      return;
+    }
+
+    classData[kelasVal].forEach((name) => {
+      const row = document.createElement("label");
+      row.className = "multi-option-row";
+
+      const cb = document.createElement("input");
+      cb.type = "checkbox";
+      cb.value = name;
+
+      cb.addEventListener("change", () => {
+        if (cb.checked) {
+          if (!selectedMurids.includes(name)) selectedMurids.push(name);
+        } else {
+          selectedMurids = selectedMurids.filter((n) => n !== name);
+        }
+        updateNamaMuridDisplay();
+      });
+
+      const span = document.createElement("span");
+      span.textContent = name;
+
+      row.appendChild(cb);
+      row.appendChild(span);
+      namaMuridOptions.appendChild(row);
+    });
+  }
+
+  namaMuridDisplay.addEventListener("click", () => {
+    const isHidden = namaMuridDropdown.style.display === "none" || namaMuridDropdown.style.display === "";
+    namaMuridDropdown.style.display = isHidden ? "block" : "none";
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!namaMuridWrapper.contains(e.target)) {
+      namaMuridDropdown.style.display = "none";
+    }
+  });
+
+  // ------- Semak jika ada data sahsiah -------
   function hasSahsiahData() {
-    const namaMurid = document.getElementById("namaMurid").value.trim();
+    const hasNamaList = selectedMurids.length > 0;
     const amalan = document.getElementById("amalanBaik").value;
     const perincian = document.getElementById("perincianAmalan").value;
     const ketAmalan = document.getElementById("keteranganAmalan").value.trim();
     const kategoriKes = document.getElementById("kategoriKes").value;
     const punca = document.getElementById("puncaKes").value.trim();
     const ketKes = document.getElementById("keteranganKes").value.trim();
-    return !!(namaMurid || amalan || perincian || ketAmalan || kategoriKes || punca || ketKes);
+    return !!(hasNamaList || amalan || perincian || ketAmalan || kategoriKes || punca || ketKes);
   }
 
   // ------- Simpan rekod (Rekod Semasa) -------
@@ -700,11 +826,14 @@
 
   function clearForm() {
     document.getElementById("namaGuru").value = "";
-    document.getElementById("kelas").value = "";
+    kelasSelect.value = "";
     document.getElementById("tempat").value = "";
     document.getElementById("jumlahMurid").value = "";
 
-    document.getElementById("namaMurid").value = "";
+    selectedMurids = [];
+    updateNamaMuridDisplay();
+    namaMuridOptions.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+
     document.getElementById("amalanBaik").value = "";
     document.getElementById("perincianAmalan").value = "";
     document.getElementById("keteranganAmalan").value = "";
@@ -719,7 +848,7 @@
 
   btnSave.addEventListener("click", () => {
     const namaGuru = document.getElementById("namaGuru").value.trim();
-    const kelas = document.getElementById("kelas").value;
+    const kelas = kelasSelect.value;
     const tempat = document.getElementById("tempat").value;
     const jumlahMurid = document.getElementById("jumlahMurid").value;
 
@@ -737,15 +866,17 @@
     let jenis = null;
     let kategori = "";
     let keterangan = "";
-    let namaMurid = "";
+    let namaMuridText = "";
+    let namaMuridList = [];
     const adaSahsiah = hasSahsiahData();
 
     if (adaSahsiah) {
-      namaMurid = document.getElementById("namaMurid").value.trim();
-      if (!namaMurid) {
-        alert("Sila isi Nama Murid jika mahu rekod sahsiah murid.");
+      if (selectedMurids.length === 0) {
+        alert("Sila pilih sekurang-kurangnya seorang murid untuk rekod sahsiah.");
         return;
       }
+      namaMuridList = selectedMurids.slice();
+      namaMuridText = namaMuridList.join(", ");
 
       const isGoodMode = btnGood.classList.contains("active");
       if (isGoodMode) {
@@ -783,7 +914,8 @@
       kelas,
       tempat,
       jumlahMurid: Number(jumlahMurid),
-      namaMurid: namaMurid || null,
+      namaMurid: namaMuridText || null,
+      namaMuridList: namaMuridList.length ? namaMuridList : null,
       jenis,
       kategori,
       keterangan
@@ -861,6 +993,8 @@
       jenisHtml = `<span class="pill-bad">Kesalahan</span>`;
     }
 
+    const namaMuridText = rec.namaMuridList ? rec.namaMuridList.join(", ") : (rec.namaMurid || "-");
+
     semakDetailContent.innerHTML = `
       <p><strong>Tarikh:</strong> ${rec.tarikh || "-"} &nbsp; | &nbsp;
          <strong>Waktu:</strong> ${rec.waktu || "-"} (${rangeText})<br>
@@ -869,7 +1003,7 @@
          <strong>Kelas:</strong> ${rec.kelas || "-"}<br>
          <strong>Tempat:</strong> ${rec.tempat || "-"}<br>
          <strong>Jumlah Murid:</strong> ${rec.jumlahMurid ?? "-"}</p>
-      <p><strong>Nama Murid:</strong> ${rec.namaMurid || "-"}<br>
+      <p><strong>Nama Murid:</strong> ${namaMuridText}<br>
          <strong>Sahsiah:</strong> ${jenisHtml}<br>
          <strong>Kategori / Perincian:</strong> ${rec.kategori || "-"}<br>
          <strong>Keterangan:</strong> ${rec.keterangan || "-"}</p>
@@ -979,14 +1113,13 @@
   // ------- Kehadiran harian (ambil dari app kehadiran murid) -------
   const kehadiranRatioEl = document.getElementById("kehadiranRatio");
   const kehadiranSubtextEl = document.getElementById("kehadiranSubtext");
-  const kelasSelect = document.getElementById("kelas");
 
   function getTodayAttendanceKey() {
     const now = new Date();
     const y = now.getFullYear();
     const m = String(now.getMonth() + 1).padStart(2, "0");
     const d = String(now.getDate()).padStart(2, "0");
-    return `${y}-${m}-${d}`; // sama format dengan app kehadiran murid
+    return `${y}-${m}-${d}`;
   }
 
   function updateKehadiranInfo() {
@@ -1018,12 +1151,16 @@
       });
   }
 
-  kelasSelect.addEventListener("change", updateKehadiranInfo);
+  kelasSelect.addEventListener("change", () => {
+    updateKehadiranInfo();
+    rebuildNamaMuridOptions();
+  });
 
   // ------- Init -------
   updateDateTimeUI();
   setInterval(updateDateTimeUI, 30000);
   updateKehadiranInfo();
+  rebuildNamaMuridOptions(); // kalau kelas belum pilih, akan tunjuk mesej
 </script>
 </body>
 </html>
