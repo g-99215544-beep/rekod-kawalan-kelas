@@ -61,10 +61,16 @@
       display: inline-flex;
       align-items: center;
       gap: 4px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #f3f4f6;
     }
-    .status-pill span.icon {
-      font-size: 0.95rem;
+    .status-icon {
+      width: 16px;
+      height: 16px;
+      object-fit: contain;
     }
+
     .tab-row {
       display: inline-flex;
       border-radius: 999px;
@@ -87,19 +93,21 @@
       color: #ffffff;
       box-shadow: 0 2px 6px rgba(5,150,105,0.45);
     }
+
     .input-card {
       background: #f9fafb;
       border-radius: 16px;
       padding: 14px 12px 14px;
       border: 1px solid #e5e7eb;
     }
-    .field {
-      margin-bottom: 10px;
-    }
+    .field { margin-bottom: 10px; }
+
     label {
       font-size: 0.8rem;
       font-weight: 500;
-      display: block;
+      display: flex;
+      align-items: center;
+      gap: 6px;
       margin-bottom: 3px;
       color: #4b5563;
     }
@@ -108,7 +116,11 @@
       color: #e11d48;
       font-weight: 600;
     }
-    .label-icon { margin-right: 4px; }
+    .label-icon-img {
+      width: 16px;
+      height: 16px;
+      object-fit: contain;
+    }
 
     input[type="text"],
     input[type="number"],
@@ -353,15 +365,14 @@
     <!-- Tarikh / Masa / Waktu -->
     <div class="status-row">
       <div class="status-pill">
-        <span class="icon">📅</span>
+        <img class="status-icon" src="https://imgur.com/VMTwyi9.png" alt="Tarikh">
         <span id="headerTarikh">--/--/----</span>
       </div>
       <div class="status-pill">
-        <span class="icon">⏰</span>
+        <img class="status-icon" src="https://imgur.com/ZH7Xd9w.png" alt="Masa">
         <span id="headerMasa">--:--:--</span>
       </div>
       <div class="status-pill">
-        <span>•</span>
         <span id="headerWaktu">Luar Waktu PdP</span>
       </div>
     </div>
@@ -376,12 +387,18 @@
     <div id="rekodView">
       <div class="input-card">
         <div class="field">
-          <label class="required"><span class="label-icon">👩‍🏫</span>Nama Guru</label>
+          <label class="required">
+            <img class="label-icon-img" src="https://imgur.com/QJQj9zz.png" alt="">
+            <span>Nama Guru</span>
+          </label>
           <input type="text" id="namaGuru" placeholder="Contoh: Cikgu Sufian" />
         </div>
 
         <div class="field">
-          <label class="required"><span class="label-icon">🏫</span>Kelas</label>
+          <label class="required">
+            <img class="label-icon-img" src="https://imgur.com/tZDR2yZ.png" alt="">
+            <span>Kelas</span>
+          </label>
           <select id="kelas">
             <option value="">Sila Pilih</option>
             <option value="1B">1B</option>
@@ -406,7 +423,10 @@
         </div>
 
         <div class="field">
-          <label class="required"><span class="label-icon">📍</span>Tempat</label>
+          <label class="required">
+            <img class="label-icon-img" src="https://imgur.com/F8XY0yc.png" alt="">
+            <span>Tempat</span>
+          </label>
           <select id="tempat">
             <option value="">Sila Pilih</option>
             <option value="KELAS">KELAS</option>
@@ -421,7 +441,10 @@
         </div>
 
         <div class="field">
-          <label class="required"><span class="label-icon">👥</span>Jumlah Murid</label>
+          <label class="required">
+            <img class="label-icon-img" src="https://imgur.com/5CNFDAu.png" alt="">
+            <span>Jumlah Murid</span>
+          </label>
           <div class="inline-count">
             <input type="number" id="jumlahMurid" min="0" placeholder="Contoh: 28" />
             <span id="kehadiranRatio" class="kehadiran-ratio">/ -</span>
@@ -434,11 +457,11 @@
         <button class="btn-submit" id="btnSave">HANTAR</button>
       </div>
 
-      <!-- SAHSIAH (scroll ke bawah) -->
+      <!-- SAHSIAH -->
       <div class="section-title">Maklumat Sahsiah Murid (tidak wajib)</div>
       <div class="input-card">
         <div class="field">
-          <label><span class="label-icon">🧒</span>Nama Murid</label>
+          <label>Nama Murid</label>
           <input type="text" id="namaMurid" placeholder="Contoh: Ahmad Fitri" />
         </div>
 
@@ -966,7 +989,7 @@
     return `${y}-${m}-${d}`; // sama format dengan app kehadiran murid
   }
 
-  function updateKehadiranInfo() {            // <-- DI SINI
+  function updateKehadiranInfo() {
     const kelas = kelasSelect.value;
     if (!kelas) {
       kehadiranRatioEl.textContent = "/ -";
@@ -977,7 +1000,6 @@
     getAttendanceForClass(dateKey, kelas)
       .then((data) => {
         if (data && data.present != null && data.total != null) {
-          // present & total mungkin number atau string – paparkan sahaja
           const present = data.present;
           const total = data.total;
           kehadiranRatioEl.textContent = `/ ${present}`;
