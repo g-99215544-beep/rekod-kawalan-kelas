@@ -660,7 +660,7 @@
   </div>
 </div>
 
-<!-- Firebase v8 -->
+<!-- Firebase v8 + database.js MESTI dulu -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 <script src="database.js"></script>
@@ -760,18 +760,34 @@
     }
   }
 
+  // >>>>> FUNGSI DIBAIKI DI SINI
   function rebuildNamaMuridOptions() {
+    // reset pilihan
     selectedMurids = [];
     updateNamaMuridDisplay();
     namaMuridOptions.innerHTML = "";
-    const kelasVal = kelasSelect.value;
-    if (!kelasVal || !window.classData || !classData[kelasVal]) {
+
+    const kelasVal = kelasSelect.value.trim();
+
+    if (!kelasVal) {
       namaMuridOptions.innerHTML =
         '<div class="multi-empty">Sila pilih kelas terlebih dahulu.</div>';
       return;
     }
 
-    classData[kelasVal].forEach((name) => {
+    // classData datang dari database.js (global const)
+    let senarai = [];
+    if (typeof classData !== "undefined" && classData[kelasVal]) {
+      senarai = classData[kelasVal];
+    }
+
+    if (!senarai || senarai.length === 0) {
+      namaMuridOptions.innerHTML =
+        '<div class="multi-empty">Tiada senarai murid untuk kelas ini.</div>';
+      return;
+    }
+
+    senarai.forEach((name) => {
       const row = document.createElement("label");
       row.className = "multi-option-row";
 
@@ -796,6 +812,7 @@
       namaMuridOptions.appendChild(row);
     });
   }
+  // <<<<< TAMAT FUNGSI DIBAIKI
 
   namaMuridDisplay.addEventListener("click", () => {
     const isHidden = namaMuridDropdown.style.display === "none" || namaMuridDropdown.style.display === "";
@@ -1160,7 +1177,7 @@
   updateDateTimeUI();
   setInterval(updateDateTimeUI, 30000);
   updateKehadiranInfo();
-  rebuildNamaMuridOptions(); // kalau kelas belum pilih, akan tunjuk mesej
+  rebuildNamaMuridOptions(); // mula-mula: paparkan mesej "pilih kelas"
 </script>
 </body>
 </html>
