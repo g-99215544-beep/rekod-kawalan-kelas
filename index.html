@@ -6,16 +6,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
-    *{box-sizing:border-box;font-family:"Poppins",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    *{box-sizing:border-box;font-family:Poppins,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
     body{margin:0;background:#e5ecf4;color:#0f172a}
     .app-shell{max-width:480px;margin:12px auto 24px;padding:8px}
     .app-card{background:#fff;border-radius:20px;padding:18px 18px 20px;box-shadow:0 10px 30px rgba(15,23,42,.18)}
-    .logo-wrap{display:flex;flex-direction:column;align-items:center;margin-bottom:12px}
+    .logo-wrap{display:flex;flex-direction:column;align-items:center;margin-bottom:12px;position:relative}
     .logo-wrap img{width:80px;height:80px;border-radius:50%;object-fit:cover;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.25)}
     .logo-wrap h1{margin:10px 0 0;text-align:center;font-size:1.2rem;letter-spacing:.04em;font-weight:600}
+    #notifBadge{position:absolute;top:0;right:0;background:red;color:#fff;font-size:12px;padding:2px 6px;border-radius:999px;display:none}
     .status-row{display:flex;justify-content:center;gap:10px;font-size:.85rem;color:#4b5563;margin:6px 0 14px;flex-wrap:wrap}
     .status-pill{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;background:#f3f4f6}
-    .status-icon{width:16px;height:16px;object-fit:contain}
     .tab-row{display:inline-flex;border-radius:999px;padding:3px;background:#e5f3ec;margin-bottom:14px}
     .tab-btn{border:none;background:transparent;padding:6px 20px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:500;color:#166534}
     .tab-btn.active{background:#059669;color:#fff;box-shadow:0 2px 6px rgba(5,150,105,.45)}
@@ -23,14 +23,13 @@
     .field{margin-bottom:10px}
     label{font-size:.8rem;font-weight:500;display:flex;align-items:center;gap:6px;margin-bottom:3px;color:#4b5563}
     .required::after{content:" *";color:#e11d48;font-weight:600}
-    input[type="text"],input[type="number"],input[type="date"],select,textarea{width:100%;border-radius:10px;border:1px solid #d1d5db;padding:8px 10px;font-size:.9rem;outline:none;background:#fff;transition:border-color .15s ease,box-shadow .15s ease}
-    input:focus,select:focus,textarea:focus{border-color:#059669;box-shadow:0 0 0 2px rgba(34,197,94,.35)}
+    input[type="text"],input[type="number"],input[type="date"],select,textarea{width:100%;border-radius:10px;border:1px solid #d1d5db;padding:8px 10px;font-size:.9rem;outline:none;background:#fff}
     textarea{resize:vertical;min-height:70px}
     .btn-submit{margin-top:8px;width:100%;border:none;border-radius:999px;padding:10px 16px;font-size:.95rem;font-weight:600;letter-spacing:.04em;background:#047857;color:#fff;cursor:pointer;box-shadow:0 4px 10px rgba(4,120,87,.45)}
     .section-title{margin:16px 0 8px;font-size:.95rem;font-weight:600;color:#111827}
     .toggle-row{display:inline-flex;background:#e5e7eb;border-radius:999px;padding:3px;margin-bottom:10px}
     .toggle-btn{border:none;background:transparent;padding:5px 14px;border-radius:999px;font-size:.8rem;cursor:pointer;font-weight:500;color:#374151}
-    .toggle-btn.active{background:#2563eb;color:#fff;box-shadow:0 1px 4px rgba(37,99,235,.4)}
+    .toggle-btn.active{background:#2563eb;color:#fff}
     .btn-secondary{border:1px solid #d1d5db;background:#fff;color:#374151;padding:7px 14px;border-radius:999px;font-size:.8rem;cursor:pointer}
     .btn-row{margin-top:8px;display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
     .inline-count{display:flex;align-items:center;gap:6px}
@@ -52,6 +51,14 @@
     .multi-option-row span{flex:1;line-height:1.25}
     .multi-footer{margin-top:4px;font-size:.7rem;color:#6b7280;border-top:1px dashed #e5e7eb;padding-top:4px}
     .multi-empty{font-size:.8rem;color:#6b7280;padding:4px 2px}
+    /* Admin modal */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:center;justify-content:center;z-index:1000}
+    .modal-card{background:#fff;border-radius:18px;padding:20px 22px 18px;width:100%;max-width:360px;box-shadow:0 18px 40px rgba(15,23,42,.45)}
+    .modal-card h2{margin:0 0 6px 0;font-size:1.1rem;font-weight:600;color:#111827}
+    .modal-card p{margin:0 0 14px 0;font-size:.85rem;color:#4b5563}
+    .modal-buttons{margin-top:14px;display:flex;justify-content:flex-end;gap:8px}
+    .btn-modal-cancel{border-radius:999px;border:none;padding:7px 16px;background:#e5e7eb;color:#374151;font-size:.82rem;cursor:pointer}
+    .btn-modal-primary{border-radius:999px;border:none;padding:7px 18px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;font-size:.82rem;font-weight:500;cursor:pointer}
   </style>
 </head>
 <body>
@@ -59,6 +66,7 @@
   <div class="app-card">
     <div class="logo-wrap">
       <img id="sksaLogo" src="https://i.imgur.com/AfsVtVG.png" alt="Logo SKSA" />
+      <span id="notifBadge">!</span>
       <h1>REKOD PEMANTAUAN KELAS SKSA</h1>
     </div>
 
@@ -73,116 +81,138 @@
       <button id="tabSemak" class="tab-btn">SEMAK REKOD</button>
     </div>
 
+    <!-- REKOD SEMASA -->
     <div id="rekodView">
-      <div class="input-card">
-        <div class="field">
-          <label class="required">Nama Guru</label>
-          <input type="text" id="namaGuru" placeholder="Contoh: Cikgu Sufian" />
-        </div>
-        <div class="field">
-          <label class="required">Kelas</label>
-          <select id="kelas"><option value="">Sila Pilih</option></select>
-        </div>
-        <div class="field">
-          <label class="required">Tempat</label>
-          <select id="tempat">
-            <option value="">Sila Pilih</option>
-            <option value="KELAS">KELAS</option>
-            <option value="MAKMAL KOMPUTER">MAKMAL KOMPUTER</option>
-            <option value="KANTIN">KANTIN</option>
-            <option value="SURAU">SURAU</option>
-            <option value="DEWAN">DEWAN</option>
-            <option value="BILIK JQAF">BILIK JQAF</option>
-            <option value="BILIK MUZIK">BILIK MUZIK</option>
-            <option value="LAIN-LAIN">LAIN-LAIN</option>
-          </select>
-        </div>
-        <div class="field">
-          <label class="required">Jumlah Murid</label>
-          <div class="inline-count">
-            <input type="number" id="jumlahMurid" min="0" placeholder="Contoh: 28" />
-            <span id="kehadiranRatio" class="kehadiran-ratio">/ -</span>
-          </div>
-          <div id="kehadiranSubtext" class="kehadiran-subtext">Kehadiran hari ini: -</div>
-        </div>
-        <button class="btn-submit" id="btnSave">HANTAR</button>
+      <!-- Sub tabs -->
+      <div class="tab-row" style="margin-top:10px;">
+        <button id="subTabForm" class="tab-btn active">ISI REKOD</button>
+        <button id="subTabToday" class="tab-btn">REKOD HARI INI</button>
       </div>
 
-      <div class="section-title">Maklumat Sahsiah Murid (tidak wajib)</div>
-      <div class="input-card">
-        <div class="field">
-          <label>Nama Murid</label>
-          <div class="multi-select" id="namaMuridWrapper">
-            <input type="text" id="namaMuridDisplay" placeholder="Pilih murid yang terlibat" readonly />
-            <div id="namaMuridDropdown" class="multi-dropdown" style="display:none;">
-              <div id="namaMuridOptions"></div>
-              <div class="multi-footer">* Senarai murid berdasarkan kelas yang dipilih.</div>
+      <!-- Form -->
+      <div id="rekodFormView">
+        <div class="input-card">
+          <div class="field">
+            <label class="required">Nama Guru</label>
+            <input type="text" id="namaGuru" placeholder="Contoh: Cikgu Sufian" />
+          </div>
+          <div class="field">
+            <label class="required">Kelas</label>
+            <select id="kelas"><option value="">Sila Pilih</option></select>
+          </div>
+          <div class="field">
+            <label class="required">Tempat</label>
+            <select id="tempat">
+              <option value="">Sila Pilih</option>
+              <option value="KELAS">KELAS</option>
+              <option value="MAKMAL KOMPUTER">MAKMAL KOMPUTER</option>
+              <option value="KANTIN">KANTIN</option>
+              <option value="SURAU">SURAU</option>
+              <option value="DEWAN">DEWAN</option>
+              <option value="BILIK JQAF">BILIK JQAF</option>
+              <option value="BILIK MUZIK">BILIK MUZIK</option>
+              <option value="LAIN-LAIN">LAIN-LAIN</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="required">Jumlah Murid</label>
+            <div class="inline-count">
+              <input type="number" id="jumlahMurid" min="0" placeholder="Contoh: 28" />
+              <span id="kehadiranRatio" class="kehadiran-ratio">/ -</span>
+            </div>
+            <div id="kehadiranSubtext" class="kehadiran-subtext">Kehadiran hari ini: -</div>
+          </div>
+          <button class="btn-submit" id="btnSave">HANTAR</button>
+        </div>
+
+        <div class="section-title">Maklumat Sahsiah Murid (tidak wajib)</div>
+        <div class="input-card">
+          <div class="field">
+            <label>Nama Murid</label>
+            <div class="multi-select" id="namaMuridWrapper">
+              <input type="text" id="namaMuridDisplay" placeholder="Pilih murid yang terlibat" readonly />
+              <div id="namaMuridDropdown" class="multi-dropdown" style="display:none;">
+                <div id="namaMuridOptions"></div>
+                <div class="multi-footer">* Senarai murid berdasarkan kelas yang dipilih.</div>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="toggle-row">
-          <button type="button" class="toggle-btn active" id="btnGood">Amalan Baik</button>
-          <button type="button" class="toggle-btn" id="btnBad">Kesalahan Disiplin</button>
-        </div>
+          <div class="toggle-row">
+            <button type="button" class="toggle-btn active" id="btnGood">Amalan Baik</button>
+            <button type="button" class="toggle-btn" id="btnBad">Kesalahan Disiplin</button>
+          </div>
 
-        <div id="panelGood">
-          <div class="field">
-            <label>Kategori Amalan Baik</label>
-            <select id="amalanBaik">
-              <option value="">Sila Pilih</option>
-              <option value="Adab dan Berbudi Bahasa">ADAB DAN BERBUDI BAHASA</option>
-              <option value="Akhlak Mulia">AKHLAK MULIA</option>
-              <option value="Kebersihan Diri & Persekitaran">KEBERSIHAN DIRI & PERSEKITARAN</option>
-              <option value="Keselamatan Diri">KESELAMATAN DIRI</option>
-            </select>
+          <div id="panelGood">
+            <div class="field">
+              <label>Kategori Amalan Baik</label>
+              <select id="amalanBaik">
+                <option value="">Sila Pilih</option>
+                <option value="Adab dan Berbudi Bahasa">ADAB DAN BERBUDI BAHASA</option>
+                <option value="Akhlak Mulia">AKHLAK MULIA</option>
+                <option value="Kebersihan Diri & Persekitaran">KEBERSIHAN DIRI & PERSEKITARAN</option>
+                <option value="Keselamatan Diri">KESELAMATAN DIRI</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Perincian Amalan</label>
+              <select id="perincianAmalan">
+                <option value="">Sila Pilih</option>
+                <option value="Menghargai Diri">MENGHARGAI DIRI</option>
+                <option value="Menghormati Guru & Rakan">MENGHORMATI GURU & RAKAN</option>
+                <option value="Berkelakuan Sopan">BERKELAKUAN SOPAN</option>
+                <option value="Menjaga Kebersihan Kelas">MENJAGA KEBERSIHAN KELAS</option>
+                <option value="Menjalankan Tugas yang Diamanahkan">MENJALANKAN TUGAS YANG DIAMANAHKAN</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Keterangan Amalan</label>
+              <textarea id="keteranganAmalan" placeholder="Contoh: Menolong rakan yang kesusahan tanpa diminta."></textarea>
+            </div>
           </div>
-          <div class="field">
-            <label>Perincian Amalan</label>
-            <select id="perincianAmalan">
-              <option value="">Sila Pilih</option>
-              <option value="Menghargai Diri">MENGHARGAI DIRI</option>
-              <option value="Menghormati Guru & Rakan">MENGHORMATI GURU & RAKAN</option>
-              <option value="Berkelakuan Sopan">BERKELAKUAN SOPAN</option>
-              <option value="Menjaga Kebersihan Kelas">MENJAGA KEBERSIHAN KELAS</option>
-              <option value="Menjalankan Tugas yang Diamanahkan">MENJALANKAN TUGAS YANG DIAMANAHKAN</option>
-            </select>
+
+          <div id="panelBad" style="display:none;">
+            <div class="field">
+              <label>Kategori Kes</label>
+              <select id="kategoriKes">
+                <option value="">Sila Pilih</option>
+                <option value="Barang Larangan">BARANG LARANGAN</option>
+                <option value="Kekemasan Diri">KEKEMASAN DIRI</option>
+                <option value="Kenakalan">KENAKALAN</option>
+                <option value="Ponteng / Lewat Hadir">PONTENG / LEWAT HADIR</option>
+                <option value="Kes Khas">KES KHAS</option>
+                <option value="Kesalahan Asrama">KESALAHAN ASRAMA</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Punca / Ringkasan Salah Laku</label>
+              <input type="text" id="puncaKes" placeholder="Contoh: Membawa telefon bimbit tanpa kebenaran." />
+            </div>
+            <div class="field">
+              <label>Keterangan Kes</label>
+              <textarea id="keteranganKes" placeholder="Contoh: Didapati menggunakan telefon bimbit di dalam kelas."></textarea>
+            </div>
           </div>
-          <div class="field">
-            <label>Keterangan Amalan</label>
-            <textarea id="keteranganAmalan" placeholder="Contoh: Menolong rakan yang kesusahan tanpa diminta."></textarea>
+
+          <div class="btn-row">
+            <button type="button" class="btn-secondary" id="btnClearForm">Reset Semua</button>
           </div>
         </div>
+      </div>
 
-        <div id="panelBad" style="display:none;">
-          <div class="field">
-            <label>Kategori Kes</label>
-            <select id="kategoriKes">
-              <option value="">Sila Pilih</option>
-              <option value="Barang Larangan">BARANG LARANGAN</option>
-              <option value="Kekemasan Diri">KEKEMASAN DIRI</option>
-              <option value="Kenakalan">KENAKALAN</option>
-              <option value="Ponteng / Lewat Hadir">PONTENG / LEWAT HADIR</option>
-              <option value="Kes Khas">KES KHAS</option>
-              <option value="Kesalahan Asrama">KESALAHAN ASRAMA</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>Punca / Ringkasan Salah Laku</label>
-            <input type="text" id="puncaKes" placeholder="Contoh: Membawa telefon bimbit tanpa kebenaran." />
-          </div>
-          <div class="field">
-            <label>Keterangan Kes</label>
-            <textarea id="keteranganKes" placeholder="Contoh: Didapati menggunakan telefon bimbit di dalam kelas."></textarea>
-          </div>
-        </div>
-
-        <div class="btn-row">
-          <button type="button" class="btn-secondary" id="btnClearForm">Reset Semua</button>
+      <!-- Rekod Hari Ini -->
+      <div id="rekodTodayView" style="display:none;">
+        <div class="section-title">Jadual Guru Mengikut Waktu (Hari Ini)</div>
+        <div class="table-wrapper" id="todayTableWrapper">
+          <table>
+            <thead><tr id="todayHeadRow"></tr></thead>
+            <tbody><tr id="todayBodyRow"></tr></tbody>
+          </table>
         </div>
       </div>
     </div>
 
+    <!-- SEMAK REKOD -->
     <div id="semakView" style="display:none;">
       <div class="section-title">Semak Rekod Mengikut Tarikh & Kelas</div>
       <div class="input-card">
@@ -214,6 +244,18 @@
   </div>
 </div>
 
+<!-- Admin Modal -->
+<div id="adminModal" class="modal-backdrop">
+  <div class="modal-card">
+    <h2>Admin – Laporan Sahsiah</h2>
+    <p>Senarai laporan yang perlu tindakan.</p>
+    <div id="adminReportList" style="max-height:300px;overflow:auto;"></div>
+    <div class="modal-buttons">
+      <button type="button" class="btn-modal-cancel" id="btnAdminCancel">Tutup</button>
+    </div>
+  </div>
+</div>
+
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 <script src="database.js"></script>
@@ -227,10 +269,22 @@
   function updateDateTimeUI(){const now=new Date();document.getElementById("headerTarikh").textContent=formatDate(now);document.getElementById("headerMasa").textContent=formatTime(now);const p=getCurrentPeriod(now);document.getElementById("headerWaktu").textContent=p?p.code:"Luar Waktu PdP"}
   setInterval(updateDateTimeUI,1000);updateDateTimeUI();
 
+  // Tabs
+  const tabRekod=document.getElementById("tabRekod"),tabSemak=document.getElementById("tabSemak"),rekodView=document.getElementById("rekodView"),semakView=document.getElementById("semakView");
+  function setTab(tab){if(tab==="rekod"){tabRekod.classList.add("active");tabSemak.classList.remove("active");rekodView.style.display="block";semakView.style.display="none"}else{tabRekod.classList.remove("active");tabSemak.classList.add("active");rekodView.style.display="none";semakView.style.display="block"}}
+  tabRekod.addEventListener("click",()=>setTab("rekod"));tabSemak.addEventListener("click",()=>setTab("semak"));
+
+  // Sub tabs
+  const subTabForm=document.getElementById("subTabForm"),subTabToday=document.getElementById("subTabToday"),rekodFormView=document.getElementById("rekodFormView"),rekodTodayView=document.getElementById("rekodTodayView");
+  function setSubTab(tab){if(tab==="form"){subTabForm.classList.add("active");subTabToday.classList.remove("active");rekodFormView.style.display="block";rekodTodayView.style.display="none"}else{subTabForm.classList.remove("active");subTabToday.classList.add("active");rekodFormView.style.display="none";rekodTodayView.style.display="block";loadTodaySchedule()}}
+  subTabForm.addEventListener("click",()=>setSubTab("form"));subTabToday.addEventListener("click",()=>setSubTab("today"));
+
+  // Sahsiah toggle
   const btnGood=document.getElementById("btnGood"),btnBad=document.getElementById("btnBad"),panelGood=document.getElementById("panelGood"),panelBad=document.getElementById("panelBad");
   function setMode(mode){if(mode==="good"){btnGood.classList.add("active");btnBad.classList.remove("active");panelGood.style.display="block";panelBad.style.display="none"}else{btnGood.classList.remove("active");btnBad.classList.add("active");panelGood.style.display="none";panelBad.style.display="block"}}
   btnGood.addEventListener("click",()=>setMode("good"));btnBad.addEventListener("click",()=>setMode("bad"));
 
+  // Multi-select murid
   const kelasSelect=document.getElementById("kelas");
   const namaMuridDisplay=document.getElementById("namaMuridDisplay");
   const namaMuridDropdown=document.getElementById("namaMuridDropdown");
@@ -293,6 +347,16 @@
     return db.ref("kehadiran/"+key).set(rec);
   }
 
+  function createSahsiahNotification(record){
+    const notif={
+      tarikh:record.tarikh,masa:record.masaRekod,kelas:record.kelas,
+      namaGuru:record.namaGuru,namaMurid:record.namaMurid,
+      jenis:record.jenis,kategori:record.kategori,keterangan:record.keterangan,
+      status:"pending"
+    };
+    db.ref("notifications").push(notif);
+  }
+
   document.getElementById("btnSave").addEventListener("click",()=>{
     const namaGuru=document.getElementById("namaGuru").value.trim();
     const kelas=kelasSelect.value;
@@ -321,13 +385,14 @@
       }
     }
     const newRecord={tarikh,waktu,masaRekod,namaGuru,kelas,tempat,jumlahMurid:Number(jumlahMurid),namaMurid:namaMuridText||null,namaMuridList:namaMuridList.length?namaMuridList:null,jenis,kategori,keterangan};
-    saveRecordToFirebase(newRecord).then(()=>{alert("Rekod berjaya disimpan ke Firebase.");clearForm();}).catch(()=>{alert("Gagal simpan rekod. Sila cuba lagi.");});
+    saveRecordToFirebase(newRecord).then(()=>{
+      if(adaSahsiah) createSahsiahNotification(newRecord);
+      alert("Rekod berjaya disimpan ke Firebase.");
+      clearForm();
+    }).catch(()=>{alert("Gagal simpan rekod. Sila cuba lagi.");});
   });
 
-  const tabRekod=document.getElementById("tabRekod"),tabSemak=document.getElementById("tabSemak"),rekodView=document.getElementById("rekodView"),semakView=document.getElementById("semakView");
-  function setTab(tab){if(tab==="rekod"){tabRekod.classList.add("active");tabSemak.classList.remove("active");rekodView.style.display="block";semakView.style.display="none"}else{tabRekod.classList.remove("active");tabSemak.classList.add("active");rekodView.style.display="none";semakView.style.display="block"}}
-  tabRekod.addEventListener("click",()=>setTab("rekod"));tabSemak.addEventListener("click",()=>setTab("semak"));
-
+  // Semak Rekod
   const semakTarikhInput=document.getElementById("semakTarikh"),semakKelasSelect=document.getElementById("semakKelas"),btnSemakLoad=document.getElementById("btnSemakLoad"),semakSummary=document.getElementById("semakSummary"),semakTableWrapper=document.getElementById("semakTableWrapper"),semakHeadRow=document.getElementById("semakHeadRow"),semakBodyRow=document.getElementById("semakBodyRow"),semakDetailCard=document.getElementById("semakDetailCard"),semakDetailContent=document.getElementById("semakDetailContent");
   function dateInputToKey(val){const parts=val.split("-");if(parts.length!==3)return"";const[y,m,d]=parts;return d+"/"+m+"/"+y}
   function buildHeadRow(){semakHeadRow.innerHTML="";periods.forEach(p=>{const th=document.createElement("th");th.innerHTML=p.code+"<br><small>"+p.start+" - "+p.end+"</small>";semakHeadRow.appendChild(th)})}
@@ -342,11 +407,49 @@
       if(!data){semakSummary.textContent="Tiada rekod dijumpai.";semakTableWrapper.style.display="none";return;}
       const rowsByW={};periods.forEach(p=>rowsByW[p.code]=[]);
       Object.values(data).forEach(rec=>{if(rec.kelas===k&&rowsByW[rec.waktu])rowsByW[rec.waktu].push(rec)});
-      semakBodyRow.innerHTML="";periods.forEach(p=>{const td=document.createElement("td");const list=rowsByW[p.code];if(!list.length){td.textContent="-"}else{list.forEach(r=>{const div=document.createElement("div");div.style.marginBottom="4px";let jenisHtml="-";if(r.jenis==="baik")jenisHtml='<span class="pill-good">Amalan Baik</span>';else if(r.jenis==="jahat")jenisHtml='<span class="pill-bad">Kesalahan</span>';div.innerHTML="<strong>"+r.namaGuru+"</strong><br>"+r.tempat+"<br>"+jenisHtml;div.style.cursor="pointer";div.addEventListener("click",()=>{semakDetailCard.style.display="block";semakDetailContent.innerHTML="<strong>Guru:</strong> "+r.namaGuru+"<br><strong>Kelas:</strong> "+r.kelas+"<br><strong>Tempat:</strong> "+r.tempat+"<br><strong>Waktu:</strong> "+r.waktu+" ("+p.start+"-"+p.end+")<br><strong>Jumlah Murid:</strong> "+r.jumlahMurid+"<br><strong>Nama Murid:</strong> "+(r.namaMurid||"-")+"<br><strong>Jenis:</strong> "+(r.jenis||"-")+"<br><strong>Kategori:</strong> "+(r.kategori||"-")+"<br><strong>Keterangan:</strong> "+(r.keterangan||"-");});td.appendChild(div);});}semakBodyRow.appendChild(td);});
+      semakBodyRow.innerHTML="";periods.forEach(p=>{
+        const td=document.createElement("td");const list=rowsByW[p.code];
+        if(!list.length){td.textContent="-"}else{
+          list.forEach(r=>{
+            const div=document.createElement("div");div.style.marginBottom="4px";
+            let jenisHtml="-";if(r.jenis==="baik")jenisHtml='<span class="pill-good">Amalan Baik</span>';else if(r.jenis==="jahat")jenisHtml='<span class="pill-bad">Kesalahan</span>';
+            div.innerHTML="<strong>"+r.namaGuru+"</strong><br>"+r.tempat+"<br>"+jenisHtml;
+            div.style.cursor="pointer";
+            div.addEventListener("click",()=>{
+              semakDetailCard.style.display="block";
+              semakDetailContent.innerHTML="<strong>Guru:</strong> "+r.namaGuru+"<br><strong>Kelas:</strong> "+r.kelas+"<br><strong>Tempat:</strong> "+r.tempat+"<br><strong>Waktu:</strong> "+r.waktu+" ("+p.start+"-"+p.end+")<br><strong>Jumlah Murid:</strong> "+r.jumlahMurid+"<br><strong>Nama Murid:</strong> "+(r.namaMurid||"-")+"<br><strong>Jenis:</strong> "+(r.jenis||"-")+"<br><strong>Kategori:</strong> "+(r.kategori||"-")+"<br><strong>Keterangan:</strong> "+(r.keterangan||"-");
+            });
+            td.appendChild(div);
+          });
+        }
+        semakBodyRow.appendChild(td);
+      });
       semakSummary.textContent="Rekod untuk "+k+" pada "+tarikhKey;semakTableWrapper.style.display="block";
     });
   });
 
+  // Rekod Hari Ini
+  function loadTodaySchedule(){
+    const kelas=kelasSelect.value;
+    if(!kelas){alert("Sila pilih kelas dahulu.");return;}
+    const today=formatDate(new Date());
+    const headRow=document.getElementById("todayHeadRow");
+    const bodyRow=document.getElementById("todayBodyRow");
+    headRow.innerHTML="";bodyRow.innerHTML="";
+    periods.forEach(p=>{const th=document.createElement("th");th.innerHTML=p.code+"<br><small>"+p.start+"-"+p.end+"</small>";headRow.appendChild(th)});
+    db.ref("kehadiran").orderByChild("tarikh").equalTo(today).once("value").then(snap=>{
+      const data=snap.val()||{};const map={};periods.forEach(p=>map[p.code]=[]);
+      Object.values(data).forEach(r=>{if(r.kelas===kelas&&map[r.waktu])map[r.waktu].push(r)});
+      periods.forEach(p=>{
+        const td=document.createElement("td");
+        if(map[p.code].length===0){td.textContent="-"}
+        else{map[p.code].forEach(r=>{const div=document.createElement("div");div.innerHTML="<strong>"+r.namaGuru+"</strong><br>"+r.tempat;td.appendChild(div);});}
+        bodyRow.appendChild(td);
+      });
+    });
+  }
+
+  // Load kelas from Firebase
   function loadKelasFromFirebase(){
     const path="config/classes/classData";
     db.ref(path).once("value").then(snapshot=>{
@@ -361,7 +464,50 @@
     }).catch(err=>console.error("Gagal load kelas:",err));
   }
 
-  document.addEventListener("DOMContentLoaded",()=>{loadKelasFromFirebase();});
+  // Notifications badge
+  function listenNotifications(){
+    db.ref("notifications").orderByChild("status").equalTo("pending").on("value",snap=>{
+      const data=snap.val();const badge=document.getElementById("notifBadge");
+      if(data){const count=Object.keys(data).length;badge.textContent=count;badge.style.display="block";}
+      else{badge.style.display="none";}
+    });
+  }
+
+  // Admin modal
+  const adminModal=document.getElementById("adminModal");
+  const btnAdminCancel=document.getElementById("btnAdminCancel");
+  document.getElementById("sksaLogo").addEventListener("click",()=>{
+    adminModal.style.display="flex";
+    loadSahsiahReports();
+  });
+  btnAdminCancel.addEventListener("click",()=>adminModal.style.display="none");
+
+  function loadSahsiahReports(){
+    const container=document.getElementById("adminReportList");
+    container.innerHTML="Loading...";
+    db.ref("notifications").orderByChild("status").equalTo("pending").once("value").then(snap=>{
+      const data=snap.val();container.innerHTML="";
+      if(!data){container.innerHTML="<em>Tiada laporan baharu.</em>";return;}
+      Object.entries(data).forEach(([key,r])=>{
+        const div=document.createElement("div");
+        div.style.border="1px solid #ddd";div.style.padding="8px";div.style.marginBottom="6px";
+        div.innerHTML=`<strong>${r.namaGuru}</strong> (${r.kelas})<br>
+        Murid: ${r.namaMurid}<br>Jenis: ${r.jenis}<br>Kategori: ${r.kategori}<br>
+        <button onclick="sahkanLaporan('${key}')">SAHKAN</button>`;
+        container.appendChild(div);
+      });
+    });
+  }
+
+  function sahkanLaporan(key){
+    db.ref("notifications/"+key+"/status").set("confirmed").then(()=>{loadSahsiahReports();});
+  }
+  window.sahkanLaporan=sahkanLaporan;
+
+  document.addEventListener("DOMContentLoaded",()=>{
+    loadKelasFromFirebase();
+    listenNotifications();
+  });
 </script>
 </body>
 </html>
