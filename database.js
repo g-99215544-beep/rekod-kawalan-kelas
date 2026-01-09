@@ -1,14 +1,21 @@
-const firebaseConfig = {
-  apiKey: "AIzaSyDbCgDz2vK2BZUpwM3iDWJcPQSptVcNkv4",
-  authDomain: "kehadiran-murid-6ece0.firebaseapp.com",
-  databaseURL: "https://kehadiran-murid-6ece0-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "kehadiran-murid-6ece0",
-  storageBucket: "kehadiran-murid-6ece0.appspot.com",
-  messagingSenderId: "223849234784",
-  appId: "1:223849234784:web:e1471ded7ea17ba60bde05"
-};
+self.addEventListener("install", e=>{
+  e.waitUntil(
+    caches.open("sksa-cache").then(cache=>{
+      return cache.addAll([
+        "./index.html",
+        "./database.js",
+        "./manifest.json",
+        "./app-icon-192.png",
+        "./app-icon-512.png"
+      ]);
+    })
+  );
+});
 
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
-const db = firebase.database();
+self.addEventListener("fetch", e=>{
+  e.respondWith(
+    caches.match(e.request).then(res=>{
+      return res || fetch(e.request);
+    })
+  );
+});
