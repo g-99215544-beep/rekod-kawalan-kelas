@@ -1,16 +1,13 @@
-// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyDbCgDz2vK2BZUpwM3iDWJcPQSptVcNkv4",
   authDomain: "kehadiran-murid-6ece0.firebaseapp.com",
   databaseURL: "https://kehadiran-murid-6ece0-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "kehadiran-murid-6ece0",
-  storageBucket: "kehadiran-murid-6ece0.firebasestorage.app",
+  storageBucket: "kehadiran-murid-6ece0.appspot.com",
   messagingSenderId: "223849234784",
-  appId: "1:223849234784:web:e1471ded7ea17ba60bde05",
-  measurementId: "G-4DY138HKTW"
+  appId: "1:223849234784:web:e1471ded7ea17ba60bde05"
 };
 
-// Init Firebase
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
