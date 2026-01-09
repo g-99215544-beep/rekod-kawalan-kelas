@@ -6,478 +6,85 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
-    * {
-      box-sizing: border-box;
-      font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-    body {
-      margin: 0;
-      background: #e5ecf4;
-      color: #0f172a;
-    }
-    .app-shell {
-      max-width: 480px;
-      margin: 12px auto 24px;
-      padding: 8px;
-    }
-    .app-card {
-      background: #ffffff;
-      border-radius: 20px;
-      padding: 18px 18px 20px;
-      box-shadow: 0 10px 30px rgba(15,23,42,0.18);
-    }
-    .logo-wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-    .logo-wrap img {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      object-fit: cover;
-      cursor: pointer;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.25);
-    }
-    .logo-wrap h1 {
-      margin: 10px 0 0;
-      text-align: center;
-      font-size: 1.2rem;
-      letter-spacing: 0.04em;
-      font-weight: 600;
-    }
-    .status-row {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      font-size: 0.85rem;
-      color: #4b5563;
-      margin-top: 6px;
-      margin-bottom: 14px;
-      flex-wrap: wrap;
-    }
-    .status-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 2px 8px;
-      border-radius: 999px;
-      background: #f3f4f6;
-    }
-    .status-icon {
-      width: 16px;
-      height: 16px;
-      object-fit: contain;
-    }
-
-    .tab-row {
-      display: inline-flex;
-      border-radius: 999px;
-      padding: 3px;
-      background: #e5f3ec;
-      margin-bottom: 14px;
-    }
-    .tab-btn {
-      border: none;
-      background: transparent;
-      padding: 6px 20px;
-      border-radius: 999px;
-      font-size: 0.85rem;
-      cursor: pointer;
-      font-weight: 500;
-      color: #166534;
-    }
-    .tab-btn.active {
-      background: #059669;
-      color: #ffffff;
-      box-shadow: 0 2px 6px rgba(5,150,105,0.45);
-    }
-
-    .input-card {
-      background: #f9fafb;
-      border-radius: 16px;
-      padding: 14px 12px 14px;
-      border: 1px solid #e5e7eb;
-    }
-    .field { margin-bottom: 10px; }
-
-    label {
-      font-size: 0.8rem;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-bottom: 3px;
-      color: #4b5563;
-    }
-    .required::after {
-      content: " *";
-      color: #e11d48;
-      font-weight: 600;
-    }
-    .label-icon-img {
-      width: 16px;
-      height: 16px;
-      object-fit: contain;
-    }
-
-    input[type="text"],
-    input[type="number"],
-    input[type="date"],
-    select,
-    textarea {
-      width: 100%;
-      border-radius: 10px;
-      border: 1px solid #d1d5db;
-      padding: 8px 10px;
-      font-size: 0.9rem;
-      outline: none;
-      background: #ffffff;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease;
-    }
-    input[type="text"]:focus,
-    input[type="number"]:focus,
-    input[type="date"]:focus,
-    select:focus,
-    textarea:focus {
-      border-color: #059669;
-      box-shadow: 0 0 0 2px rgba(34,197,94,0.35);
-    }
-    textarea { resize: vertical; min-height: 70px; }
-
-    .btn-submit {
-      margin-top: 8px;
-      width: 100%;
-      border: none;
-      border-radius: 999px;
-      padding: 10px 16px;
-      font-size: 0.95rem;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      background: #047857;
-      color: #ffffff;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(4,120,87,0.45);
-    }
-    .btn-submit:hover { filter: brightness(1.03); }
-
-    .section-title {
-      margin-top: 16px;
-      margin-bottom: 8px;
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: #111827;
-    }
-
-    .toggle-row {
-      display: inline-flex;
-      background: #e5e7eb;
-      border-radius: 999px;
-      padding: 3px;
-      margin-bottom: 10px;
-    }
-    .toggle-btn {
-      border: none;
-      background: transparent;
-      padding: 5px 14px;
-      border-radius: 999px;
-      font-size: 0.8rem;
-      cursor: pointer;
-      font-weight: 500;
-      color: #374151;
-    }
-    .toggle-btn.active {
-      background: #2563eb;
-      color: #ffffff;
-      box-shadow: 0 1px 4px rgba(37,99,235,0.4);
-    }
-    .btn-secondary {
-      border: 1px solid #d1d5db;
-      background: #ffffff;
-      color: #374151;
-      padding: 7px 14px;
-      border-radius: 999px;
-      font-size: 0.8rem;
-      cursor: pointer;
-    }
-    .btn-row {
-      margin-top: 8px;
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    /* Jumlah murid + kehadiran */
-    .inline-count {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .inline-count input { flex: 1 1 auto; }
-    .kehadiran-ratio {
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: #047857;
-      white-space: nowrap;
-      padding: 4px 8px;
-      border-radius: 999px;
-      background: #ecfdf5;
-      border: 1px solid #bbf7d0;
-    }
-    .kehadiran-subtext {
-      margin-top: 3px;
-      font-size: 0.75rem;
-      color: #6b7280;
-    }
-
-    /* Semak Rekod table */
-    .table-wrapper {
-      max-height: 340px;
-      overflow: auto;
-      margin-top: 8px;
-      border-radius: 12px;
-      border: 1px solid #e5e7eb;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.78rem;
-    }
-    thead { background: #047857; color: #ffffff; }
-    th, td {
-      padding: 6px 6px;
-      border-bottom: 1px solid #e5e7eb;
-      text-align: left;
-      vertical-align: top;
-    }
-    tbody tr:nth-child(even) { background: #f9fafb; }
-
-    .teacher-chip {
-      display: block;
-      width: 100%;
-      text-align: left;
-      border: none;
-      border-radius: 999px;
-      background: #ecfdf5;
-      color: #065f46;
-      padding: 3px 6px;
-      margin-bottom: 4px;
-      font-size: 0.75rem;
-      cursor: pointer;
-    }
-    .teacher-chip small {
-      display: block;
-      font-size: 0.68rem;
-      color: #047857;
-      opacity: 0.9;
-    }
-
-    .pill-good {
-      background: #e0f2fe;
-      color: #0369a1;
-      padding: 2px 6px;
-      border-radius: 999px;
-      font-size: 0.7rem;
-      font-weight: 500;
-    }
-    .pill-bad {
-      background: #fee2e2;
-      color: #b91c1c;
-      padding: 2px 6px;
-      border-radius: 999px;
-      font-size: 0.7rem;
-      font-weight: 500;
-    }
-
-    .empty-state {
-      font-size: 0.8rem;
-      color: #6b7280;
-      margin-top: 4px;
-    }
-
-    /* Modal login admin */
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(15,23,42,0.45);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-    }
-    .modal-card {
-      background: #ffffff;
-      border-radius: 18px;
-      padding: 20px 22px 18px;
-      width: 100%;
-      max-width: 360px;
-      box-shadow: 0 18px 40px rgba(15,23,42,0.45);
-    }
-    .modal-card h2 {
-      margin: 0 0 6px 0;
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: #111827;
-    }
-    .modal-card p {
-      margin: 0 0 14px 0;
-      font-size: 0.85rem;
-      color: #4b5563;
-    }
-    .modal-buttons {
-      margin-top: 14px;
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-    }
-    .btn-modal-cancel {
-      border-radius: 999px;
-      border: none;
-      padding: 7px 16px;
-      background: #e5e7eb;
-      color: #374151;
-      font-size: 0.82rem;
-      cursor: pointer;
-    }
-    .btn-modal-primary {
-      border-radius: 999px;
-      border: none;
-      padding: 7px 18px;
-      background: linear-gradient(135deg,#2563eb,#1d4ed8);
-      color: #fff;
-      font-size: 0.82rem;
-      font-weight: 500;
-      cursor: pointer;
-    }
-
-    /* Multi-select Nama Murid */
-    .multi-select {
-      position: relative;
-    }
-    .multi-select input[readonly] {
-      cursor: pointer;
-      background-color: #eef2ff;
-    }
-    .multi-dropdown {
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: calc(100% + 4px);
-      background: #ffffff;
-      border-radius: 12px;
-      border: 1px solid #e5e7eb;
-      box-shadow: 0 10px 25px rgba(15,23,42,0.18);
-      max-height: 260px;
-      overflow: auto;
-      z-index: 40;
-      padding: 6px 8px 8px;
-    }
-    .multi-option-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 6px;
-      padding: 3px 2px;
-      font-size: 0.8rem;
-      cursor: pointer;
-    }
-    .multi-option-row input {
-      margin-top: 2px;
-      flex-shrink: 0;
-    }
-    .multi-option-row span {
-      flex: 1;
-      line-height: 1.25;
-    }
-    .multi-footer {
-      margin-top: 4px;
-      font-size: 0.7rem;
-      color: #6b7280;
-      border-top: 1px dashed #e5e7eb;
-      padding-top: 4px;
-    }
-    .multi-empty {
-      font-size: 0.8rem;
-      color: #6b7280;
-      padding: 4px 2px;
-    }
+    *{box-sizing:border-box;font-family:"Poppins",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    body{margin:0;background:#e5ecf4;color:#0f172a}
+    .app-shell{max-width:480px;margin:12px auto 24px;padding:8px}
+    .app-card{background:#fff;border-radius:20px;padding:18px 18px 20px;box-shadow:0 10px 30px rgba(15,23,42,.18)}
+    .logo-wrap{display:flex;flex-direction:column;align-items:center;margin-bottom:12px}
+    .logo-wrap img{width:80px;height:80px;border-radius:50%;object-fit:cover;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+    .logo-wrap h1{margin:10px 0 0;text-align:center;font-size:1.2rem;letter-spacing:.04em;font-weight:600}
+    .status-row{display:flex;justify-content:center;gap:10px;font-size:.85rem;color:#4b5563;margin:6px 0 14px;flex-wrap:wrap}
+    .status-pill{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;background:#f3f4f6}
+    .status-icon{width:16px;height:16px;object-fit:contain}
+    .tab-row{display:inline-flex;border-radius:999px;padding:3px;background:#e5f3ec;margin-bottom:14px}
+    .tab-btn{border:none;background:transparent;padding:6px 20px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:500;color:#166534}
+    .tab-btn.active{background:#059669;color:#fff;box-shadow:0 2px 6px rgba(5,150,105,.45)}
+    .input-card{background:#f9fafb;border-radius:16px;padding:14px 12px;border:1px solid #e5e7eb}
+    .field{margin-bottom:10px}
+    label{font-size:.8rem;font-weight:500;display:flex;align-items:center;gap:6px;margin-bottom:3px;color:#4b5563}
+    .required::after{content:" *";color:#e11d48;font-weight:600}
+    input[type="text"],input[type="number"],input[type="date"],select,textarea{width:100%;border-radius:10px;border:1px solid #d1d5db;padding:8px 10px;font-size:.9rem;outline:none;background:#fff;transition:border-color .15s ease,box-shadow .15s ease}
+    input:focus,select:focus,textarea:focus{border-color:#059669;box-shadow:0 0 0 2px rgba(34,197,94,.35)}
+    textarea{resize:vertical;min-height:70px}
+    .btn-submit{margin-top:8px;width:100%;border:none;border-radius:999px;padding:10px 16px;font-size:.95rem;font-weight:600;letter-spacing:.04em;background:#047857;color:#fff;cursor:pointer;box-shadow:0 4px 10px rgba(4,120,87,.45)}
+    .section-title{margin:16px 0 8px;font-size:.95rem;font-weight:600;color:#111827}
+    .toggle-row{display:inline-flex;background:#e5e7eb;border-radius:999px;padding:3px;margin-bottom:10px}
+    .toggle-btn{border:none;background:transparent;padding:5px 14px;border-radius:999px;font-size:.8rem;cursor:pointer;font-weight:500;color:#374151}
+    .toggle-btn.active{background:#2563eb;color:#fff;box-shadow:0 1px 4px rgba(37,99,235,.4)}
+    .btn-secondary{border:1px solid #d1d5db;background:#fff;color:#374151;padding:7px 14px;border-radius:999px;font-size:.8rem;cursor:pointer}
+    .btn-row{margin-top:8px;display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+    .inline-count{display:flex;align-items:center;gap:6px}
+    .kehadiran-ratio{font-size:.85rem;font-weight:600;color:#047857;white-space:nowrap;padding:4px 8px;border-radius:999px;background:#ecfdf5;border:1px solid #bbf7d0}
+    .kehadiran-subtext{margin-top:3px;font-size:.75rem;color:#6b7280}
+    .table-wrapper{max-height:340px;overflow:auto;margin-top:8px;border-radius:12px;border:1px solid #e5e7eb}
+    table{width:100%;border-collapse:collapse;font-size:.78rem}
+    thead{background:#047857;color:#fff}
+    th,td{padding:6px;border-bottom:1px solid #e5e7eb;text-align:left;vertical-align:top}
+    tbody tr:nth-child(even){background:#f9fafb}
+    .pill-good{background:#e0f2fe;color:#0369a1;padding:2px 6px;border-radius:999px;font-size:.7rem;font-weight:500}
+    .pill-bad{background:#fee2e2;color:#b91c1c;padding:2px 6px;border-radius:999px;font-size:.7rem;font-weight:500}
+    .empty-state{font-size:.8rem;color:#6b7280;margin-top:4px}
+    .multi-select{position:relative}
+    .multi-select input[readonly]{cursor:pointer;background-color:#eef2ff}
+    .multi-dropdown{position:absolute;left:0;right:0;top:calc(100% + 4px);background:#fff;border-radius:12px;border:1px solid #e5e7eb;box-shadow:0 10px 25px rgba(15,23,42,.18);max-height:260px;overflow:auto;z-index:40;padding:6px 8px}
+    .multi-option-row{display:flex;align-items:flex-start;gap:6px;padding:3px 2px;font-size:.8rem;cursor:pointer}
+    .multi-option-row input{margin-top:2px;flex-shrink:0}
+    .multi-option-row span{flex:1;line-height:1.25}
+    .multi-footer{margin-top:4px;font-size:.7rem;color:#6b7280;border-top:1px dashed #e5e7eb;padding-top:4px}
+    .multi-empty{font-size:.8rem;color:#6b7280;padding:4px 2px}
   </style>
 </head>
 <body>
 <div class="app-shell">
   <div class="app-card">
-    <!-- Header + logo -->
     <div class="logo-wrap">
-      <img id="sksaLogo" src="https://i.imgur.com/AfsVtVG.png" alt="Logo SKSA" title="Klik untuk log masuk admin" />
+      <img id="sksaLogo" src="https://i.imgur.com/AfsVtVG.png" alt="Logo SKSA" />
       <h1>REKOD PEMANTAUAN KELAS SKSA</h1>
     </div>
 
-    <!-- Tarikh / Masa / Waktu -->
     <div class="status-row">
-      <div class="status-pill">
-        <img class="status-icon" src="https://i.imgur.com/VMTwyi9.png" alt="Tarikh">
-        <span id="headerTarikh">--/--/----</span>
-      </div>
-      <div class="status-pill">
-        <img class="status-icon" src="https://i.imgur.com/ZH7Xd9w.png" alt="Masa">
-        <span id="headerMasa">--:--:--</span>
-      </div>
-      <div class="status-pill">
-        <span id="headerWaktu">Luar Waktu PdP</span>
-      </div>
+      <div class="status-pill"><span id="headerTarikh">--/--/----</span></div>
+      <div class="status-pill"><span id="headerMasa">--:--:--</span></div>
+      <div class="status-pill"><span id="headerWaktu">Luar Waktu PdP</span></div>
     </div>
 
-    <!-- Tabs -->
     <div class="tab-row">
       <button id="tabRekod" class="tab-btn active">REKOD SEMASA</button>
       <button id="tabSemak" class="tab-btn">SEMAK REKOD</button>
     </div>
 
-    <!-- TAB 1: REKOD SEMASA -->
     <div id="rekodView">
       <div class="input-card">
         <div class="field">
-          <label class="required">
-            <img class="label-icon-img" src="https://i.imgur.com/QJQj9zz.png" alt="">
-            <span>Nama Guru</span>
-          </label>
+          <label class="required">Nama Guru</label>
           <input type="text" id="namaGuru" placeholder="Contoh: Cikgu Sufian" />
         </div>
-
         <div class="field">
-          <label class="required">
-            <img class="label-icon-img" src="https://i.imgur.com/tZDR2yZ.png" alt="">
-            <span>Kelas</span>
-          </label>
-          <select id="kelas">
-            <option value="">Sila Pilih</option>
-            <option value="1B">1B</option>
-            <option value="1C">1C</option>
-            <option value="1G">1G</option>
-            <option value="2B">2B</option>
-            <option value="2C">2C</option>
-            <option value="2G">2G</option>
-            <option value="3B">3B</option>
-            <option value="3C">3C</option>
-            <option value="3G">3G</option>
-            <option value="4B">4B</option>
-            <option value="4C">4C</option>
-            <option value="4G">4G</option>
-            <option value="5B">5B</option>
-            <option value="5C">5C</option>
-            <option value="5G">5G</option>
-            <option value="6B">6B</option>
-            <option value="6C">6C</option>
-            <option value="6G">6G</option>
-          </select>
+          <label class="required">Kelas</label>
+          <select id="kelas"><option value="">Sila Pilih</option></select>
         </div>
-
         <div class="field">
-          <label class="required">
-            <img class="label-icon-img" src="https://i.imgur.com/F8XY0yc.png" alt="">
-            <span>Tempat</span>
-          </label>
+          <label class="required">Tempat</label>
           <select id="tempat">
             <option value="">Sila Pilih</option>
             <option value="KELAS">KELAS</option>
@@ -490,25 +97,17 @@
             <option value="LAIN-LAIN">LAIN-LAIN</option>
           </select>
         </div>
-
         <div class="field">
-          <label class="required">
-            <img class="label-icon-img" src="https://i.imgur.com/5CNFDAu.png" alt="">
-            <span>Jumlah Murid</span>
-          </label>
+          <label class="required">Jumlah Murid</label>
           <div class="inline-count">
             <input type="number" id="jumlahMurid" min="0" placeholder="Contoh: 28" />
             <span id="kehadiranRatio" class="kehadiran-ratio">/ -</span>
           </div>
-          <div id="kehadiranSubtext" class="kehadiran-subtext">
-            Kehadiran hari ini: -
-          </div>
+          <div id="kehadiranSubtext" class="kehadiran-subtext">Kehadiran hari ini: -</div>
         </div>
-
         <button class="btn-submit" id="btnSave">HANTAR</button>
       </div>
 
-      <!-- SAHSIAH -->
       <div class="section-title">Maklumat Sahsiah Murid (tidak wajib)</div>
       <div class="input-card">
         <div class="field">
@@ -516,10 +115,8 @@
           <div class="multi-select" id="namaMuridWrapper">
             <input type="text" id="namaMuridDisplay" placeholder="Pilih murid yang terlibat" readonly />
             <div id="namaMuridDropdown" class="multi-dropdown" style="display:none;">
-              <div id="namaMuridOptions" class="multi-options"></div>
-              <div class="multi-footer">
-                * Senarai murid berdasarkan kelas yang dipilih.
-              </div>
+              <div id="namaMuridOptions"></div>
+              <div class="multi-footer">* Senarai murid berdasarkan kelas yang dipilih.</div>
             </div>
           </div>
         </div>
@@ -529,7 +126,6 @@
           <button type="button" class="toggle-btn" id="btnBad">Kesalahan Disiplin</button>
         </div>
 
-        <!-- Amalan Baik -->
         <div id="panelGood">
           <div class="field">
             <label>Kategori Amalan Baik</label>
@@ -558,7 +154,6 @@
           </div>
         </div>
 
-        <!-- Kesalahan Disiplin -->
         <div id="panelBad" style="display:none;">
           <div class="field">
             <label>Kategori Kes</label>
@@ -588,7 +183,6 @@
       </div>
     </div>
 
-    <!-- TAB 2: SEMAK REKOD -->
     <div id="semakView" style="display:none;">
       <div class="section-title">Semak Rekod Mengikut Tarikh & Kelas</div>
       <div class="input-card">
@@ -598,586 +192,176 @@
         </div>
         <div class="field">
           <label class="required">Kelas</label>
-          <select id="semakKelas">
-            <option value="">Sila Pilih</option>
-            <option value="1B">1B</option>
-            <option value="1C">1C</option>
-            <option value="1G">1G</option>
-            <option value="2B">2B</option>
-            <option value="2C">2C</option>
-            <option value="2G">2G</option>
-            <option value="3B">3B</option>
-            <option value="3C">3C</option>
-            <option value="3G">3G</option>
-            <option value="4B">4B</option>
-            <option value="4C">4C</option>
-            <option value="4G">4G</option>
-            <option value="5B">5B</option>
-            <option value="5C">5C</option>
-            <option value="5G">5G</option>
-            <option value="6B">6B</option>
-            <option value="6C">6C</option>
-            <option value="6G">6G</option>
-          </select>
+          <select id="semakKelas"><option value="">Sila Pilih</option></select>
         </div>
         <button class="btn-submit" style="margin-top:4px;" id="btnSemakLoad">SEMAK REKOD</button>
-        <div id="semakSummary" class="empty-state">
-          Sila pilih tarikh dan kelas untuk semak rekod.
-        </div>
+        <div id="semakSummary" class="empty-state">Sila pilih tarikh dan kelas untuk semak rekod.</div>
       </div>
 
       <div class="section-title">Jadual Guru Mengikut Waktu</div>
       <div class="table-wrapper" id="semakTableWrapper" style="display:none;">
         <table>
-          <thead>
-          <tr id="semakHeadRow"></tr>
-          </thead>
-          <tbody>
-          <tr id="semakBodyRow"></tr>
-          </tbody>
+          <thead><tr id="semakHeadRow"></tr></thead>
+          <tbody><tr id="semakBodyRow"></tr></tbody>
         </table>
       </div>
 
       <div id="semakDetailCard" class="input-card" style="margin-top:10px; display:none;">
         <div class="section-title" style="margin-top:0;">Butiran Rekod</div>
-        <div id="semakDetailContent" style="font-size:0.82rem; color:#374151;"></div>
+        <div id="semakDetailContent" style="font-size:.82rem;color:#374151;"></div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Modal Log Masuk Admin -->
-<div id="adminModal" class="modal-backdrop" style="display:none;">
-  <div class="modal-card">
-    <h2>Log Masuk Admin</h2>
-    <p>Masukkan kata laluan admin untuk pengesahan.</p>
-    <label for="adminPasswordInput" style="font-size:0.8rem;font-weight:500;margin-bottom:3px;">Kata Laluan</label>
-    <input type="password" id="adminPasswordInput" placeholder="Masukkan kata laluan" />
-    <div class="modal-buttons">
-      <button type="button" class="btn-modal-cancel" id="btnAdminCancel">Batal</button>
-      <button type="button" class="btn-modal-primary" id="btnAdminSubmit">Log Masuk</button>
-    </div>
-  </div>
-</div>
-
-<!-- Firebase v8 + database.js MESTI dulu -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 <script src="database.js"></script>
 
 <script>
-  // ------- Util tarikh & waktu -------
-  const periods = [
-    { code: "W1", start: "07:40", end: "08:10" },
-    { code: "W2", start: "08:10", end: "08:40" },
-    { code: "W3", start: "08:40", end: "09:10" },
-    { code: "W4", start: "09:10", end: "09:40" },
-    { code: "W5", start: "09:40", end: "10:10" },
-    { code: "W6", start: "10:10", end: "10:40" },
-    { code: "W7", start: "10:40", end: "11:10" },
-    { code: "W8", start: "11:10", end: "11:40" },
-    { code: "W9", start: "11:40", end: "12:10" },
-    { code: "W10", start: "12:10", end: "12:40" },
-    { code: "W11", start: "12:40", end: "13:10" },
-    { code: "W12", start: "13:10", end: "13:40" }
-  ];
+  const periods=[{code:"W1",start:"07:40",end:"08:10"},{code:"W2",start:"08:10",end:"08:40"},{code:"W3",start:"08:40",end:"09:10"},{code:"W4",start:"09:10",end:"09:40"},{code:"W5",start:"09:40",end:"10:10"},{code:"W6",start:"10:10",end:"10:40"},{code:"W7",start:"10:40",end:"11:10"},{code:"W8",start:"11:10",end:"11:40"},{code:"W9",start:"11:40",end:"12:10"},{code:"W10",start:"12:10",end:"12:40"},{code:"W11",start:"12:40",end:"13:10"},{code:"W12",start:"13:10",end:"13:40"}];
+  function timeToMinutes(str){const[h,m]=str.split(":").map(Number);return h*60+m}
+  function formatDate(d){return String(d.getDate()).padStart(2,"0")+"/"+String(d.getMonth()+1).padStart(2,"0")+"/"+d.getFullYear()}
+  function formatTime(d){return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0")+":"+String(d.getSeconds()).padStart(2,"0")}
+  function getCurrentPeriod(now){const mn=now.getHours()*60+now.getMinutes();for(const p of periods){const s=timeToMinutes(p.start),e=timeToMinutes(p.end);if(mn>=s&&mn<e)return p}return null}
+  function updateDateTimeUI(){const now=new Date();document.getElementById("headerTarikh").textContent=formatDate(now);document.getElementById("headerMasa").textContent=formatTime(now);const p=getCurrentPeriod(now);document.getElementById("headerWaktu").textContent=p?p.code:"Luar Waktu PdP"}
+  setInterval(updateDateTimeUI,1000);updateDateTimeUI();
 
-  function timeToMinutes(str) {
-    const [h, m] = str.split(":").map(Number);
-    return h * 60 + m;
-  }
-  function formatDate(d) {
-    const dd = String(d.getDate()).padStart(2, "0");
-    const mm = String(d.getMonth() + 1).padStart(2, "0");
-    const yyyy = d.getFullYear();
-    return `${dd}/${mm}/${yyyy}`;
-  }
-  function formatTime(d) {
-    const hh = String(d.getHours()).padStart(2, "0");
-    const mm = String(d.getMinutes()).padStart(2, "0");
-    const ss = String(d.getSeconds()).padStart(2, "0");
-    return `${hh}:${mm}:${ss}`;
-  }
-  function getCurrentPeriod(now) {
-    const minutesNow = now.getHours() * 60 + now.getMinutes();
-    for (const p of periods) {
-      const start = timeToMinutes(p.start);
-      const end = timeToMinutes(p.end);
-      if (minutesNow >= start && minutesNow < end) return p;
-    }
-    return null;
-  }
-  function updateDateTimeUI() {
-    const now = new Date();
-    const tarikh = formatDate(now);
-    const timeStr = formatTime(now);
-    const period = getCurrentPeriod(now);
-    const periodText = period ? period.code : "Luar Waktu PdP";
+  const btnGood=document.getElementById("btnGood"),btnBad=document.getElementById("btnBad"),panelGood=document.getElementById("panelGood"),panelBad=document.getElementById("panelBad");
+  function setMode(mode){if(mode==="good"){btnGood.classList.add("active");btnBad.classList.remove("active");panelGood.style.display="block";panelBad.style.display="none"}else{btnGood.classList.remove("active");btnBad.classList.add("active");panelGood.style.display="none";panelBad.style.display="block"}}
+  btnGood.addEventListener("click",()=>setMode("good"));btnBad.addEventListener("click",()=>setMode("bad"));
 
-    document.getElementById("headerTarikh").textContent = tarikh;
-    document.getElementById("headerMasa").textContent = timeStr;
-    document.getElementById("headerWaktu").textContent = periodText;
-  }
+  const kelasSelect=document.getElementById("kelas");
+  const namaMuridDisplay=document.getElementById("namaMuridDisplay");
+  const namaMuridDropdown=document.getElementById("namaMuridDropdown");
+  const namaMuridOptions=document.getElementById("namaMuridOptions");
+  const namaMuridWrapper=document.getElementById("namaMuridWrapper");
+  let selectedMurids=[];
+  function updateNamaMuridDisplay(){if(selectedMurids.length===0){namaMuridDisplay.value=""}else if(selectedMurids.length<=2){namaMuridDisplay.value=selectedMurids.join(", ")}else{namaMuridDisplay.value=selectedMurids.length+" murid dipilih"}}
 
-  // ------- Sahsiah toggle -------
-  const btnGood = document.getElementById("btnGood");
-  const btnBad = document.getElementById("btnBad");
-  const panelGood = document.getElementById("panelGood");
-  const panelBad = document.getElementById("panelBad");
-
-  function setMode(mode) {
-    if (mode === "good") {
-      btnGood.classList.add("active");
-      btnBad.classList.remove("active");
-      panelGood.style.display = "block";
-      panelBad.style.display = "none";
-    } else {
-      btnGood.classList.remove("active");
-      btnBad.classList.add("active");
-      panelGood.style.display = "none";
-      panelBad.style.display = "block";
-    }
-  }
-
-  btnGood.addEventListener("click", () => setMode("good"));
-  btnBad.addEventListener("click", () => setMode("bad"));
-
-  // ------- Multi-select Nama Murid -------
-  const kelasSelect = document.getElementById("kelas");
-  const namaMuridDisplay = document.getElementById("namaMuridDisplay");
-  const namaMuridDropdown = document.getElementById("namaMuridDropdown");
-  const namaMuridOptions = document.getElementById("namaMuridOptions");
-  const namaMuridWrapper = document.getElementById("namaMuridWrapper");
-  let selectedMurids = [];
-
-  function updateNamaMuridDisplay() {
-    if (selectedMurids.length === 0) {
-      namaMuridDisplay.value = "";
-    } else if (selectedMurids.length <= 2) {
-      namaMuridDisplay.value = selectedMurids.join(", ");
-    } else {
-      namaMuridDisplay.value = `${selectedMurids.length} murid dipilih`;
-    }
-  }
-
-  // >>>>> FUNGSI DIBAIKI DI SINI
-  function rebuildNamaMuridOptions() {
-    // reset pilihan
-    selectedMurids = [];
-    updateNamaMuridDisplay();
-    namaMuridOptions.innerHTML = "";
-
-    const kelasVal = kelasSelect.value.trim();
-
-    if (!kelasVal) {
-      namaMuridOptions.innerHTML =
-        '<div class="multi-empty">Sila pilih kelas terlebih dahulu.</div>';
-      return;
-    }
-
-    // classData datang dari database.js (global const)
-    let senarai = [];
-    if (typeof classData !== "undefined" && classData[kelasVal]) {
-      senarai = classData[kelasVal];
-    }
-
-    if (!senarai || senarai.length === 0) {
-      namaMuridOptions.innerHTML =
-        '<div class="multi-empty">Tiada senarai murid untuk kelas ini.</div>';
-      return;
-    }
-
-    senarai.forEach((name) => {
-      const row = document.createElement("label");
-      row.className = "multi-option-row";
-
-      const cb = document.createElement("input");
-      cb.type = "checkbox";
-      cb.value = name;
-
-      cb.addEventListener("change", () => {
-        if (cb.checked) {
-          if (!selectedMurids.includes(name)) selectedMurids.push(name);
-        } else {
-          selectedMurids = selectedMurids.filter((n) => n !== name);
-        }
-        updateNamaMuridDisplay();
+  function rebuildNamaMuridOptions(){
+    selectedMurids=[];updateNamaMuridDisplay();namaMuridOptions.innerHTML="";
+    const kelasVal=kelasSelect.value.trim();
+    if(!kelasVal){namaMuridOptions.innerHTML='<div class="multi-empty">Sila pilih kelas terlebih dahulu.</div>';return;}
+    const path=`config/classes/classData/${kelasVal}`;
+    db.ref(path).once("value").then(snap=>{
+      const data=snap.val();
+      if(!data){namaMuridOptions.innerHTML='<div class="multi-empty">Tiada data murid untuk kelas ini.</div>';return;}
+      const senarai=Object.values(data);
+      if(!senarai.length){namaMuridOptions.innerHTML='<div class="multi-empty">Tiada data murid untuk kelas ini.</div>';return;}
+      senarai.forEach(name=>{
+        const row=document.createElement("label");row.className="multi-option-row";
+        const cb=document.createElement("input");cb.type="checkbox";cb.value=name;
+        cb.addEventListener("change",()=>{if(cb.checked){if(!selectedMurids.includes(name))selectedMurids.push(name)}else{selectedMurids=selectedMurids.filter(n=>n!==name)}updateNamaMuridDisplay();});
+        const span=document.createElement("span");span.textContent=name;
+        row.appendChild(cb);row.appendChild(span);namaMuridOptions.appendChild(row);
       });
+    }).catch(()=>{namaMuridOptions.innerHTML='<div class="multi-empty">Ralat semasa ambil data murid.</div>';});
+  }
+  kelasSelect.addEventListener("change",rebuildNamaMuridOptions);
+  namaMuridDisplay.addEventListener("click",()=>{const h=namaMuridDropdown.style.display==="none"||namaMuridDropdown.style.display==="";namaMuridDropdown.style.display=h?"block":"none"});
+  document.addEventListener("click",e=>{if(!namaMuridWrapper.contains(e.target))namaMuridDropdown.style.display="none"});
 
-      const span = document.createElement("span");
-      span.textContent = name;
+  function hasSahsiahData(){
+    const hasNama=selectedMurids.length>0;
+    const amalan=document.getElementById("amalanBaik").value;
+    const perincian=document.getElementById("perincianAmalan").value;
+    const ketAmalan=document.getElementById("keteranganAmalan").value.trim();
+    const kategoriKes=document.getElementById("kategoriKes").value;
+    const punca=document.getElementById("puncaKes").value.trim();
+    const ketKes=document.getElementById("keteranganKes").value.trim();
+    return !!(hasNama||amalan||perincian||ketAmalan||kategoriKes||punca||ketKes);
+  }
 
-      row.appendChild(cb);
-      row.appendChild(span);
-      namaMuridOptions.appendChild(row);
+  function clearForm(){
+    document.getElementById("namaGuru").value="";
+    kelasSelect.value="";
+    document.getElementById("tempat").value="";
+    document.getElementById("jumlahMurid").value="";
+    selectedMurids=[];updateNamaMuridDisplay();namaMuridOptions.innerHTML="";
+    document.getElementById("amalanBaik").value="";
+    document.getElementById("perincianAmalan").value="";
+    document.getElementById("keteranganAmalan").value="";
+    document.getElementById("kategoriKes").value="";
+    document.getElementById("puncaKes").value="";
+    document.getElementById("keteranganKes").value="";
+  }
+  document.getElementById("btnClearForm").addEventListener("click",clearForm);
+
+  function saveRecordToFirebase(rec){
+    const key=db.ref("kehadiran").push().key;
+    return db.ref("kehadiran/"+key).set(rec);
+  }
+
+  document.getElementById("btnSave").addEventListener("click",()=>{
+    const namaGuru=document.getElementById("namaGuru").value.trim();
+    const kelas=kelasSelect.value;
+    const tempat=document.getElementById("tempat").value;
+    const jumlahMurid=document.getElementById("jumlahMurid").value;
+    if(!namaGuru||!kelas||!tempat||jumlahMurid===""){alert("Sila lengkapkan Nama Guru, Kelas, Tempat dan Jumlah Murid.");return;}
+    const now=new Date();const tarikh=formatDate(now);const masaRekod=formatTime(now);const p=getCurrentPeriod(now);const waktu=p?p.code:"Luar Waktu PdP";
+    let jenis=null,kategori="",keterangan="",namaMuridText="",namaMuridList=[];
+    const adaSahsiah=hasSahsiahData();
+    if(adaSahsiah){
+      if(selectedMurids.length===0){alert("Sila pilih sekurang-kurangnya seorang murid untuk rekod sahsiah.");return;}
+      namaMuridList=selectedMurids.slice();namaMuridText=namaMuridList.join(", ");
+      const isGood=btnGood.classList.contains("active");
+      if(isGood){
+        const amalan=document.getElementById("amalanBaik").value;
+        if(!amalan){alert("Sila pilih kategori Amalan Baik atau kosongkan semua maklumat sahsiah jika tidak mahu lapor.");return;}
+        const perincian=document.getElementById("perincianAmalan").value;
+        const ket=document.getElementById("keteranganAmalan").value.trim();
+        jenis="baik";kategori=perincian?amalan+" - "+perincian:amalan;keterangan=ket;
+      }else{
+        const kategoriKes=document.getElementById("kategoriKes").value;
+        if(!kategoriKes){alert("Sila pilih Kategori Kes atau kosongkan semua maklumat sahsiah jika tidak mahu lapor.");return;}
+        const punca=document.getElementById("puncaKes").value.trim();
+        const ketKes=document.getElementById("keteranganKes").value.trim();
+        jenis="jahat";kategori=kategoriKes;keterangan=[punca,ketKes].filter(Boolean).join(" | ");
+      }
+    }
+    const newRecord={tarikh,waktu,masaRekod,namaGuru,kelas,tempat,jumlahMurid:Number(jumlahMurid),namaMurid:namaMuridText||null,namaMuridList:namaMuridList.length?namaMuridList:null,jenis,kategori,keterangan};
+    saveRecordToFirebase(newRecord).then(()=>{alert("Rekod berjaya disimpan ke Firebase.");clearForm();}).catch(()=>{alert("Gagal simpan rekod. Sila cuba lagi.");});
+  });
+
+  const tabRekod=document.getElementById("tabRekod"),tabSemak=document.getElementById("tabSemak"),rekodView=document.getElementById("rekodView"),semakView=document.getElementById("semakView");
+  function setTab(tab){if(tab==="rekod"){tabRekod.classList.add("active");tabSemak.classList.remove("active");rekodView.style.display="block";semakView.style.display="none"}else{tabRekod.classList.remove("active");tabSemak.classList.add("active");rekodView.style.display="none";semakView.style.display="block"}}
+  tabRekod.addEventListener("click",()=>setTab("rekod"));tabSemak.addEventListener("click",()=>setTab("semak"));
+
+  const semakTarikhInput=document.getElementById("semakTarikh"),semakKelasSelect=document.getElementById("semakKelas"),btnSemakLoad=document.getElementById("btnSemakLoad"),semakSummary=document.getElementById("semakSummary"),semakTableWrapper=document.getElementById("semakTableWrapper"),semakHeadRow=document.getElementById("semakHeadRow"),semakBodyRow=document.getElementById("semakBodyRow"),semakDetailCard=document.getElementById("semakDetailCard"),semakDetailContent=document.getElementById("semakDetailContent");
+  function dateInputToKey(val){const parts=val.split("-");if(parts.length!==3)return"";const[y,m,d]=parts;return d+"/"+m+"/"+y}
+  function buildHeadRow(){semakHeadRow.innerHTML="";periods.forEach(p=>{const th=document.createElement("th");th.innerHTML=p.code+"<br><small>"+p.start+" - "+p.end+"</small>";semakHeadRow.appendChild(th)})}
+  buildHeadRow();
+
+  btnSemakLoad.addEventListener("click",()=>{
+    const t=semakTarikhInput.value;const k=semakKelasSelect.value;
+    if(!t||!k){alert("Sila pilih tarikh dan kelas.");return;}
+    const tarikhKey=dateInputToKey(t);
+    db.ref("kehadiran").orderByChild("tarikh").equalTo(tarikhKey).once("value").then(snap=>{
+      const data=snap.val();
+      if(!data){semakSummary.textContent="Tiada rekod dijumpai.";semakTableWrapper.style.display="none";return;}
+      const rowsByW={};periods.forEach(p=>rowsByW[p.code]=[]);
+      Object.values(data).forEach(rec=>{if(rec.kelas===k&&rowsByW[rec.waktu])rowsByW[rec.waktu].push(rec)});
+      semakBodyRow.innerHTML="";periods.forEach(p=>{const td=document.createElement("td");const list=rowsByW[p.code];if(!list.length){td.textContent="-"}else{list.forEach(r=>{const div=document.createElement("div");div.style.marginBottom="4px";let jenisHtml="-";if(r.jenis==="baik")jenisHtml='<span class="pill-good">Amalan Baik</span>';else if(r.jenis==="jahat")jenisHtml='<span class="pill-bad">Kesalahan</span>';div.innerHTML="<strong>"+r.namaGuru+"</strong><br>"+r.tempat+"<br>"+jenisHtml;div.style.cursor="pointer";div.addEventListener("click",()=>{semakDetailCard.style.display="block";semakDetailContent.innerHTML="<strong>Guru:</strong> "+r.namaGuru+"<br><strong>Kelas:</strong> "+r.kelas+"<br><strong>Tempat:</strong> "+r.tempat+"<br><strong>Waktu:</strong> "+r.waktu+" ("+p.start+"-"+p.end+")<br><strong>Jumlah Murid:</strong> "+r.jumlahMurid+"<br><strong>Nama Murid:</strong> "+(r.namaMurid||"-")+"<br><strong>Jenis:</strong> "+(r.jenis||"-")+"<br><strong>Kategori:</strong> "+(r.kategori||"-")+"<br><strong>Keterangan:</strong> "+(r.keterangan||"-");});td.appendChild(div);});}semakBodyRow.appendChild(td);});
+      semakSummary.textContent="Rekod untuk "+k+" pada "+tarikhKey;semakTableWrapper.style.display="block";
     });
-  }
-  // <<<<< TAMAT FUNGSI DIBAIKI
-
-  namaMuridDisplay.addEventListener("click", () => {
-    const isHidden = namaMuridDropdown.style.display === "none" || namaMuridDropdown.style.display === "";
-    namaMuridDropdown.style.display = isHidden ? "block" : "none";
   });
 
-  document.addEventListener("click", (e) => {
-    if (!namaMuridWrapper.contains(e.target)) {
-      namaMuridDropdown.style.display = "none";
-    }
-  });
-
-  // ------- Semak jika ada data sahsiah -------
-  function hasSahsiahData() {
-    const hasNamaList = selectedMurids.length > 0;
-    const amalan = document.getElementById("amalanBaik").value;
-    const perincian = document.getElementById("perincianAmalan").value;
-    const ketAmalan = document.getElementById("keteranganAmalan").value.trim();
-    const kategoriKes = document.getElementById("kategoriKes").value;
-    const punca = document.getElementById("puncaKes").value.trim();
-    const ketKes = document.getElementById("keteranganKes").value.trim();
-    return !!(hasNamaList || amalan || perincian || ketAmalan || kategoriKes || punca || ketKes);
-  }
-
-  // ------- Simpan rekod (Rekod Semasa) -------
-  const btnSave = document.getElementById("btnSave");
-  const btnClearForm = document.getElementById("btnClearForm");
-
-  function clearForm() {
-    document.getElementById("namaGuru").value = "";
-    kelasSelect.value = "";
-    document.getElementById("tempat").value = "";
-    document.getElementById("jumlahMurid").value = "";
-
-    selectedMurids = [];
-    updateNamaMuridDisplay();
-    namaMuridOptions.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
-
-    document.getElementById("amalanBaik").value = "";
-    document.getElementById("perincianAmalan").value = "";
-    document.getElementById("keteranganAmalan").value = "";
-    document.getElementById("kategoriKes").value = "";
-    document.getElementById("puncaKes").value = "";
-    document.getElementById("keteranganKes").value = "";
-
-    updateKehadiranInfo();
-  }
-
-  btnClearForm.addEventListener("click", clearForm);
-
-  btnSave.addEventListener("click", () => {
-    const namaGuru = document.getElementById("namaGuru").value.trim();
-    const kelas = kelasSelect.value;
-    const tempat = document.getElementById("tempat").value;
-    const jumlahMurid = document.getElementById("jumlahMurid").value;
-
-    if (!namaGuru || !kelas || !tempat || jumlahMurid === "") {
-      alert("Sila lengkapkan Nama Guru, Kelas, Tempat dan Jumlah Murid.");
-      return;
-    }
-
-    const now = new Date();
-    const tarikh = formatDate(now);
-    const masaRekod = formatTime(now);
-    const period = getCurrentPeriod(now);
-    const waktu = period ? period.code : "Luar Waktu PdP";
-
-    let jenis = null;
-    let kategori = "";
-    let keterangan = "";
-    let namaMuridText = "";
-    let namaMuridList = [];
-    const adaSahsiah = hasSahsiahData();
-
-    if (adaSahsiah) {
-      if (selectedMurids.length === 0) {
-        alert("Sila pilih sekurang-kurangnya seorang murid untuk rekod sahsiah.");
-        return;
-      }
-      namaMuridList = selectedMurids.slice();
-      namaMuridText = namaMuridList.join(", ");
-
-      const isGoodMode = btnGood.classList.contains("active");
-      if (isGoodMode) {
-        const amalan = document.getElementById("amalanBaik").value;
-        if (!amalan) {
-          alert("Sila pilih kategori Amalan Baik atau kosongkan semua maklumat sahsiah jika tidak mahu lapor.");
-          return;
-        }
-        const perincian = document.getElementById("perincianAmalan").value;
-        const ket = document.getElementById("keteranganAmalan").value.trim();
-
-        jenis = "baik";
-        kategori = perincian ? `${amalan} - ${perincian}` : amalan;
-        keterangan = ket;
-      } else {
-        const kategoriKes = document.getElementById("kategoriKes").value;
-        if (!kategoriKes) {
-          alert("Sila pilih Kategori Kes atau kosongkan semua maklumat sahsiah jika tidak mahu lapor.");
-          return;
-        }
-        const punca = document.getElementById("puncaKes").value.trim();
-        const ketKes = document.getElementById("keteranganKes").value.trim();
-
-        jenis = "jahat";
-        kategori = kategoriKes;
-        keterangan = [punca, ketKes].filter(Boolean).join(" | ");
-      }
-    }
-
-    const newRecord = {
-      tarikh,
-      waktu,
-      masaRekod,
-      namaGuru,
-      kelas,
-      tempat,
-      jumlahMurid: Number(jumlahMurid),
-      namaMurid: namaMuridText || null,
-      namaMuridList: namaMuridList.length ? namaMuridList : null,
-      jenis,
-      kategori,
-      keterangan
-    };
-
-    saveRecordToFirebase(newRecord)
-      .then(() => {
-        alert("Rekod berjaya disimpan ke Firebase.");
-        clearForm();
-      })
-      .catch((err) => {
-        console.error(err);
-        alert("Gagal simpan rekod. Sila cuba lagi.");
+  function loadKelasFromFirebase(){
+    const path="config/classes/classData";
+    db.ref(path).once("value").then(snapshot=>{
+      const data=snapshot.val();if(!data){console.warn("Tiada data kelas");return;}
+      const classList=Object.keys(data).sort();
+      kelasSelect.innerHTML='<option value="">Sila Pilih</option>';
+      semakKelasSelect.innerHTML='<option value="">Sila Pilih</option>';
+      classList.forEach(kls=>{
+        const o1=document.createElement("option");o1.value=kls;o1.textContent=kls;kelasSelect.appendChild(o1);
+        const o2=document.createElement("option");o2.value=kls;o2.textContent=kls;semakKelasSelect.appendChild(o2);
       });
-  });
-
-  // ------- Tab REKOD SEMASA / SEMAK REKOD -------
-  const tabRekod = document.getElementById("tabRekod");
-  const tabSemak = document.getElementById("tabSemak");
-  const rekodView = document.getElementById("rekodView");
-  const semakView = document.getElementById("semakView");
-
-  function setTab(tab) {
-    if (tab === "rekod") {
-      tabRekod.classList.add("active");
-      tabSemak.classList.remove("active");
-      rekodView.style.display = "block";
-      semakView.style.display = "none";
-    } else {
-      tabRekod.classList.remove("active");
-      tabSemak.classList.add("active");
-      rekodView.style.display = "none";
-      semakView.style.display = "block";
-    }
+    }).catch(err=>console.error("Gagal load kelas:",err));
   }
 
-  tabRekod.addEventListener("click", () => setTab("rekod"));
-  tabSemak.addEventListener("click", () => setTab("semak"));
-
-  // ------- Semak Rekod (jadual W1-W12) -------
-  const semakTarikhInput = document.getElementById("semakTarikh");
-  const semakKelasSelect = document.getElementById("semakKelas");
-  const btnSemakLoad = document.getElementById("btnSemakLoad");
-  const semakSummary = document.getElementById("semakSummary");
-  const semakTableWrapper = document.getElementById("semakTableWrapper");
-  const semakHeadRow = document.getElementById("semakHeadRow");
-  const semakBodyRow = document.getElementById("semakBodyRow");
-  const semakDetailCard = document.getElementById("semakDetailCard");
-  const semakDetailContent = document.getElementById("semakDetailContent");
-
-  function dateInputToKey(val) {
-    const parts = val.split("-");
-    if (parts.length !== 3) return "";
-    const [y,m,d] = parts;
-    return `${d}/${m}/${y}`;
-  }
-
-  function buildHeadRow() {
-    semakHeadRow.innerHTML = "";
-    periods.forEach(p => {
-      const th = document.createElement("th");
-      th.innerHTML = `${p.code}<br><small>${p.start} - ${p.end}</small>`;
-      semakHeadRow.appendChild(th);
-    });
-  }
-
-  function showRecordDetail(rec) {
-    const period = periods.find(p => p.code === rec.waktu);
-    const rangeText = period ? `${period.start} - ${period.end}` : "-";
-
-    let jenisHtml = "-";
-    if (rec.jenis === "baik") {
-      jenisHtml = `<span class="pill-good">Amalan Baik</span>`;
-    } else if (rec.jenis === "jahat") {
-      jenisHtml = `<span class="pill-bad">Kesalahan</span>`;
-    }
-
-    const namaMuridText = rec.namaMuridList ? rec.namaMuridList.join(", ") : (rec.namaMurid || "-");
-
-    semakDetailContent.innerHTML = `
-      <p><strong>Tarikh:</strong> ${rec.tarikh || "-"} &nbsp; | &nbsp;
-         <strong>Waktu:</strong> ${rec.waktu || "-"} (${rangeText})<br>
-         <strong>Masa Rekod:</strong> ${rec.masaRekod || "-"}</p>
-      <p><strong>Nama Guru:</strong> ${rec.namaGuru || "-"}<br>
-         <strong>Kelas:</strong> ${rec.kelas || "-"}<br>
-         <strong>Tempat:</strong> ${rec.tempat || "-"}<br>
-         <strong>Jumlah Murid:</strong> ${rec.jumlahMurid ?? "-"}</p>
-      <p><strong>Nama Murid:</strong> ${namaMuridText}<br>
-         <strong>Sahsiah:</strong> ${jenisHtml}<br>
-         <strong>Kategori / Perincian:</strong> ${rec.kategori || "-"}<br>
-         <strong>Keterangan:</strong> ${rec.keterangan || "-"}</p>
-    `;
-    semakDetailCard.style.display = "block";
-  }
-
-  function renderSemak(records, tarikhKey, kelasFilter) {
-    const filtered = kelasFilter
-      ? records.filter(r => r.kelas === kelasFilter)
-      : records;
-
-    if (!filtered || filtered.length === 0) {
-      semakSummary.textContent = kelasFilter
-        ? `Tiada rekod untuk tarikh ${tarikhKey} bagi kelas ${kelasFilter}.`
-        : `Tiada rekod untuk tarikh ${tarikhKey}.`;
-      semakTableWrapper.style.display = "none";
-      semakDetailCard.style.display = "none";
-      return;
-    }
-
-    semakSummary.textContent =
-      `Tarikh ${tarikhKey}, kelas ${kelasFilter} – jumlah rekod: ${filtered.length}. Klik nama guru di jadual untuk lihat butiran.`;
-
-    const map = {};
-    periods.forEach(p => map[p.code] = []);
-    filtered.forEach(r => {
-      if (r.waktu && map[r.waktu]) {
-        map[r.waktu].push(r);
-      }
-    });
-
-    buildHeadRow();
-
-    semakBodyRow.innerHTML = "";
-    periods.forEach(p => {
-      const td = document.createElement("td");
-      const arr = map[p.code] || [];
-      if (arr.length === 0) {
-        td.textContent = "-";
-      } else {
-        arr.forEach(rec => {
-          const btn = document.createElement("button");
-          btn.className = "teacher-chip";
-          const sub = `${rec.kelas || ""} · ${rec.tempat || ""}`.trim();
-          btn.innerHTML = `${rec.namaGuru || "Tanpa Nama"}${sub ? `<small>${sub}</small>` : ""}`;
-          btn.addEventListener("click", () => showRecordDetail(rec));
-          td.appendChild(btn);
-        });
-      }
-      semakBodyRow.appendChild(td);
-    });
-
-    semakTableWrapper.style.display = "block";
-  }
-
-  function loadSemakForDate(tarikhKey, kelasFilter) {
-    if (!tarikhKey) return;
-    semakDetailCard.style.display = "none";
-    semakTableWrapper.style.display = "none";
-    semakSummary.textContent = "Memuatkan rekod...";
-    unsubscribeTodayRecords();
-    subscribeToTodayRecords(tarikhKey, (records) =>
-      renderSemak(records, tarikhKey, kelasFilter)
-    );
-  }
-
-  btnSemakLoad.addEventListener("click", () => {
-    if (!semakTarikhInput.value || !semakKelasSelect.value) {
-      alert("Sila pilih tarikh dan kelas sebelum semak rekod.");
-      return;
-    }
-    const key = dateInputToKey(semakTarikhInput.value);
-    loadSemakForDate(key, semakKelasSelect.value);
-  });
-
-  // ------- Login Admin (klik logo, password admin123) -------
-  const ADMIN_PASSWORD = "admin123";
-
-  const logoEl = document.getElementById("sksaLogo");
-  const adminModal = document.getElementById("adminModal");
-  const adminPwInput = document.getElementById("adminPasswordInput");
-  const btnAdminCancel = document.getElementById("btnAdminCancel");
-  const btnAdminSubmit = document.getElementById("btnAdminSubmit");
-
-  function openAdminModal() {
-    adminModal.style.display = "flex";
-    adminPwInput.value = "";
-    adminPwInput.focus();
-  }
-  function closeAdminModal() { adminModal.style.display = "none"; }
-
-  logoEl.addEventListener("click", openAdminModal);
-  btnAdminCancel.addEventListener("click", closeAdminModal);
-
-  btnAdminSubmit.addEventListener("click", () => {
-    const pw = adminPwInput.value;
-    if (pw === ADMIN_PASSWORD) {
-      closeAdminModal();
-      alert("Log masuk admin berjaya (kata laluan betul).");
-    } else {
-      alert("Kata laluan salah.");
-      adminPwInput.focus();
-    }
-  });
-
-  // ------- Kehadiran harian (ambil dari app kehadiran murid) -------
-  const kehadiranRatioEl = document.getElementById("kehadiranRatio");
-  const kehadiranSubtextEl = document.getElementById("kehadiranSubtext");
-
-  function getTodayAttendanceKey() {
-    const now = new Date();
-    const y = now.getFullYear();
-    const m = String(now.getMonth() + 1).padStart(2, "0");
-    const d = String(now.getDate()).padStart(2, "0");
-    return `${y}-${m}-${d}`;
-  }
-
-  function updateKehadiranInfo() {
-    const kelas = kelasSelect.value;
-    if (!kelas) {
-      kehadiranRatioEl.textContent = "/ -";
-      kehadiranSubtextEl.textContent = "Kehadiran hari ini: -";
-      return;
-    }
-    const dateKey = getTodayAttendanceKey();
-    getAttendanceForClass(dateKey, kelas)
-      .then((data) => {
-        if (data && data.present != null && data.total != null) {
-          const present = data.present;
-          const total = data.total;
-          kehadiranRatioEl.textContent = `/ ${present}`;
-          kehadiranSubtextEl.textContent =
-            `Kehadiran hari ini (${kelas}): ${present}/${total} hadir`;
-        } else {
-          kehadiranRatioEl.textContent = "/ -";
-          kehadiranSubtextEl.textContent =
-            "Kehadiran hari ini: Tiada rekod kehadiran untuk kelas ini.";
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-        kehadiranRatioEl.textContent = "/ ?";
-        kehadiranSubtextEl.textContent = "Gagal memuatkan data kehadiran.";
-      });
-  }
-
-  kelasSelect.addEventListener("change", () => {
-    updateKehadiranInfo();
-    rebuildNamaMuridOptions();
-  });
-
-  // ------- Init -------
-  updateDateTimeUI();
-  setInterval(updateDateTimeUI, 30000);
-  updateKehadiranInfo();
-  rebuildNamaMuridOptions(); // mula-mula: paparkan mesej "pilih kelas"
+  document.addEventListener("DOMContentLoaded",()=>{loadKelasFromFirebase();});
 </script>
 </body>
 </html>
