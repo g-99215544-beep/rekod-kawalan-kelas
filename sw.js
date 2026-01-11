@@ -1,5 +1,5 @@
-const CACHE_NAME = 'sksa-pemantauan-v1';
-const urlsToCache = [
+const CACHE_NAME = 'sksa-pemantauan-v3';
+const ASSETS = [
   './',
   './index.html',
   './manifest.json',
@@ -8,51 +8,48 @@ const urlsToCache = [
   'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap'
 ];
 
-// Install event
 self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => {
-        console.log('Cache dibuka');
-        return cache.addAll(urlsToCache);
-      })
-  );
   self.skipWaiting();
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
+  );
 });
 
-// Activate event
 self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheName !== CACHE_NAME) {
-            console.log('Padam cache lama:', cacheName);
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
+    caches.keys().then(keys =>
+      Promise.all(keys.map(k => k !== CACHE_NAME && caches.delete(k)))
+    ).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
-// Fetch event - Network first, fallback to cache
 self.addEventListener('fetch', event => {
+  const req = event.request;
+  const url = new URL(req.url);
+
+  // Network-first for HTML
+  if (req.mode === 'navigate' || (req.headers.get('accept') || '').includes('text/html')) {
+    event.respondWith(
+      fetch(req).then(res => {
+        const clone = res.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(req, clone));
+        return res;
+      }).catch(() => caches.match(req))
+    );
+    return;
+  }
+
+  // Cache-first for static assets
   event.respondWith(
-    fetch(event.request)
-      .then(response => {
-        // Clone response untuk cache
-        if (response.status === 200) {
-          const responseClone = response.clone();
-          caches.open(CACHE_NAME).then(cache => {
-            cache.put(event.request, responseClone);
-          });
+    caches.match(req).then(cached => {
+      if (cached) return cached;
+      return fetch(req).then(res => {
+        if (res && res.status === 200) {
+          const clone = res.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(req, clone));
         }
-        return response;
-      })
-      .catch(() => {
-        return caches.match(event.request);
-      })
+        return res;
+      }).catch(() => cached);
+    })
   );
 });
