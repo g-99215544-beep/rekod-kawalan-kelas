@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sksa-pemantauan-v3';
+const CACHE_NAME = 'sksa-pemantauan-v4';
 const ASSETS = [
   './',
   './index.html',
