@@ -129,6 +129,17 @@ button:active { transform: scale(.98); }
 }
 </style>
 
+
+<style>
+.tab-btn {
+  background: #9CA3AF !important;
+  color: #fff !important;
+}
+.tab-btn.active {
+  background: #1FA37B !important;
+}
+</style>
+
 </head>
 <body>
 <div class="app-shell">
@@ -146,7 +157,7 @@ button:active { transform: scale(.98); }
     </div>
 
     <div class="tab-row">
-      <button id="tabRekod" class="tab-btn active">REKOD SEMASA</button>
+      <button id="tabRekod" class="tab-btn">REKOD SEMASA</button>
       <button id="tabSemak" class="tab-btn">SEMAK REKOD</button>
     </div>
 
@@ -154,7 +165,7 @@ button:active { transform: scale(.98); }
     <div id="rekodView">
       <!-- Sub tabs -->
       <div class="tab-row" style="margin-top:10px;">
-        <button id="subTabForm" class="tab-btn active">ISI REKOD</button>
+        <button id="subTabForm" class="tab-btn">ISI REKOD</button>
         <button id="subTabToday" class="tab-btn">REKOD HARI INI</button>
       </div>
 
@@ -271,14 +282,53 @@ button:active { transform: scale(.98); }
 
       <!-- Rekod Hari Ini -->
       <div id="rekodTodayView" style="display:none;">
-        <div class="section-title">Jadual Guru Mengikut Waktu (Hari Ini)</div>
-        <div class="table-wrapper" id="todayTableWrapper">
-          <table>
-            <thead><tr id="todayHeadRow"></tr></thead>
-            <tbody><tr id="todayBodyRow"></tr></tbody>
-          </table>
-        </div>
-      </div>
+        <div class="section-title">
+<h3>Jadual Guru Mengikut Waktu (Semua Kelas - Hari Ini)</h3>
+<div style="overflow-x:auto;">
+<table id="allClassSchedule" border="1" cellpadding="6" cellspacing="0" style="width:100%; border-collapse:collapse;">
+  <thead>
+    <tr style="background:#1FA37B; color:white;">
+      <th>Kelas</th>
+      <th>W1</th><th>W2</th><th>W3</th><th>W4</th>
+      <th>W5</th><th>W6</th><th>W7</th><th>W8</th><th>W9</th>
+    </tr>
+  </thead>
+  <tbody id="allClassBody">
+    <tr><td colspan="10" style="text-align:center;">Loading...</td></tr>
+  </tbody>
+</table>
+</div>
+
+<script>
+function loadAllClassSchedule() {
+  const body = document.getElementById("allClassBody");
+  if(!body || typeof firebase === "undefined") return;
+
+  firebase.database().ref("jadual").once("value").then(snapshot => {
+    body.innerHTML = "";
+    if(!snapshot.exists()){
+      body.innerHTML = '<tr><td colspan="10" style="text-align:center;">Tiada data jadual</td></tr>';
+      return;
+    }
+
+    snapshot.forEach(classSnap => {
+      const kelas = classSnap.key;
+      const data = classSnap.val() || {};
+      const row = document.createElement("tr");
+
+      let htmlRow = `<td><strong>${kelas}</strong></td>`;
+      for(let i=1;i<=9;i++){
+        htmlRow += `<td>${data["W"+i] || "-"}</td>`;
+      }
+      row.innerHTML = htmlRow;
+      body.appendChild(row);
+    });
+  });
+}
+
+document.addEventListener("DOMContentLoaded", loadAllClassSchedule);
+</script>
+
     </div>
 
     <!-- SEMAK REKOD -->
