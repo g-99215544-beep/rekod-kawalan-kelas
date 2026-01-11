@@ -283,6 +283,7 @@ button:active { transform: scale(.98); }
       <!-- Rekod Hari Ini -->
       <div id="rekodTodayView" style="display:none;">
         <div class="section-title">
+<h3>
 <h3>Jadual Guru Mengikut Waktu (Semua Kelas - Hari Ini)</h3>
 <div style="overflow-x:auto;">
 <table id="allClassSchedule" border="1" cellpadding="6" cellspacing="0" style="width:100%; border-collapse:collapse;">
@@ -298,6 +299,53 @@ button:active { transform: scale(.98); }
   </tbody>
 </table>
 </div>
+
+<script>
+function loadAllClassScheduleFromRecords(){
+  const body = document.getElementById("allClassBody");
+  if(!body || typeof firebase === "undefined") return;
+
+  const today = new Date().toISOString().split("T")[0];
+
+  firebase.database().ref("kehadiran").once("value").then(snapshot => {
+    body.innerHTML = "";
+    if(!snapshot.exists()){
+      body.innerHTML = '<tr><td colspan="10" style="text-align:center;">Tiada data</td></tr>';
+      return;
+    }
+
+    const kelasMap = {};
+
+    snapshot.forEach(child => {
+      const rec = child.val();
+      if(!rec || rec.tarikh !== today) return;
+
+      const kelas = rec.kelas || "Unknown";
+      const waktu = rec.waktu || "W1";
+
+      if(!kelasMap[kelas]) kelasMap[kelas] = {};
+      kelasMap[kelas][waktu] = rec.namaGuru || "-";
+    });
+
+    Object.keys(kelasMap).forEach(kelas => {
+      const row = document.createElement("tr");
+      let htmlRow = `<td><strong>${kelas}</strong></td>`;
+      for(let i=1;i<=9;i++){
+        htmlRow += `<td>${kelasMap[kelas]["W"+i] || "-"}</td>`;
+      }
+      row.innerHTML = htmlRow;
+      body.appendChild(row);
+    });
+
+    if(Object.keys(kelasMap).length === 0){
+      body.innerHTML = '<tr><td colspan="10" style="text-align:center;">Tiada rekod hari ini</td></tr>';
+    }
+  });
+}
+
+document.addEventListener("DOMContentLoaded", loadAllClassScheduleFromRecords);
+</script>
+
 
 <script>
 function loadAllClassSchedule() {
@@ -347,13 +395,69 @@ document.addEventListener("DOMContentLoaded", loadAllClassSchedule);
         <div id="semakSummary" class="empty-state">Sila pilih tarikh dan kelas untuk semak rekod.</div>
       </div>
 
-      <div class="section-title">Jadual Guru Mengikut Waktu</div>
-      <div class="table-wrapper" id="semakTableWrapper" style="display:none;">
-        <table>
-          <thead><tr id="semakHeadRow"></tr></thead>
-          <tbody><tr id="semakBodyRow"></tr></tbody>
-        </table>
-      </div>
+      <div class="section-title">
+<h3>Jadual Guru Mengikut Waktu (Semua Kelas - Hari Ini)</h3>
+<div style="overflow-x:auto;">
+<table id="allClassSchedule" border="1" cellpadding="6" cellspacing="0" style="width:100%; border-collapse:collapse;">
+  <thead>
+    <tr style="background:#1FA37B; color:white;">
+      <th>Kelas</th>
+      <th>W1</th><th>W2</th><th>W3</th><th>W4</th>
+      <th>W5</th><th>W6</th><th>W7</th><th>W8</th><th>W9</th>
+    </tr>
+  </thead>
+  <tbody id="allClassBody">
+    <tr><td colspan="10" style="text-align:center;">Loading...</td></tr>
+  </tbody>
+</table>
+</div>
+
+<script>
+function loadAllClassScheduleFromRecords(){
+  const body = document.getElementById("allClassBody");
+  if(!body || typeof firebase === "undefined") return;
+
+  const today = new Date().toISOString().split("T")[0];
+
+  firebase.database().ref("kehadiran").once("value").then(snapshot => {
+    body.innerHTML = "";
+    if(!snapshot.exists()){
+      body.innerHTML = '<tr><td colspan="10" style="text-align:center;">Tiada data</td></tr>';
+      return;
+    }
+
+    const kelasMap = {};
+
+    snapshot.forEach(child => {
+      const rec = child.val();
+      if(!rec || rec.tarikh !== today) return;
+
+      const kelas = rec.kelas || "Unknown";
+      const waktu = rec.waktu || "W1";
+
+      if(!kelasMap[kelas]) kelasMap[kelas] = {};
+      kelasMap[kelas][waktu] = rec.namaGuru || "-";
+    });
+
+    Object.keys(kelasMap).forEach(kelas => {
+      const row = document.createElement("tr");
+      let htmlRow = `<td><strong>${kelas}</strong></td>`;
+      for(let i=1;i<=9;i++){
+        htmlRow += `<td>${kelasMap[kelas]["W"+i] || "-"}</td>`;
+      }
+      row.innerHTML = htmlRow;
+      body.appendChild(row);
+    });
+
+    if(Object.keys(kelasMap).length === 0){
+      body.innerHTML = '<tr><td colspan="10" style="text-align:center;">Tiada rekod hari ini</td></tr>';
+    }
+  });
+}
+
+document.addEventListener("DOMContentLoaded", loadAllClassScheduleFromRecords);
+</script>
+
 
       <div id="semakDetailCard" class="input-card" style="margin-top:10px; display:none;">
         <div class="section-title" style="margin-top:0;">Butiran Rekod</div>
@@ -730,9 +834,7 @@ function closeAdminLogin() {
 document.addEventListener("DOMContentLoaded", () => {
   const logo = document.getElementById("logo");
   if(logo){
-    logo.addEventListener("click", () => {
-      if (!isAdminLoggedIn) {
-        openAdminLogin();
+    
       } else {
         openAdminModal();
       }
@@ -769,6 +871,44 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+</script>
+
+
+<script>
+function syncNotifications(){
+  if(typeof firebase === "undefined") return;
+
+  firebase.database().ref("notifications").on("value", snap => {
+    const count = snap.numChildren();
+    const badge = document.getElementById("notifBadge");
+    if(badge){
+      if(count > 0){
+        badge.style.display = "block";
+        badge.textContent = count;
+      } else {
+        badge.style.display = "none";
+      }
+    }
+
+    const list = document.getElementById("adminList");
+    if(list){
+      list.innerHTML = "";
+      if(!snap.exists()){
+        list.innerHTML = "Tiada laporan baharu.";
+        return;
+      }
+      snap.forEach(child => {
+        const d = child.val() || {};
+        const div = document.createElement("div");
+        div.className = "admin-item";
+        div.innerHTML = `<strong>${d.namaMurid || "Tanpa Nama"}</strong><br>${d.kategori || ""} - ${d.perincian || ""}`;
+        list.appendChild(div);
+      });
+    }
+  });
+}
+
+document.addEventListener("DOMContentLoaded", syncNotifications);
 </script>
 
 </body>
