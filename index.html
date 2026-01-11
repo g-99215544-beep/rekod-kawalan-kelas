@@ -753,5 +753,96 @@ function loadAllClassesToday(){
 }
 </script>
 
+
+<!-- ================= REKOD HARI INI (SEMUA KELAS) ================= -->
+<div class="section" id="sectionRekodHariIni" style="display:none; margin-top:12px;">
+  <div class="card">
+    <h3>Rekod Hari Ini – Semua Kelas</h3>
+    <div style="overflow-x:auto;">
+      <table border="1" cellpadding="6" cellspacing="0" style="width:100%; border-collapse:collapse;">
+        <thead>
+          <tr style="background:#1FA37B; color:white;">
+            <th>Kelas</th>
+            <th>W1</th><th>W2</th><th>W3</th><th>W4</th>
+            <th>W5</th><th>W6</th><th>W7</th><th>W8</th><th>W9</th>
+          </tr>
+        </thead>
+        <tbody id="rekodHariIniBody">
+          <tr><td colspan="10" style="text-align:center;">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<script>
+// ===== PATCH: Rekod Hari Ini - Semua Kelas (tanpa pilih kelas) =====
+function loadRekodHariIniSemuaKelas() {
+  const body = document.getElementById("rekodHariIniBody");
+  if (!body || typeof firebase === "undefined") return;
+
+  const today = new Date().toISOString().split("T")[0];
+  body.innerHTML = `<tr><td colspan="10" style="text-align:center;">Loading...</td></tr>`;
+
+  firebase.database().ref("kehadiran").once("value").then(snapshot => {
+    body.innerHTML = "";
+
+    if (!snapshot.exists()) {
+      body.innerHTML = `<tr><td colspan="10" style="text-align:center;">Tiada data</td></tr>`;
+      return;
+    }
+
+    const kelasMap = {};
+
+    snapshot.forEach(child => {
+      const rec = child.val();
+      if (!rec || rec.tarikh !== today) return;
+
+      const kelas = rec.kelas || "Unknown";
+      const waktu = rec.waktu || "W1";
+      const guru = rec.namaGuru || "-";
+
+      if (!kelasMap[kelas]) kelasMap[kelas] = {};
+      kelasMap[kelas][waktu] = guru;
+    });
+
+    const kelasList = Object.keys(kelasMap).sort();
+
+    if (kelasList.length === 0) {
+      body.innerHTML = `<tr><td colspan="10" style="text-align:center;">Tiada rekod hari ini</td></tr>`;
+      return;
+    }
+
+    kelasList.forEach(kelas => {
+      let row = `<tr><td><strong>${kelas}</strong></td>`;
+      for (let i = 1; i <= 9; i++) {
+        row += `<td>${kelasMap[kelas]["W" + i] || "-"}</td>`;
+      }
+      row += `</tr>`;
+      body.innerHTML += row;
+    });
+  }).catch(err => {
+    console.error("Load Rekod Hari Ini error:", err);
+    body.innerHTML = `<tr><td colspan="10" style="text-align:center;">Ralat memuat data</td></tr>`;
+  });
+}
+
+// Hook to existing Rekod Hari Ini tab button
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById("tabRekodHariIni") || document.getElementById("rekodHariIniBtn");
+  const sec = document.getElementById("sectionRekodHariIni");
+  const isiSec = document.getElementById("sectionIsiRekod");
+
+  if (btn) {
+    btn.addEventListener("click", () => {
+      if (sec) sec.style.display = "block";
+      if (isiSec) isiSec.style.display = "none";
+      loadRekodHariIniSemuaKelas();
+    });
+  }
+});
+</script>
+
 </body>
 </html>
