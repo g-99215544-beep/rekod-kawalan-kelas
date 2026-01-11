@@ -855,5 +855,88 @@ document.getElementById("rekodHariIniBtn").addEventListener("click", () => {
   }
 });
 
+
+<script>
+// ===== ADMIN LOGIN + BADGE + TAKE ACTION =====
+let isAdminLoggedIn = false;
+const ADMIN_PASSWORD = "admin123";
+
+// Logo click -> login gate
+document.addEventListener("DOMContentLoaded", () => {
+  const logo = document.getElementById("logo");
+  if (logo) {
+    logo.addEventListener("click", () => {
+      if (!isAdminLoggedIn) {
+        document.getElementById("adminLoginModal").style.display = "flex";
+      } else {
+        document.getElementById("adminModal").style.display = "flex";
+      }
+    });
+  }
+
+  const loginBtn = document.getElementById("adminLoginBtn");
+  if (loginBtn) {
+    loginBtn.addEventListener("click", () => {
+      const pass = document.getElementById("adminPassword").value;
+      if (pass === ADMIN_PASSWORD) {
+        isAdminLoggedIn = true;
+        document.getElementById("adminLoginModal").style.display = "none";
+        document.getElementById("adminModal").style.display = "flex";
+      } else {
+        alert("Kata laluan salah");
+      }
+    });
+  }
+
+  // Sync notifications for badge + admin list
+  if (typeof firebase !== "undefined") {
+    firebase.database().ref("notifications").on("value", snap => {
+      const badge = document.getElementById("notifBadge");
+      const list = document.getElementById("adminList");
+
+      const count = snap.numChildren();
+      if (badge) {
+        if (count > 0) {
+          badge.style.display = "block";
+          badge.textContent = count;
+        } else {
+          badge.style.display = "none";
+        }
+      }
+
+      if (list) {
+        list.innerHTML = "";
+        if (!snap.exists()) {
+          list.innerHTML = "<p>Tiada laporan baharu.</p>";
+          return;
+        }
+
+        snap.forEach(child => {
+          const key = child.key;
+          const d = child.val() || {};
+          const div = document.createElement("div");
+          div.style.borderBottom = "1px solid #eee";
+          div.style.padding = "8px 0";
+          div.innerHTML = `
+            <strong>${d.namaMurid || "Tanpa Nama"}</strong><br>
+            ${d.kategori || ""} - ${d.perincian || ""}<br>
+            <button onclick="adminTakeAction('${key}')">Sahkan / Selesai</button>
+          `;
+          list.appendChild(div);
+        });
+      }
+    });
+  }
+});
+
+// Admin take action -> remove notification
+function adminTakeAction(key) {
+  if (!key) return;
+  firebase.database().ref("notifications/" + key).remove().then(() => {
+    alert("Laporan disahkan & dikeluarkan dari senarai.");
+  });
+}
+</script>
+
 </body>
 </html>
