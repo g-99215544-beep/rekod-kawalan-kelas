@@ -86,6 +86,20 @@
     .btn-install{background:#fff;color:#047857;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;font-weight:600;cursor:pointer}
     .btn-dismiss{background:transparent;color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.4);padding:6px 12px;border-radius:999px;font-size:.8rem;cursor:pointer}
   </style>
+
+<style>
+button { transition: transform .08s ease, box-shadow .08s ease, filter .08s ease; }
+button:hover { filter: brightness(1.05); box-shadow: 0 4px 10px rgba(0,0,0,.12); }
+button:active { transform: scale(.98); }
+.toast {
+  position: fixed; bottom: 20px; right: 20px; z-index: 9999;
+  background: #1f2937; color: #fff; padding: 12px 16px; border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0,0,0,.25); opacity: 0; transform: translateY(10px);
+  transition: all .25s ease;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+</style>
+
 </head>
 <body>
 <div class="app-shell">
@@ -582,5 +596,33 @@
     listenNotifications();
   });
 </script>
+
+<div id="toast" class="toast">Rekod berjaya disimpan</div>
+<script>
+(function(){
+  function showToast(msg){
+    const t = document.getElementById('toast');
+    if(!t) return;
+    t.textContent = msg || 'Berjaya';
+    t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'), 2500);
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // Autofocus first input
+    const firstInput = document.querySelector('input, select, textarea');
+    if(firstInput) firstInput.focus();
+
+    // Global submit listener (polish only, no feature change)
+    document.addEventListener('submit', (e) => {
+      setTimeout(() => {
+        showToast('Rekod berjaya disimpan');
+        try { e.target.reset && e.target.reset(); } catch(err){}
+      }, 300);
+    }, true);
+  });
+})();
+</script>
+
 </body>
 </html>
