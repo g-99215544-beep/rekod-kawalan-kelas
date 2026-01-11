@@ -86,60 +86,6 @@
     .btn-install{background:#fff;color:#047857;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;font-weight:600;cursor:pointer}
     .btn-dismiss{background:transparent;color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.4);padding:6px 12px;border-radius:999px;font-size:.8rem;cursor:pointer}
   </style>
-
-<style>
-button { transition: transform .08s ease, box-shadow .08s ease, filter .08s ease; }
-button:hover { filter: brightness(1.05); box-shadow: 0 4px 10px rgba(0,0,0,.12); }
-button:active { transform: scale(.98); }
-.toast {
-  position: fixed; bottom: 20px; right: 20px; z-index: 9999;
-  background: #1f2937; color: #fff; padding: 12px 16px; border-radius: 10px;
-  box-shadow: 0 10px 25px rgba(0,0,0,.25); opacity: 0; transform: translateY(10px);
-  transition: all .25s ease;
-}
-.toast.show { opacity: 1; transform: translateY(0); }
-</style>
-
-
-<style>
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 9999;
-  left: 0; top: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.4);
-  justify-content: center;
-  align-items: center;
-}
-.modal-content {
-  background: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  width: 300px;
-  text-align: center;
-}
-.modal-content input {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-}
-.modal-content button {
-  margin: 5px;
-}
-</style>
-
-
-<style>
-.tab-btn {
-  background: #9CA3AF !important;
-  color: #fff !important;
-}
-.tab-btn.active {
-  background: #1FA37B !important;
-}
-</style>
-
 </head>
 <body>
 <div class="app-shell">
@@ -157,7 +103,7 @@ button:active { transform: scale(.98); }
     </div>
 
     <div class="tab-row">
-      <button id="tabRekod" class="tab-btn">REKOD SEMASA</button>
+      <button id="tabRekod" class="tab-btn active">REKOD SEMASA</button>
       <button id="tabSemak" class="tab-btn">SEMAK REKOD</button>
     </div>
 
@@ -165,7 +111,7 @@ button:active { transform: scale(.98); }
     <div id="rekodView">
       <!-- Sub tabs -->
       <div class="tab-row" style="margin-top:10px;">
-        <button id="subTabForm" class="tab-btn">ISI REKOD</button>
+        <button id="subTabForm" class="tab-btn active">ISI REKOD</button>
         <button id="subTabToday" class="tab-btn">REKOD HARI INI</button>
       </div>
 
@@ -282,8 +228,8 @@ button:active { transform: scale(.98); }
 
       <!-- Rekod Hari Ini -->
       <div id="rekodTodayView" style="display:none;">
-        <div class="section-title">
-<h3>
+        <div class="section-title">Jadual Guru Mengikut Waktu (Hari Ini)</div>
+
 <h3>Jadual Guru Mengikut Waktu (Semua Kelas - Hari Ini)</h3>
 <div style="overflow-x:auto;">
 <table id="allClassSchedule" border="1" cellpadding="6" cellspacing="0" style="width:100%; border-collapse:collapse;">
@@ -300,83 +246,13 @@ button:active { transform: scale(.98); }
 </table>
 </div>
 
-<script>
-function loadAllClassScheduleFromRecords(){
-  const body = document.getElementById("allClassBody");
-  if(!body || typeof firebase === "undefined") return;
-
-  const today = new Date().toISOString().split("T")[0];
-
-  firebase.database().ref("kehadiran").once("value").then(snapshot => {
-    body.innerHTML = "";
-    if(!snapshot.exists()){
-      body.innerHTML = '<tr><td colspan="10" style="text-align:center;">Tiada data</td></tr>';
-      return;
-    }
-
-    const kelasMap = {};
-
-    snapshot.forEach(child => {
-      const rec = child.val();
-      if(!rec || rec.tarikh !== today) return;
-
-      const kelas = rec.kelas || "Unknown";
-      const waktu = rec.waktu || "W1";
-
-      if(!kelasMap[kelas]) kelasMap[kelas] = {};
-      kelasMap[kelas][waktu] = rec.namaGuru || "-";
-    });
-
-    Object.keys(kelasMap).forEach(kelas => {
-      const row = document.createElement("tr");
-      let htmlRow = `<td><strong>${kelas}</strong></td>`;
-      for(let i=1;i<=9;i++){
-        htmlRow += `<td>${kelasMap[kelas]["W"+i] || "-"}</td>`;
-      }
-      row.innerHTML = htmlRow;
-      body.appendChild(row);
-    });
-
-    if(Object.keys(kelasMap).length === 0){
-      body.innerHTML = '<tr><td colspan="10" style="text-align:center;">Tiada rekod hari ini</td></tr>';
-    }
-  });
-}
-
-document.addEventListener("DOMContentLoaded", loadAllClassScheduleFromRecords);
-</script>
-
-
-<script>
-function loadAllClassSchedule() {
-  const body = document.getElementById("allClassBody");
-  if(!body || typeof firebase === "undefined") return;
-
-  firebase.database().ref("jadual").once("value").then(snapshot => {
-    body.innerHTML = "";
-    if(!snapshot.exists()){
-      body.innerHTML = '<tr><td colspan="10" style="text-align:center;">Tiada data jadual</td></tr>';
-      return;
-    }
-
-    snapshot.forEach(classSnap => {
-      const kelas = classSnap.key;
-      const data = classSnap.val() || {};
-      const row = document.createElement("tr");
-
-      let htmlRow = `<td><strong>${kelas}</strong></td>`;
-      for(let i=1;i<=9;i++){
-        htmlRow += `<td>${data["W"+i] || "-"}</td>`;
-      }
-      row.innerHTML = htmlRow;
-      body.appendChild(row);
-    });
-  });
-}
-
-document.addEventListener("DOMContentLoaded", loadAllClassSchedule);
-</script>
-
+        <div class="table-wrapper" id="todayTableWrapper">
+          <table>
+            <thead><tr id="todayHeadRow"></tr></thead>
+            <tbody><tr id="todayBodyRow"></tr></tbody>
+          </table>
+        </div>
+      </div>
     </div>
 
     <!-- SEMAK REKOD -->
@@ -395,69 +271,13 @@ document.addEventListener("DOMContentLoaded", loadAllClassSchedule);
         <div id="semakSummary" class="empty-state">Sila pilih tarikh dan kelas untuk semak rekod.</div>
       </div>
 
-      <div class="section-title">
-<h3>Jadual Guru Mengikut Waktu (Semua Kelas - Hari Ini)</h3>
-<div style="overflow-x:auto;">
-<table id="allClassSchedule" border="1" cellpadding="6" cellspacing="0" style="width:100%; border-collapse:collapse;">
-  <thead>
-    <tr style="background:#1FA37B; color:white;">
-      <th>Kelas</th>
-      <th>W1</th><th>W2</th><th>W3</th><th>W4</th>
-      <th>W5</th><th>W6</th><th>W7</th><th>W8</th><th>W9</th>
-    </tr>
-  </thead>
-  <tbody id="allClassBody">
-    <tr><td colspan="10" style="text-align:center;">Loading...</td></tr>
-  </tbody>
-</table>
-</div>
-
-<script>
-function loadAllClassScheduleFromRecords(){
-  const body = document.getElementById("allClassBody");
-  if(!body || typeof firebase === "undefined") return;
-
-  const today = new Date().toISOString().split("T")[0];
-
-  firebase.database().ref("kehadiran").once("value").then(snapshot => {
-    body.innerHTML = "";
-    if(!snapshot.exists()){
-      body.innerHTML = '<tr><td colspan="10" style="text-align:center;">Tiada data</td></tr>';
-      return;
-    }
-
-    const kelasMap = {};
-
-    snapshot.forEach(child => {
-      const rec = child.val();
-      if(!rec || rec.tarikh !== today) return;
-
-      const kelas = rec.kelas || "Unknown";
-      const waktu = rec.waktu || "W1";
-
-      if(!kelasMap[kelas]) kelasMap[kelas] = {};
-      kelasMap[kelas][waktu] = rec.namaGuru || "-";
-    });
-
-    Object.keys(kelasMap).forEach(kelas => {
-      const row = document.createElement("tr");
-      let htmlRow = `<td><strong>${kelas}</strong></td>`;
-      for(let i=1;i<=9;i++){
-        htmlRow += `<td>${kelasMap[kelas]["W"+i] || "-"}</td>`;
-      }
-      row.innerHTML = htmlRow;
-      body.appendChild(row);
-    });
-
-    if(Object.keys(kelasMap).length === 0){
-      body.innerHTML = '<tr><td colspan="10" style="text-align:center;">Tiada rekod hari ini</td></tr>';
-    }
-  });
-}
-
-document.addEventListener("DOMContentLoaded", loadAllClassScheduleFromRecords);
-</script>
-
+      <div class="section-title">Jadual Guru Mengikut Waktu</div>
+      <div class="table-wrapper" id="semakTableWrapper" style="display:none;">
+        <table>
+          <thead><tr id="semakHeadRow"></tr></thead>
+          <tbody><tr id="semakBodyRow"></tr></tbody>
+        </table>
+      </div>
 
       <div id="semakDetailCard" class="input-card" style="margin-top:10px; display:none;">
         <div class="section-title" style="margin-top:0;">Butiran Rekod</div>
@@ -780,72 +600,64 @@ document.addEventListener("DOMContentLoaded", loadAllClassScheduleFromRecords);
   });
 </script>
 
-<div id="toast" class="toast">Rekod berjaya disimpan</div>
-<script>
-(function(){
-  function showToast(msg){
-    const t = document.getElementById('toast');
-    if(!t) return;
-    t.textContent = msg || 'Berjaya';
-    t.classList.add('show');
-    setTimeout(()=>t.classList.remove('show'), 2500);
-  }
-
-  document.addEventListener('DOMContentLoaded', () => {
-    // Autofocus first input
-    const firstInput = document.querySelector('input, select, textarea');
-    if(firstInput) firstInput.focus();
-
-    // Global submit listener (polish only, no feature change)
-    document.addEventListener('submit', (e) => {
-      setTimeout(() => {
-        showToast('Rekod berjaya disimpan');
-        try { e.target.reset && e.target.reset(); } catch(err){}
-      }, 300);
-    }, true);
-  });
-})();
-</script>
-
-
 <!-- Admin Login Modal -->
-<div id="adminLoginModal" class="modal">
-  <div class="modal-content">
+<div id="adminLoginModal" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:9999; align-items:center; justify-content:center;">
+  <div class="modal-content" style="background:#fff; padding:20px; border-radius:12px; width:320px; text-align:center;">
     <h3>Login Admin</h3>
-    <input type="password" id="adminPassword" placeholder="Masukkan kata laluan" />
-    <button id="adminLoginBtn">Login</button>
-    <button onclick="closeAdminLogin()">Batal</button>
+    <input type="password" id="adminPassword" placeholder="Masukkan kata laluan" style="width:100%; padding:10px; margin:10px 0;" />
+    <div style="display:flex; gap:10px; justify-content:center;">
+      <button id="adminLoginBtn">Login</button>
+      <button onclick="closeAdminLogin()">Batal</button>
+    </div>
   </div>
 </div>
 
 
 <script>
+// ===== CLEAN ADMIN + BADGE + ALL CLASSES (REBUILT) =====
 let isAdminLoggedIn = false;
 const ADMIN_PASSWORD = "admin123";
 
-function openAdminLogin() {
-  document.getElementById("adminLoginModal").style.display = "flex";
+function openAdminLogin(){
+  const m = document.getElementById("adminLoginModal");
+  if(m) m.style.display = "flex";
 }
-function closeAdminLogin() {
-  document.getElementById("adminLoginModal").style.display = "none";
-  document.getElementById("adminPassword").value = "";
+function closeAdminLogin(){
+  const m = document.getElementById("adminLoginModal");
+  const p = document.getElementById("adminPassword");
+  if(m) m.style.display = "none";
+  if(p) p.value = "";
+}
+
+// Ensure admin modal functions exist
+function openAdminModal(){
+  const m = document.getElementById("adminModal");
+  if(m) m.style.display = "block";
+}
+function closeAdminModal(){
+  const m = document.getElementById("adminModal");
+  if(m) m.style.display = "none";
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  // Logo click -> login gate
   const logo = document.getElementById("logo");
   if(logo){
-    
+    logo.addEventListener("click", () => {
+      if(!isAdminLoggedIn){
+        openAdminLogin();
       } else {
         openAdminModal();
       }
     });
   }
 
-  const btn = document.getElementById("adminLoginBtn");
-  if(btn){
-    btn.addEventListener("click", () => {
-      const pass = document.getElementById("adminPassword").value;
-      if (pass === ADMIN_PASSWORD) {
+  // Login button
+  const loginBtn = document.getElementById("adminLoginBtn");
+  if(loginBtn){
+    loginBtn.addEventListener("click", () => {
+      const pass = (document.getElementById("adminPassword")||{}).value || "";
+      if(pass === ADMIN_PASSWORD){
         isAdminLoggedIn = true;
         closeAdminLogin();
         openAdminModal();
@@ -855,11 +667,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // notification badge update
-  if (typeof firebase !== "undefined") {
+  // Sync notifications for badge & modal list
+  if(typeof firebase !== "undefined"){
     firebase.database().ref("notifications").on("value", snap => {
-      const count = snap.numChildren();
       const badge = document.getElementById("notifBadge");
+      const count = snap.numChildren();
       if(badge){
         if(count > 0){
           badge.style.display = "block";
@@ -868,47 +680,77 @@ document.addEventListener("DOMContentLoaded", () => {
           badge.style.display = "none";
         }
       }
+
+      const list = document.getElementById("adminList");
+      if(list){
+        list.innerHTML = "";
+        if(!snap.exists()){
+          list.innerHTML = "Tiada laporan baharu.";
+          return;
+        }
+        snap.forEach(child => {
+          const d = child.val() || {};
+          const div = document.createElement("div");
+          div.className = "admin-item";
+          div.style.borderBottom = "1px solid #e5e7eb";
+          div.style.padding = "8px 0";
+          div.innerHTML = `<strong>${d.namaMurid || "Tanpa Nama"}</strong><br>${d.kategori || ""} - ${d.perincian || ""}`;
+          list.appendChild(div);
+        });
+      }
     });
   }
+
+  // Load all classes from kehadiran for today
+  loadAllClassesToday();
 });
-</script>
 
+function loadAllClassesToday(){
+  const body = document.getElementById("allClassBody");
+  if(!body || typeof firebase === "undefined") return;
 
-<script>
-function syncNotifications(){
-  if(typeof firebase === "undefined") return;
+  const today = new Date().toISOString().split("T")[0];
 
-  firebase.database().ref("notifications").on("value", snap => {
-    const count = snap.numChildren();
-    const badge = document.getElementById("notifBadge");
-    if(badge){
-      if(count > 0){
-        badge.style.display = "block";
-        badge.textContent = count;
-      } else {
-        badge.style.display = "none";
-      }
+  firebase.database().ref("kehadiran").once("value").then(snapshot => {
+    body.innerHTML = "";
+    if(!snapshot.exists()){
+      body.innerHTML = '<tr><td colspan="10" style="text-align:center;">Tiada data</td></tr>';
+      return;
     }
 
-    const list = document.getElementById("adminList");
-    if(list){
-      list.innerHTML = "";
-      if(!snap.exists()){
-        list.innerHTML = "Tiada laporan baharu.";
-        return;
-      }
-      snap.forEach(child => {
-        const d = child.val() || {};
-        const div = document.createElement("div");
-        div.className = "admin-item";
-        div.innerHTML = `<strong>${d.namaMurid || "Tanpa Nama"}</strong><br>${d.kategori || ""} - ${d.perincian || ""}`;
-        list.appendChild(div);
-      });
+    const kelasMap = {};
+
+    snapshot.forEach(child => {
+      const rec = child.val() || {};
+      if(rec.tarikh !== today) return;
+
+      const kelas = rec.kelas || "Unknown";
+      const waktu = rec.waktu || "W1";
+
+      if(!kelasMap[kelas]) kelasMap[kelas] = {};
+      kelasMap[kelas][waktu] = rec.namaGuru || "-";
+    });
+
+    const kelasList = Object.keys(kelasMap).sort();
+    if(kelasList.length === 0){
+      body.innerHTML = '<tr><td colspan="10" style="text-align:center;">Tiada rekod hari ini</td></tr>';
+      return;
     }
+
+    kelasList.forEach(kelas => {
+      const tr = document.createElement("tr");
+      let row = `<td><strong>${kelas}</strong></td>`;
+      for(let i=1;i<=9;i++){
+        row += `<td>${kelasMap[kelas]["W"+i] || "-"}</td>`;
+      }
+      tr.innerHTML = row;
+      body.appendChild(tr);
+    });
+  }).catch(err => {
+    body.innerHTML = '<tr><td colspan="10" style="text-align:center;">Ralat memuat data</td></tr>';
+    console.error("Load all classes error:", err);
   });
 }
-
-document.addEventListener("DOMContentLoaded", syncNotifications);
 </script>
 
 </body>
