@@ -521,7 +521,7 @@
   // Rekod Hari Ini
   function loadTodaySchedule(){
     const kelas=kelasSelect.value;
-    if(!kelas){alert("Sila pilih kelas dahulu.");return;}
+    if(!kelas){}
     const today=formatDate(new Date());
     const headRow=document.getElementById("todayHeadRow");
     const bodyRow=document.getElementById("todayBodyRow");
@@ -843,6 +843,17 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 </script>
+
+
+document.getElementById("rekodHariIniBtn").addEventListener("click", () => {
+  const isiSec = document.getElementById("sectionIsiRekod");
+  const rekodSec = document.getElementById("sectionRekodHariIni");
+  if (isiSec) isiSec.style.display = "none";
+  if (rekodSec) rekodSec.style.display = "block";
+  if (typeof loadRekodHariIniSemuaKelas === "function") {
+    loadRekodHariIniSemuaKelas();
+  }
+});
 
 </body>
 </html>
