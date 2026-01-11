@@ -287,7 +287,7 @@
   </div>
 </div>
 
-<!-- Admin Modal -->
+
 <div id="adminModal" class="modal-backdrop">
   <div class="modal-card">
     <h2>Admin – Laporan Sahsiah</h2>
@@ -600,7 +600,7 @@
   });
 </script>
 
-<!-- Admin Login Modal -->
+
 <div id="adminLoginModal" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:9999; align-items:center; justify-content:center;">
   <div class="modal-content" style="background:#fff; padding:20px; border-radius:12px; width:320px; text-align:center;">
     <h3>Login Admin</h3>
@@ -856,45 +856,86 @@ document.getElementById("rekodHariIniBtn").addEventListener("click", () => {
 });
 
 
+<!-- ===== ADMIN LOGIN MODAL ===== -->
+<div id="adminLoginModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:9999; align-items:center; justify-content:center;">
+  <div style="background:#fff; padding:20px; border-radius:12px; width:320px; text-align:center;">
+    <h3>Login Admin</h3>
+    <input type="password" id="adminPassword" placeholder="Masukkan kata laluan" style="width:100%; padding:10px; margin:10px 0;" />
+    <div style="display:flex; gap:10px; justify-content:center;">
+      <button id="adminLoginBtn">Login</button>
+      <button id="adminCancelBtn">Batal</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADMIN PANEL MODAL ===== -->
+<div id="adminPanelModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:9999; align-items:center; justify-content:center;">
+  <div style="background:#fff; padding:20px; border-radius:12px; width:90%; max-width:400px;">
+    <h3>Admin – Laporan Sahsiah</h3>
+    <div id="adminList" style="max-height:300px; overflow:auto; margin-top:10px;"></div>
+    <div style="text-align:right; margin-top:10px;">
+      <button id="adminCloseBtn">Tutup</button>
+    </div>
+  </div>
+</div>
+
+
 <script>
-// ===== ADMIN LOGIN + BADGE + TAKE ACTION =====
+// ===== CLEAN ADMIN LOGIN + BADGE + TAKE ACTION =====
 let isAdminLoggedIn = false;
 const ADMIN_PASSWORD = "admin123";
 
-// Logo click -> login gate
 document.addEventListener("DOMContentLoaded", () => {
   const logo = document.getElementById("logo");
+  const loginModal = document.getElementById("adminLoginModal");
+  const panelModal = document.getElementById("adminPanelModal");
+  const loginBtn = document.getElementById("adminLoginBtn");
+  const cancelBtn = document.getElementById("adminCancelBtn");
+  const closeBtn = document.getElementById("adminCloseBtn");
+
   if (logo) {
     logo.addEventListener("click", () => {
       if (!isAdminLoggedIn) {
-        document.getElementById("adminLoginModal").style.display = "flex";
+        loginModal.style.display = "flex";
       } else {
-        document.getElementById("adminModal").style.display = "flex";
+        panelModal.style.display = "flex";
       }
     });
   }
 
-  const loginBtn = document.getElementById("adminLoginBtn");
+  if (cancelBtn) {
+    cancelBtn.addEventListener("click", () => {
+      loginModal.style.display = "none";
+    });
+  }
+
+  if (closeBtn) {
+    closeBtn.addEventListener("click", () => {
+      panelModal.style.display = "none";
+    });
+  }
+
   if (loginBtn) {
     loginBtn.addEventListener("click", () => {
       const pass = document.getElementById("adminPassword").value;
       if (pass === ADMIN_PASSWORD) {
         isAdminLoggedIn = true;
-        document.getElementById("adminLoginModal").style.display = "none";
-        document.getElementById("adminModal").style.display = "flex";
+        loginModal.style.display = "none";
+        panelModal.style.display = "flex";
       } else {
         alert("Kata laluan salah");
       }
     });
   }
 
-  // Sync notifications for badge + admin list
+  // Firebase notification sync
   if (typeof firebase !== "undefined") {
     firebase.database().ref("notifications").on("value", snap => {
       const badge = document.getElementById("notifBadge");
       const list = document.getElementById("adminList");
 
-      const count = snap.numChildren();
+      const count = snap.exists() ? snap.numChildren() : 0;
+
       if (badge) {
         if (count > 0) {
           badge.style.display = "block";
@@ -929,7 +970,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// Admin take action -> remove notification
 function adminTakeAction(key) {
   if (!key) return;
   firebase.database().ref("notifications/" + key).remove().then(() => {
