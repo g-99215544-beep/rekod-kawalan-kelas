@@ -100,6 +100,35 @@ button:active { transform: scale(.98); }
 .toast.show { opacity: 1; transform: translateY(0); }
 </style>
 
+
+<style>
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.4);
+  justify-content: center;
+  align-items: center;
+}
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  width: 300px;
+  text-align: center;
+}
+.modal-content input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+}
+.modal-content button {
+  margin: 5px;
+}
+</style>
+
 </head>
 <body>
 <div class="app-shell">
@@ -622,6 +651,74 @@ button:active { transform: scale(.98); }
     }, true);
   });
 })();
+</script>
+
+
+<!-- Admin Login Modal -->
+<div id="adminLoginModal" class="modal">
+  <div class="modal-content">
+    <h3>Login Admin</h3>
+    <input type="password" id="adminPassword" placeholder="Masukkan kata laluan" />
+    <button id="adminLoginBtn">Login</button>
+    <button onclick="closeAdminLogin()">Batal</button>
+  </div>
+</div>
+
+
+<script>
+let isAdminLoggedIn = false;
+const ADMIN_PASSWORD = "admin123";
+
+function openAdminLogin() {
+  document.getElementById("adminLoginModal").style.display = "flex";
+}
+function closeAdminLogin() {
+  document.getElementById("adminLoginModal").style.display = "none";
+  document.getElementById("adminPassword").value = "";
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const logo = document.getElementById("logo");
+  if(logo){
+    logo.addEventListener("click", () => {
+      if (!isAdminLoggedIn) {
+        openAdminLogin();
+      } else {
+        openAdminModal();
+      }
+    });
+  }
+
+  const btn = document.getElementById("adminLoginBtn");
+  if(btn){
+    btn.addEventListener("click", () => {
+      const pass = document.getElementById("adminPassword").value;
+      if (pass === ADMIN_PASSWORD) {
+        isAdminLoggedIn = true;
+        closeAdminLogin();
+        openAdminModal();
+      } else {
+        alert("Kata laluan salah!");
+      }
+    });
+  }
+
+  // notification badge update
+  if (typeof firebase !== "undefined") {
+    firebase.database().ref("notifications").on("value", snap => {
+      const count = snap.numChildren();
+      const badge = document.getElementById("notifBadge");
+      if(badge){
+        if(count > 0){
+          badge.style.display = "block";
+          badge.textContent = count;
+        } else {
+          badge.style.display = "none";
+        }
+      }
+    });
+  }
+});
 </script>
 
 </body>
