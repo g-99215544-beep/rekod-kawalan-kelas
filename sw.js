@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sksa-pemantauan-v13';
+const CACHE_NAME = 'sksa-pemantauan-v14';
 const urlsToCache = [
   './',
   './index.html',
