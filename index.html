@@ -363,8 +363,10 @@ const periods = [
   {code:"W9",start:"11.40",end:"12.10"},
   {code:"W10",start:"12.10",end:"12.40"},
   {code:"W11",start:"12.40",end:"13.10"},
-  {code:"W12",start:"13.10",end:"13.40"}
+  {code:"W12",start:"13.10",end:"13.40"},
+  {code:"W13",start:"13.40",end:"14.10"}
 ];
+const TOTAL_WAKTU = 13;
 
 function timeToMinutes(str) {
   const [h, m] = str.split(".").map(Number);
@@ -871,7 +873,7 @@ function loadAllClassesToday() {
   if (!head || !body || typeof firebase === "undefined") return;
   
   let headerHTML = '<tr style="background:#047857; color:white;"><th style="border:2px solid #000;">Kelas</th>';
-  for (let i = 1; i <= 9; i++) {
+  for (let i = 1; i <= TOTAL_WAKTU; i++) {
     const p = periods[i-1];
     headerHTML += '<th style="border:2px solid #000;"><span class="waktu-code">' + p.code + '</span><span class="waktu-time">' + p.start + '</span></th>';
   }
@@ -879,7 +881,7 @@ function loadAllClassesToday() {
   head.innerHTML = headerHTML;
   
   const today = formatDate(new Date());
-  body.innerHTML = '<tr><td colspan="10" style="text-align:center;border:2px solid #000;">Loading...</td></tr>';
+  body.innerHTML = '<tr><td colspan="' + (TOTAL_WAKTU + 1) + '" style="text-align:center;border:2px solid #000;">Loading...</td></tr>';
   
   db.ref("config/classes/classData").once("value").then(configSnap => {
     const allClasses = configSnap.val() ? Object.keys(configSnap.val()).sort() : [];
@@ -911,7 +913,7 @@ function loadAllClassesToday() {
       const kelasList = Object.keys(kelasMap).sort();
       
       if (kelasList.length === 0) {
-        body.innerHTML = '<tr><td colspan="10" style="text-align:center;border:2px solid #000;">Tiada kelas didaftarkan</td></tr>';
+        body.innerHTML = '<tr><td colspan="' + (TOTAL_WAKTU + 1) + '" style="text-align:center;border:2px solid #000;">Tiada kelas didaftarkan</td></tr>';
         return;
       }
       
@@ -920,7 +922,7 @@ function loadAllClassesToday() {
         
         let row = '<td style="font-weight:600;background:#f0fdf4;text-align:center;border:2px solid #000;">' + kelas + '</td>';
         
-        for (let i = 1; i <= 9; i++) {
+        for (let i = 1; i <= TOTAL_WAKTU; i++) {
           const waktuKey = "W" + i;
           const data = kelasMap[kelas][waktuKey];
           
