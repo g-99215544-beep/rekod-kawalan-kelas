@@ -27,7 +27,7 @@
     .app-card{background:#fff;border-radius:0;padding:28px 24px 34px;box-shadow:none;min-height:100vh;width:100%}
     @media (min-width: 768px){
       html,body{background:#e5ecf4}
-      .app-shell{max-width:500px;margin:20px auto;min-height:auto}
+      .app-shell{max-width:600px;margin:20px auto;min-height:auto}
       .app-card{border-radius:20px;min-height:auto;box-shadow:0 10px 30px rgba(15,23,42,.18)}
     }
     .logo-wrap{display:flex;flex-direction:column;align-items:center;margin-bottom:12px;position:relative}
@@ -39,6 +39,7 @@
     .tab-row{display:inline-flex;border-radius:999px;padding:3px;background:#e5f3ec;margin-bottom:14px}
     .tab-btn{border:none;background:transparent;padding:6px 20px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:500;color:#166534}
     .tab-btn.active{background:#059669;color:#fff;box-shadow:0 2px 6px rgba(5,150,105,.45)}
+    .tab-btn-admin{border:none;background:#dc2626;padding:6px 20px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:500;color:#fff;box-shadow:0 2px 6px rgba(220,38,38,.45)}
     .input-card{background:#f9fafb;border-radius:16px;padding:14px 12px;border:1px solid #e5e7eb}
     .field{margin-bottom:10px}
     label{font-size:.8rem;font-weight:500;display:flex;align-items:center;gap:6px;margin-bottom:3px;color:#4b5563}
@@ -85,18 +86,30 @@
     .btn-install{background:#fff;color:#047857;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;font-weight:600;cursor:pointer}
     .btn-dismiss{background:transparent;color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.4);padding:6px 12px;border-radius:999px;font-size:.8rem;cursor:pointer}
     
-    /* Jadual Hari Ini Styles */
-    #allClassSchedule th{text-align:center;padding:8px 4px;font-size:0.75rem;line-height:1.2}
+    /* Jadual Hari Ini Styles - UPDATED with thick black borders */
+    #allClassSchedule{border:2px solid #000}
+    #allClassSchedule th{text-align:center;padding:8px 4px;font-size:0.75rem;line-height:1.2;border:2px solid #000}
     #allClassSchedule th .waktu-code{display:block;font-weight:600;font-size:0.8rem}
     #allClassSchedule th .waktu-time{display:block;font-weight:400;font-size:0.65rem;opacity:0.9}
-    #allClassSchedule td{text-align:center;padding:8px 4px;font-size:0.72rem;vertical-align:middle;border-right:1px solid #e5e7eb}
-    #allClassSchedule td:last-child{border-right:none}
-    #allClassSchedule tbody tr{border-bottom:2px solid #047857}
-    #allClassSchedule tbody tr:last-child{border-bottom:none}
+    #allClassSchedule td{text-align:center;padding:8px 4px;font-size:0.72rem;vertical-align:middle;border:2px solid #000}
     #allClassSchedule .cell-empty{background-color:#fef9c3;color:#854d0e}
     #allClassSchedule .cell-filled{background-color:#fff}
     #allClassSchedule .guru-name{font-weight:600;color:#111827;display:block}
     #allClassSchedule .guru-tempat{font-size:0.65rem;color:#6b7280;display:block;margin-top:2px}
+    
+    /* Admin Panel Styles */
+    .admin-tab-row{display:none;margin-bottom:14px}
+    .admin-tab-row.show{display:inline-flex;border-radius:999px;padding:3px;background:#fef2f2}
+    .sahsiah-card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:12px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
+    .sahsiah-card .header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+    .sahsiah-card .badge{font-size:0.7rem;padding:3px 8px;border-radius:999px;font-weight:500}
+    .sahsiah-card .badge-baik{background:#dcfce7;color:#166534}
+    .sahsiah-card .badge-jahat{background:#fee2e2;color:#991b1b}
+    .sahsiah-card .badge-pending{background:#fef3c7;color:#92400e}
+    .sahsiah-card .badge-confirmed{background:#dbeafe;color:#1e40af}
+    .sahsiah-card .info-row{font-size:0.78rem;color:#4b5563;margin-bottom:4px}
+    .sahsiah-card .info-row strong{color:#111827}
+    .sahsiah-card .murid-list{font-size:0.75rem;color:#6b7280;background:#f9fafb;padding:6px 8px;border-radius:8px;margin-top:6px}
   </style>
 </head>
 <body>
@@ -114,9 +127,15 @@
       <div class="status-pill"><span id="headerWaktu">Luar Waktu PdP</span></div>
     </div>
 
-    <div class="tab-row">
+    <!-- Main Tabs -->
+    <div class="tab-row" id="mainTabRow">
       <button id="tabRekod" class="tab-btn active">REKOD SEMASA</button>
       <button id="tabSemak" class="tab-btn">SEMAK REKOD</button>
+    </div>
+    
+    <!-- Admin Tab (only shows after login) -->
+    <div class="admin-tab-row" id="adminTabRow">
+      <button id="tabAdmin" class="tab-btn-admin">📋 PANEL ADMIN</button>
     </div>
 
     <!-- REKOD SEMASA -->
@@ -237,7 +256,7 @@
         </div>
       </div>
 
-      <!-- Rekod Hari Ini (UPDATED - removed "Jadual Mengikut Kelas Dipilih") -->
+      <!-- Rekod Hari Ini -->
       <div id="rekodTodayView" style="display:none;">
         <div class="section-title">Jadual Guru Mengikut Waktu (Semua Kelas - Hari Ini)</div>
         <div style="overflow-x:auto;">
@@ -284,6 +303,15 @@
         <div id="semakDetailContent" style="font-size:.82rem;color:#374151;"></div>
       </div>
     </div>
+    
+    <!-- ADMIN VIEW (new) -->
+    <div id="adminView" style="display:none;">
+      <div class="section-title">📋 Rekod Sahsiah Murid (Semua)</div>
+      <p style="font-size:0.8rem;color:#6b7280;margin-bottom:12px;">Senarai lengkap laporan sahsiah murid. Data ini kekal walaupun sudah disahkan.</p>
+      <div id="adminSahsiahList">
+        <div class="empty-state">Loading...</div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -298,18 +326,6 @@
     <div class="modal-buttons">
       <button type="button" class="btn-modal-cancel" id="adminCancelBtn">Batal</button>
       <button type="button" class="btn-modal-primary" id="adminLoginBtn">Login</button>
-    </div>
-  </div>
-</div>
-
-<!-- Admin Panel Modal -->
-<div id="adminPanelModal" class="modal-backdrop">
-  <div class="modal-card">
-    <h2>📋 Panel Admin – Laporan Sahsiah</h2>
-    <p>Senarai laporan yang perlu tindakan.</p>
-    <div id="adminReportList" style="max-height:300px;overflow:auto;"></div>
-    <div class="modal-buttons">
-      <button type="button" class="btn-modal-cancel" id="adminCloseBtn">Tutup</button>
     </div>
   </div>
 </div>
@@ -355,14 +371,12 @@ function timeToMinutes(str) {
   return h * 60 + m;
 }
 
-// Format DD/MM/YYYY (for display and Firebase kehadiran records)
 function formatDate(d) {
   return String(d.getDate()).padStart(2, "0") + "/" + 
          String(d.getMonth() + 1).padStart(2, "0") + "/" + 
          d.getFullYear();
 }
 
-// Format YYYY-MM-DD (for Firebase dailyRecords key)
 function formatDateKey(d) {
   return d.getFullYear() + "-" + 
          String(d.getMonth() + 1).padStart(2, "0") + "-" + 
@@ -436,25 +450,35 @@ window.addEventListener('appinstalled', () => {
 // =====================================================
 const tabRekod = document.getElementById("tabRekod");
 const tabSemak = document.getElementById("tabSemak");
+const tabAdmin = document.getElementById("tabAdmin");
 const rekodView = document.getElementById("rekodView");
 const semakView = document.getElementById("semakView");
+const adminView = document.getElementById("adminView");
+const adminTabRow = document.getElementById("adminTabRow");
 
-function setTab(tab) {
+function setMainTab(tab) {
+  // Reset all tabs
+  tabRekod.classList.remove("active");
+  tabSemak.classList.remove("active");
+  rekodView.style.display = "none";
+  semakView.style.display = "none";
+  adminView.style.display = "none";
+  
   if (tab === "rekod") {
     tabRekod.classList.add("active");
-    tabSemak.classList.remove("active");
     rekodView.style.display = "block";
-    semakView.style.display = "none";
-  } else {
-    tabRekod.classList.remove("active");
+  } else if (tab === "semak") {
     tabSemak.classList.add("active");
-    rekodView.style.display = "none";
     semakView.style.display = "block";
+  } else if (tab === "admin") {
+    adminView.style.display = "block";
+    loadAllSahsiahRecords();
   }
 }
 
-tabRekod.addEventListener("click", () => setTab("rekod"));
-tabSemak.addEventListener("click", () => setTab("semak"));
+tabRekod.addEventListener("click", () => setMainTab("rekod"));
+tabSemak.addEventListener("click", () => setMainTab("semak"));
+tabAdmin.addEventListener("click", () => setMainTab("admin"));
 
 // Sub tabs
 const subTabForm = document.getElementById("subTabForm");
@@ -662,12 +686,14 @@ function createSahsiahNotification(record) {
     tarikh: record.tarikh,
     masa: record.masaRekod,
     kelas: record.kelas,
+    tempat: record.tempat,
     namaGuru: record.namaGuru,
     namaMurid: record.namaMurid,
     jenis: record.jenis,
     kategori: record.kategori,
     keterangan: record.keterangan,
-    status: "pending"
+    status: "pending",
+    createdAt: Date.now()
   };
   db.ref("notifications").push(notif);
 }
@@ -837,42 +863,36 @@ btnSemakLoad.addEventListener("click", () => {
 });
 
 // =====================================================
-// REKOD HARI INI - ALL CLASSES (UPDATED with all 5 changes)
+// REKOD HARI INI - ALL CLASSES
 // =====================================================
 function loadAllClassesToday() {
   const head = document.getElementById("allClassHead");
   const body = document.getElementById("allClassBody");
   if (!head || !body || typeof firebase === "undefined") return;
   
-  // Build header with waktu code and time (Change #5)
-  let headerHTML = '<tr style="background:#047857; color:white;"><th>Kelas</th>';
+  let headerHTML = '<tr style="background:#047857; color:white;"><th style="border:2px solid #000;">Kelas</th>';
   for (let i = 1; i <= 9; i++) {
     const p = periods[i-1];
-    headerHTML += '<th><span class="waktu-code">' + p.code + '</span><span class="waktu-time">' + p.start + '</span></th>';
+    headerHTML += '<th style="border:2px solid #000;"><span class="waktu-code">' + p.code + '</span><span class="waktu-time">' + p.start + '</span></th>';
   }
   headerHTML += '</tr>';
   head.innerHTML = headerHTML;
   
-  // Use DD/MM/YYYY format to match Firebase kehadiran records
   const today = formatDate(new Date());
-  body.innerHTML = '<tr><td colspan="10" style="text-align:center;">Loading...</td></tr>';
+  body.innerHTML = '<tr><td colspan="10" style="text-align:center;border:2px solid #000;">Loading...</td></tr>';
   
-  // First get all classes from config
   db.ref("config/classes/classData").once("value").then(configSnap => {
     const allClasses = configSnap.val() ? Object.keys(configSnap.val()).sort() : [];
     
-    // Then get today's records
     return db.ref("kehadiran").orderByChild("tarikh").equalTo(today).once("value").then(snapshot => {
       body.innerHTML = "";
       
       const kelasMap = {};
       
-      // Initialize all classes with empty data
       allClasses.forEach(kelas => {
         kelasMap[kelas] = {};
       });
       
-      // Fill in data from records
       if (snapshot.exists()) {
         snapshot.forEach(child => {
           const rec = child.val();
@@ -891,31 +911,26 @@ function loadAllClassesToday() {
       const kelasList = Object.keys(kelasMap).sort();
       
       if (kelasList.length === 0) {
-        body.innerHTML = '<tr><td colspan="10" style="text-align:center;">Tiada kelas didaftarkan</td></tr>';
+        body.innerHTML = '<tr><td colspan="10" style="text-align:center;border:2px solid #000;">Tiada kelas didaftarkan</td></tr>';
         return;
       }
       
-      // Build rows with thick borders between classes (Change #4)
       kelasList.forEach((kelas, index) => {
         const tr = document.createElement("tr");
         
-        // Kelas column
-        let row = '<td style="font-weight:600;background:#f0fdf4;text-align:center;">' + kelas + '</td>';
+        let row = '<td style="font-weight:600;background:#f0fdf4;text-align:center;border:2px solid #000;">' + kelas + '</td>';
         
-        // Waktu columns W1-W9
         for (let i = 1; i <= 9; i++) {
           const waktuKey = "W" + i;
           const data = kelasMap[kelas][waktuKey];
           
           if (data && data.guru) {
-            // Cell has data - white background (Change #2 & #3)
-            row += '<td class="cell-filled">' +
+            row += '<td class="cell-filled" style="border:2px solid #000;">' +
                    '<span class="guru-name">' + data.guru + '</span>' +
                    '<span class="guru-tempat">' + data.tempat + '</span>' +
                    '</td>';
           } else {
-            // Cell is empty - yellow background (Change #2)
-            row += '<td class="cell-empty">-</td>';
+            row += '<td class="cell-empty" style="border:2px solid #000;">-</td>';
           }
         }
         
@@ -925,7 +940,69 @@ function loadAllClassesToday() {
     });
   }).catch(err => {
     console.error("Load all classes error:", err);
-    body.innerHTML = '<tr><td colspan="10" style="text-align:center;">Ralat memuat data</td></tr>';
+    body.innerHTML = '<tr><td colspan="10" style="text-align:center;border:2px solid #000;">Ralat memuat data</td></tr>';
+  });
+}
+
+// =====================================================
+// ADMIN PANEL - LOAD ALL SAHSIAH RECORDS (NEW)
+// =====================================================
+function loadAllSahsiahRecords() {
+  const container = document.getElementById("adminSahsiahList");
+  if (!container) return;
+  
+  container.innerHTML = '<div class="empty-state">Loading...</div>';
+  
+  // Load ALL notifications (not just pending)
+  db.ref("notifications").orderByChild("createdAt").once("value").then(snap => {
+    container.innerHTML = "";
+    
+    if (!snap.exists()) {
+      container.innerHTML = '<div class="empty-state">Tiada rekod sahsiah.</div>';
+      return;
+    }
+    
+    const records = [];
+    snap.forEach(child => {
+      records.push({ key: child.key, ...child.val() });
+    });
+    
+    // Sort by createdAt descending (newest first)
+    records.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+    
+    records.forEach(r => {
+      const card = document.createElement("div");
+      card.className = "sahsiah-card";
+      
+      const jenisBadge = r.jenis === "baik" ? 
+        '<span class="badge badge-baik">✓ Amalan Baik</span>' : 
+        '<span class="badge badge-jahat">✗ Kesalahan</span>';
+      
+      const statusBadge = r.status === "confirmed" ?
+        '<span class="badge badge-confirmed">Disahkan</span>' :
+        '<span class="badge badge-pending">Menunggu</span>';
+      
+      card.innerHTML = 
+        '<div class="header">' +
+          '<div>' + jenisBadge + ' ' + statusBadge + '</div>' +
+        '</div>' +
+        '<div class="info-row"><strong>📅 Tarikh:</strong> ' + (r.tarikh || "-") + '</div>' +
+        '<div class="info-row"><strong>🕐 Masa:</strong> ' + (r.masa || "-") + '</div>' +
+        '<div class="info-row"><strong>📍 Tempat:</strong> ' + (r.tempat || "-") + '</div>' +
+        '<div class="info-row"><strong>🏫 Kelas:</strong> ' + (r.kelas || "-") + '</div>' +
+        '<div class="info-row"><strong>👨‍🏫 Guru:</strong> ' + (r.namaGuru || "-") + '</div>' +
+        '<div class="info-row"><strong>📝 Kategori:</strong> ' + (r.kategori || "-") + '</div>' +
+        (r.keterangan ? '<div class="info-row"><strong>💬 Keterangan:</strong> ' + r.keterangan + '</div>' : '') +
+        '<div class="murid-list"><strong>👤 Murid:</strong> ' + (r.namaMurid || "-") + '</div>' +
+        (r.status === "pending" ? 
+          '<button onclick="sahkanLaporan(\'' + r.key + '\')" style="margin-top:8px;background:#047857;color:#fff;border:none;padding:6px 14px;border-radius:999px;font-size:0.75rem;cursor:pointer;">✓ Sahkan Laporan</button>' : 
+          '');
+      
+      container.appendChild(card);
+    });
+  }).catch(err => {
+    console.error("Load sahsiah error:", err);
+    container.innerHTML = '<div class="empty-state" style="color:#dc2626;">Ralat memuat data.</div>';
   });
 }
 
@@ -961,98 +1038,51 @@ function loadKelasFromFirebase() {
 // =====================================================
 const sksaLogo = document.getElementById("sksaLogo");
 const adminLoginModal = document.getElementById("adminLoginModal");
-const adminPanelModal = document.getElementById("adminPanelModal");
 const adminLoginBtn = document.getElementById("adminLoginBtn");
 const adminCancelBtn = document.getElementById("adminCancelBtn");
-const adminCloseBtn = document.getElementById("adminCloseBtn");
 const adminPasswordInput = document.getElementById("adminPassword");
-const adminReportList = document.getElementById("adminReportList");
 const notifBadge = document.getElementById("notifBadge");
 
-// Click logo to open admin login or panel
 sksaLogo.addEventListener("click", () => {
   if (!isAdminLoggedIn) {
     adminLoginModal.style.display = "flex";
     adminPasswordInput.value = "";
     adminPasswordInput.focus();
   } else {
-    loadSahsiahReports();
-    adminPanelModal.style.display = "flex";
+    // Already logged in, go to admin panel
+    setMainTab("admin");
   }
 });
 
-// Cancel login
 adminCancelBtn.addEventListener("click", () => {
   adminLoginModal.style.display = "none";
 });
 
-// Close panel
-adminCloseBtn.addEventListener("click", () => {
-  adminPanelModal.style.display = "none";
-});
-
-// Login button
 adminLoginBtn.addEventListener("click", () => {
   const pass = adminPasswordInput.value;
   if (pass === ADMIN_PASSWORD) {
     isAdminLoggedIn = true;
     adminLoginModal.style.display = "none";
-    loadSahsiahReports();
-    adminPanelModal.style.display = "flex";
+    // Show admin tab
+    adminTabRow.classList.add("show");
+    // Go to admin panel
+    setMainTab("admin");
   } else {
     alert("Kata laluan salah!");
   }
 });
 
-// Enter key for login
 adminPasswordInput.addEventListener("keypress", (e) => {
   if (e.key === "Enter") {
     adminLoginBtn.click();
   }
 });
 
-// Load sahsiah reports for admin panel
-function loadSahsiahReports() {
-  adminReportList.innerHTML = "Loading...";
-  db.ref("notifications").orderByChild("status").equalTo("pending").once("value").then(snap => {
-    adminReportList.innerHTML = "";
-    const data = snap.val();
-    if (!data) {
-      adminReportList.innerHTML = "<em style='color:#6b7280;'>Tiada laporan baharu.</em>";
-      return;
-    }
-    Object.entries(data).forEach(([key, r]) => {
-      const div = document.createElement("div");
-      div.style.border = "1px solid #e5e7eb";
-      div.style.borderRadius = "10px";
-      div.style.padding = "10px";
-      div.style.marginBottom = "8px";
-      div.style.background = "#f9fafb";
-      
-      const jenisColor = r.jenis === "baik" ? "#059669" : "#dc2626";
-      const jenisText = r.jenis === "baik" ? "Amalan Baik" : "Kesalahan";
-      
-      div.innerHTML = 
-        '<strong style="color:#111827;">' + (r.namaGuru || "-") + '</strong> ' +
-        '<span style="color:#6b7280;">(' + (r.kelas || "-") + ')</span><br>' +
-        '<span style="font-size:0.8rem;color:#4b5563;">📅 ' + (r.tarikh || "-") + ' ' + (r.masa || "") + '</span><br>' +
-        '<span style="font-size:0.8rem;color:#4b5563;">👤 ' + (r.namaMurid || "-") + '</span><br>' +
-        '<span style="font-size:0.75rem;background:' + jenisColor + ';color:#fff;padding:2px 6px;border-radius:999px;">' + jenisText + '</span> ' +
-        '<span style="font-size:0.8rem;color:#374151;">' + (r.kategori || "") + '</span><br>' +
-        '<button onclick="sahkanLaporan(\'' + key + '\')" style="margin-top:6px;background:#047857;color:#fff;border:none;padding:5px 12px;border-radius:999px;font-size:0.75rem;cursor:pointer;">✓ Sahkan</button>';
-      adminReportList.appendChild(div);
-    });
-  }).catch(err => {
-    console.error("Load reports error:", err);
-    adminReportList.innerHTML = "<em style='color:#dc2626;'>Ralat memuat data.</em>";
-  });
-}
-
-// Confirm/resolve report
+// Confirm/resolve report (keeps record, just changes status)
 function sahkanLaporan(key) {
   if (!key) return;
   db.ref("notifications/" + key + "/status").set("confirmed").then(() => {
-    loadSahsiahReports();
+    loadAllSahsiahRecords();
   });
 }
 window.sahkanLaporan = sahkanLaporan;
