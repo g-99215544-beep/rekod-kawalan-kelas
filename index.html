@@ -199,6 +199,16 @@
             </select>
           </div>
           <div class="field">
+            <label class="required">Waktu Mengajar</label>
+            <select id="waktuMengajar">
+              <option value="1">1 Waktu</option>
+              <option value="2">2 Waktu</option>
+              <option value="3">3 Waktu</option>
+              <option value="4">4 Waktu</option>
+            </select>
+            <div id="waktuPreview" class="kehadiran-subtext">Rekod akan diisi: -</div>
+          </div>
+          <div class="field">
             <label class="required">Jumlah Murid</label>
             <div class="inline-count">
               <input type="number" id="jumlahMurid" min="0" placeholder="Contoh: 28" />
@@ -462,6 +472,36 @@ function updateDateTimeUI() {
   document.getElementById("headerMasa").textContent = formatTime(now);
   const p = getCurrentPeriod(now);
   document.getElementById("headerWaktu").textContent = p ? p.code : "Luar Waktu PdP";
+  updateWaktuPreview();
+}
+
+// Update waktu preview based on current time and selected waktu mengajar
+function updateWaktuPreview() {
+  const waktuPreview = document.getElementById("waktuPreview");
+  if (!waktuPreview) return;
+  
+  const now = new Date();
+  const p = getCurrentPeriod(now);
+  const waktuMengajar = parseInt(document.getElementById("waktuMengajar")?.value) || 1;
+  
+  if (!p) {
+    waktuPreview.textContent = "Rekod akan diisi: Luar waktu PdP";
+    return;
+  }
+  
+  const startIndex = parseInt(p.code.replace('W', '')) - 1;
+  const waktuList = [];
+  
+  for (let i = 0; i < waktuMengajar && (startIndex + i) < TOTAL_WAKTU; i++) {
+    waktuList.push("W" + (startIndex + 1 + i));
+  }
+  
+  if (waktuList.length > 0) {
+    waktuPreview.textContent = "Rekod akan diisi: " + waktuList.join(", ");
+    waktuPreview.style.color = "#047857";
+  } else {
+    waktuPreview.textContent = "Rekod akan diisi: -";
+  }
 }
 
 // =====================================================
@@ -747,6 +787,7 @@ function clearForm() {
   document.getElementById("guruGanti").checked = false;
   kelasSelect.value = "";
   document.getElementById("tempat").value = "";
+  document.getElementById("waktuMengajar").value = "1";
   document.getElementById("jumlahMurid").value = "";
   document.getElementById("catatanKeberadaan").value = "";
   document.getElementById("catatanField").classList.remove("show");
@@ -763,9 +804,13 @@ function clearForm() {
   document.getElementById("kehadiranSubtext").textContent = "Kehadiran hari ini: -";
   presentMuridKelas = 0;
   totalMuridKelas = 0;
+  updateWaktuPreview();
 }
 
 document.getElementById("btnClearForm").addEventListener("click", clearForm);
+
+// Update preview when waktu mengajar changes
+document.getElementById("waktuMengajar").addEventListener("change", updateWaktuPreview);
 
 function saveRecordToFirebase(rec) {
   const key = db.ref("kehadiran").push().key;
@@ -798,6 +843,7 @@ document.getElementById("btnSave").addEventListener("click", () => {
   const kelas = kelasSelect.value;
   const tempat = document.getElementById("tempat").value;
   const jumlahMurid = document.getElementById("jumlahMurid").value;
+  const waktuMengajar = parseInt(document.getElementById("waktuMengajar").value) || 1;
   const catatanKeberadaan = document.getElementById("catatanKeberadaan").value.trim();
   
   if (!namaGuru || !kelas || !tempat || jumlahMurid === "") {
@@ -806,7 +852,6 @@ document.getElementById("btnSave").addEventListener("click", () => {
   }
   
   // Validate catatan if jumlah < present (murid yang hadir)
-  // Contoh: Kehadiran 22/23, jika guru masuk 20, perlu nyatakan keberadaan 2 orang lagi
   const jumlah = parseInt(jumlahMurid) || 0;
   if (presentMuridKelas > 0 && jumlah < presentMuridKelas && !catatanKeberadaan) {
     alert("Sila nyatakan keberadaan " + (presentMuridKelas - jumlah) + " murid yang tidak berada dalam kelas.");
@@ -817,7 +862,25 @@ document.getElementById("btnSave").addEventListener("click", () => {
   const tarikh = formatDate(now);
   const masaRekod = formatTime(now);
   const p = getCurrentPeriod(now);
-  const waktu = p ? p.code : "Luar Waktu PdP";
+  const currentWaktuCode = p ? p.code : null;
+  
+  // Get waktu index (W1 = 0, W2 = 1, etc)
+  let startWaktuIndex = -1;
+  if (currentWaktuCode) {
+    startWaktuIndex = parseInt(currentWaktuCode.replace('W', '')) - 1;
+  }
+  
+  // Check if current time is valid
+  if (startWaktuIndex < 0) {
+    alert("Anda berada di luar waktu PdP. Sila rekod semasa waktu mengajar.");
+    return;
+  }
+  
+  // Check if waktu mengajar exceeds available periods
+  if (startWaktuIndex + waktuMengajar > TOTAL_WAKTU) {
+    alert("Waktu mengajar melebihi waktu yang tersedia. Maksimum " + (TOTAL_WAKTU - startWaktuIndex) + " waktu dari sekarang.");
+    return;
+  }
   
   let jenis = null, kategori = "", keterangan = "", namaMuridText = "", namaMuridList = [];
   const adaSahsiah = hasSahsiahData();
@@ -856,21 +919,46 @@ document.getElementById("btnSave").addEventListener("click", () => {
     }
   }
   
-  const newRecord = {
-    tarikh, waktu, masaRekod, namaGuru, kelas, tempat,
-    guruGanti: guruGanti,
-    jumlahMurid: Number(jumlahMurid),
-    presentMurid: presentMuridKelas || null,  // Murid yang hadir hari ini
-    totalMurid: totalMuridKelas || null,      // Jumlah keseluruhan murid dalam kelas
-    catatanKeberadaan: catatanKeberadaan || null,
-    namaMurid: namaMuridText || null,
-    namaMuridList: namaMuridList.length ? namaMuridList : null,
-    jenis, kategori, keterangan
-  };
+  // Generate list of waktu codes to save
+  const waktuList = [];
+  for (let i = 0; i < waktuMengajar; i++) {
+    waktuList.push("W" + (startWaktuIndex + 1 + i));
+  }
   
-  saveRecordToFirebase(newRecord).then(() => {
-    if (adaSahsiah) createSahsiahNotification(newRecord);
-    alert("Rekod berjaya disimpan ke Firebase.");
+  // Save record for each waktu
+  const savePromises = waktuList.map(waktuCode => {
+    const newRecord = {
+      tarikh, 
+      waktu: waktuCode, 
+      masaRekod, 
+      namaGuru, 
+      kelas, 
+      tempat,
+      guruGanti: guruGanti,
+      jumlahMurid: Number(jumlahMurid),
+      presentMurid: presentMuridKelas || null,
+      totalMurid: totalMuridKelas || null,
+      waktuMengajar: waktuMengajar,
+      waktuMula: waktuList[0],
+      waktuAkhir: waktuList[waktuList.length - 1],
+      catatanKeberadaan: catatanKeberadaan || null,
+      namaMurid: namaMuridText || null,
+      namaMuridList: namaMuridList.length ? namaMuridList : null,
+      jenis, kategori, keterangan
+    };
+    return saveRecordToFirebase(newRecord);
+  });
+  
+  Promise.all(savePromises).then(() => {
+    if (adaSahsiah) {
+      // Create notification only once (for first waktu)
+      const notifRecord = {
+        tarikh, waktu: waktuList.join(', '), masaRekod, namaGuru, kelas, tempat,
+        namaMurid: namaMuridText, jenis, kategori, keterangan
+      };
+      createSahsiahNotification(notifRecord);
+    }
+    alert("Rekod berjaya disimpan untuk " + waktuList.join(", ") + ".");
     clearForm();
   }).catch(() => {
     alert("Gagal simpan rekod. Sila cuba lagi.");
