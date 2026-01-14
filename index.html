@@ -4,14 +4,20 @@
   <meta charset="UTF-8" />
   <title>Rekod Pemantauan Kelas SKSA</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  
+  <!-- PWA Meta Tags -->
   <meta name="theme-color" content="#047857" />
   <meta name="description" content="Aplikasi Rekod Pemantauan Kelas SK Sri Aman" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Pemantauan SKSA" />
+  
+  <!-- App Icons -->
   <link rel="icon" type="image/png" sizes="192x192" href="app-icon-192.png" />
   <link rel="icon" type="image/png" sizes="512x512" href="app-icon-512.png" />
   <link rel="apple-touch-icon" href="app-icon-192.png" />
+  
+  <!-- PWA Manifest -->
   <link rel="manifest" href="manifest.json" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
@@ -19,7 +25,11 @@
     html,body{width:100%;min-height:100%;background:#fff;color:#0f172a}
     .app-shell{width:100%;min-height:100vh;padding:0;margin:0;background:#fff}
     .app-card{background:#fff;border-radius:0;padding:28px 24px 34px;box-shadow:none;min-height:100vh;width:100%}
-    @media (min-width: 768px){html,body{background:#e5ecf4}.app-shell{max-width:700px;margin:20px auto;min-height:auto}.app-card{border-radius:20px;min-height:auto;box-shadow:0 10px 30px rgba(15,23,42,.18)}}
+    @media (min-width: 768px){
+      html,body{background:#e5ecf4}
+      .app-shell{max-width:700px;margin:20px auto;min-height:auto}
+      .app-card{border-radius:20px;min-height:auto;box-shadow:0 10px 30px rgba(15,23,42,.18)}
+    }
     .logo-wrap{display:flex;flex-direction:column;align-items:center;margin-bottom:12px;position:relative}
     .logo-wrap img{width:80px;height:80px;border-radius:50%;object-fit:cover;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.25)}
     .logo-wrap h1{margin:10px 0 0;text-align:center;font-size:1.2rem;letter-spacing:.04em;font-weight:600}
@@ -29,6 +39,7 @@
     .tab-row{display:inline-flex;border-radius:999px;padding:3px;background:#e5f3ec;margin-bottom:14px}
     .tab-btn{border:none;background:transparent;padding:6px 20px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:500;color:#166534}
     .tab-btn.active{background:#059669;color:#fff;box-shadow:0 2px 6px rgba(5,150,105,.45)}
+    .tab-btn-admin{border:none;background:#dc2626;padding:6px 20px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:500;color:#fff;box-shadow:0 2px 6px rgba(220,38,38,.45)}
     .input-card{background:#f9fafb;border-radius:16px;padding:14px 12px;border:1px solid #e5e7eb}
     .field{margin-bottom:10px}
     label{font-size:.8rem;font-weight:500;display:flex;align-items:center;gap:6px;margin-bottom:3px;color:#4b5563}
@@ -50,12 +61,13 @@
     thead{background:#047857;color:#fff}
     th,td{padding:6px;border-bottom:1px solid #e5e7eb;text-align:left;vertical-align:top}
     tbody tr:nth-child(even){background:#f9fafb}
+    .pill-good{background:#e0f2fe;color:#0369a1;padding:2px 6px;border-radius:999px;font-size:.7rem;font-weight:500}
+    .pill-bad{background:#fee2e2;color:#b91c1c;padding:2px 6px;border-radius:999px;font-size:.7rem;font-weight:500}
     .pill-ganti{background:#fef3c7;color:#92400e;padding:2px 6px;border-radius:999px;font-size:.65rem;font-weight:500}
     .pill-mp{padding:2px 6px;border-radius:999px;font-size:.6rem;font-weight:600;display:inline-block;margin-top:2px}
     .pill-bc{background:#dbeafe;color:#1e40af}
     .pill-ba{background:#fce7f3;color:#9d174d}
     .pill-pemulihan{background:#d1fae5;color:#065f46}
-    .pill-pemulihan-mt{background:#e0e7ff;color:#4338ca}
     .empty-state{font-size:.8rem;color:#6b7280;margin-top:4px}
     .multi-select{position:relative}
     .multi-select input[readonly]{cursor:pointer;background-color:#eef2ff}
@@ -73,39 +85,51 @@
     .btn-modal-cancel{border-radius:999px;border:none;padding:7px 16px;background:#e5e7eb;color:#374151;font-size:.82rem;cursor:pointer}
     .btn-modal-primary{border-radius:999px;border:none;padding:7px 18px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;font-size:.82rem;font-weight:500;cursor:pointer}
     .btn-close-modal{position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:50%;border:none;background:#f3f4f6;color:#6b7280;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
+    .btn-close-modal:hover{background:#e5e7eb;color:#111827}
     .install-banner{display:none;position:fixed;bottom:0;left:0;right:0;background:linear-gradient(135deg,#047857,#059669);color:#fff;padding:14px 16px;box-shadow:0 -4px 20px rgba(0,0,0,.2);z-index:999}
     .install-banner.show{display:flex;align-items:center;justify-content:space-between;gap:12px}
     .install-banner-text{font-size:.85rem;flex:1}
     .install-banner-text strong{display:block;font-size:.95rem;margin-bottom:2px}
     .btn-install{background:#fff;color:#047857;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;font-weight:600;cursor:pointer}
     .btn-dismiss{background:transparent;color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.4);padding:6px 12px;border-radius:999px;font-size:.8rem;cursor:pointer}
+    
+    /* Radio buttons for jenis kelas */
     .radio-group{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
     .radio-option{display:flex;align-items:center;gap:6px;cursor:pointer}
     .radio-option input[type="radio"]{width:16px;height:16px;cursor:pointer}
     .radio-option label{margin:0;font-size:.85rem;cursor:pointer}
+    
+    /* Mata pelajaran field */
     .mp-field{margin-top:8px;display:none;padding:10px;background:#eff6ff;border-radius:10px;border:1px solid #bfdbfe}
     .mp-field.show{display:block}
+    
+    /* Checkbox inline style */
     .checkbox-inline{display:flex;align-items:center;gap:8px;margin-top:6px}
     .checkbox-inline input[type="checkbox"]{width:18px;height:18px;cursor:pointer}
     .checkbox-inline label{margin:0;font-size:.85rem;cursor:pointer}
+    
+    /* Catatan keberadaan */
     .catatan-field{margin-top:8px;display:none}
     .catatan-field.show{display:block}
     .catatan-field label{color:#dc2626}
-    #allClassSchedule,#pemantauanSchedule{border:2px solid #000}
-    #allClassSchedule th,#pemantauanSchedule th{text-align:center;padding:8px 4px;font-size:0.75rem;line-height:1.2;border:2px solid #000}
-    #allClassSchedule th .waktu-code,#pemantauanSchedule th .waktu-code{display:block;font-weight:600;font-size:0.8rem}
-    #allClassSchedule th .waktu-time,#pemantauanSchedule th .waktu-time{display:block;font-weight:400;font-size:0.65rem;opacity:0.9}
-    #allClassSchedule td,#pemantauanSchedule td{text-align:center;padding:6px 3px;font-size:0.7rem;vertical-align:middle;border:2px solid #000;cursor:pointer}
+    
+    /* Jadual Hari Ini Styles */
+    #allClassSchedule{border:2px solid #000}
+    #allClassSchedule th{text-align:center;padding:8px 4px;font-size:0.75rem;line-height:1.2;border:2px solid #000}
+    #allClassSchedule th .waktu-code{display:block;font-weight:600;font-size:0.8rem}
+    #allClassSchedule th .waktu-time{display:block;font-weight:400;font-size:0.65rem;opacity:0.9}
+    #allClassSchedule td{text-align:center;padding:6px 3px;font-size:0.7rem;vertical-align:middle;border:2px solid #000;cursor:pointer}
     #allClassSchedule .cell-empty{background-color:#fef9c3;color:#854d0e}
     #allClassSchedule .cell-filled{background-color:#fff}
     #allClassSchedule .cell-multi{background-color:#f0fdf4}
-    #allClassSchedule .cell-rehat,#pemantauanSchedule .cell-rehat{background-color:#059669;color:#fff;font-weight:600;cursor:default}
+    #allClassSchedule .cell-rehat{background-color:#059669;color:#fff;font-weight:600;cursor:default}
     #allClassSchedule .guru-name{font-weight:600;color:#111827;display:block;font-size:0.7rem}
     #allClassSchedule .guru-tempat{font-size:0.6rem;color:#6b7280;display:block}
     #allClassSchedule .guru-ganti-badge{font-size:0.55rem;background:#fbbf24;color:#78350f;padding:1px 3px;border-radius:3px;display:inline-block}
     #allClassSchedule .multi-record{border-bottom:1px dashed #d1d5db;padding:4px 0;margin-bottom:2px}
     #allClassSchedule .multi-record:last-child{border-bottom:none;margin-bottom:0}
-    #allClassSchedule .cell-has-pemantauan{background-color:#dbeafe !important;border:2px solid #2563eb !important}
+    
+    /* Detail Popup Card */
     .detail-popup .info-row{font-size:0.82rem;color:#374151;margin-bottom:6px;padding:6px 0;border-bottom:1px dashed #e5e7eb}
     .detail-popup .info-row:last-child{border-bottom:none}
     .detail-popup .info-row strong{color:#111827;display:inline-block;min-width:100px}
@@ -116,13 +140,10 @@
     .detail-popup .sahsiah-section{margin-top:12px;padding:10px;background:#fef3c7;border-radius:10px}
     .detail-popup .sahsiah-section.baik{background:#dcfce7}
     .detail-popup .sahsiah-section.jahat{background:#fee2e2}
-    .detail-popup .pemantauan-section{margin-top:12px;padding:12px;background:#dbeafe;border-radius:10px;border:1px solid #93c5fd}
-    .detail-popup .pemantauan-section h4{color:#1e40af;margin-bottom:8px;font-size:0.9rem}
-    .detail-popup .pemantauan-section img{max-width:100%;border-radius:8px;margin-top:8px}
+    
+    /* Admin Panel Styles */
     .admin-tab-row{display:none;margin-bottom:14px}
-    .admin-tab-row.show{display:block}
-    .admin-dropdown{width:100%;padding:10px 14px;border-radius:10px;border:2px solid #dc2626;background:#fff;font-size:0.9rem;font-weight:500;color:#dc2626;cursor:pointer}
-    .admin-dropdown:focus{outline:none;box-shadow:0 0 0 3px rgba(220,38,38,0.2)}
+    .admin-tab-row.show{display:inline-flex;border-radius:999px;padding:3px;background:#fef2f2}
     .sahsiah-card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:12px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
     .sahsiah-card .header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
     .sahsiah-card .badge{font-size:0.7rem;padding:3px 8px;border-radius:999px;font-weight:500}
@@ -133,23 +154,6 @@
     .sahsiah-card .info-row{font-size:0.78rem;color:#4b5563;margin-bottom:4px}
     .sahsiah-card .info-row strong{color:#111827}
     .sahsiah-card .murid-list{font-size:0.75rem;color:#6b7280;background:#f9fafb;padding:6px 8px;border-radius:8px;margin-top:6px}
-    .pemulihan-card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:12px;margin-bottom:10px}
-    .pemulihan-card .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-    .pemulihan-card .kelas-name{font-weight:600;color:#111827}
-    .pemulihan-card .mp-list{font-size:0.8rem;color:#6b7280}
-    .pemulihan-card .btn-edit{background:#2563eb;color:#fff;border:none;padding:4px 10px;border-radius:999px;font-size:0.7rem;cursor:pointer}
-    .pemulihan-card .btn-delete{background:#dc2626;color:#fff;border:none;padding:4px 10px;border-radius:999px;font-size:0.7rem;cursor:pointer;margin-left:4px}
-    .pemantauan-form{background:#f0f9ff;border:1px solid #bae6fd;border-radius:12px;padding:14px;margin-top:10px}
-    .pemantauan-form h3{font-size:0.95rem;color:#0369a1;margin-bottom:10px}
-    .image-upload-area{border:2px dashed #93c5fd;border-radius:10px;padding:20px;text-align:center;cursor:pointer;background:#f0f9ff;transition:all 0.2s}
-    .image-upload-area:hover{background:#dbeafe;border-color:#3b82f6}
-    .image-upload-area.has-image{border-style:solid;border-color:#22c55e;background:#f0fdf4}
-    .image-preview{max-width:100%;max-height:200px;border-radius:8px;margin-top:10px}
-    .signature-pad{border:1px solid #d1d5db;border-radius:10px;background:#fff;touch-action:none}
-    .signature-actions{margin-top:8px;display:flex;gap:8px}
-    .btn-clear-sig{background:#f3f4f6;color:#374151;border:none;padding:6px 12px;border-radius:999px;font-size:0.8rem;cursor:pointer}
-    .btn-logout{background:#f3f4f6;color:#dc2626;border:1px solid #fecaca;padding:6px 14px;border-radius:999px;font-size:0.8rem;cursor:pointer;margin-top:10px}
-    .btn-logout:hover{background:#fee2e2}
   </style>
 </head>
 <body>
@@ -160,28 +164,32 @@
       <span id="notifBadge">!</span>
       <h1>REKOD PEMANTAUAN KELAS SKSA</h1>
     </div>
+
     <div class="status-row">
       <div class="status-pill"><span id="headerTarikh">--/--/----</span></div>
       <div class="status-pill"><span id="headerMasa">--:--:--</span></div>
       <div class="status-pill"><span id="headerWaktu">Luar Waktu PdP</span></div>
     </div>
-    <!-- Admin Dropdown -->
-    <div class="admin-tab-row" id="adminTabRow">
-      <select class="admin-dropdown" id="adminFunctionSelect">
-        <option value="">📋 PANEL ADMIN - Pilih Fungsi</option>
-        <option value="semak">📊 Semak Rekod</option>
-        <option value="sahsiah">👥 Rekod Sahsiah Murid</option>
-        <option value="pemulihan">📚 Tetapan Kelas Pecahan</option>
-        <option value="pemantauan">🔍 Pemantauan Pentadbir/Pelawat</option>
-      </select>
-      <button class="btn-logout" id="btnLogout">🚪 Log Keluar Admin</button>
+
+    <!-- Main Tabs -->
+    <div class="tab-row" id="mainTabRow">
+      <button id="tabRekod" class="tab-btn active">REKOD SEMASA</button>
+      <button id="tabSemak" class="tab-btn">SEMAK REKOD</button>
     </div>
-    <!-- MAIN VIEW -->
-    <div id="mainView">
+    
+    <!-- Admin Tab (only shows after login) -->
+    <div class="admin-tab-row" id="adminTabRow">
+      <button id="tabAdmin" class="tab-btn-admin">📋 PANEL ADMIN</button>
+    </div>
+
+    <!-- REKOD SEMASA -->
+    <div id="rekodView">
       <div class="tab-row" style="margin-top:10px;">
         <button id="subTabForm" class="tab-btn active">ISI REKOD</button>
         <button id="subTabToday" class="tab-btn">REKOD HARI INI</button>
       </div>
+
+      <!-- Form -->
       <div id="rekodFormView">
         <div class="input-card">
           <div class="field">
@@ -192,6 +200,7 @@
               <label for="guruGanti">Guru Ganti</label>
             </div>
           </div>
+          
           <div class="field">
             <label class="required">Jenis Kelas</label>
             <div class="radio-group">
@@ -210,11 +219,11 @@
                 <option value="">Sila Pilih</option>
                 <option value="BC">Bahasa Cina (BC)</option>
                 <option value="BA">Bahasa Arab (BA)</option>
-                <option value="PEMULIHAN_BM">Pemulihan BM</option>
-                <option value="PEMULIHAN_MT">Pemulihan Matematik</option>
+                <option value="PEMULIHAN">Pemulihan</option>
               </select>
             </div>
           </div>
+          
           <div class="field">
             <label class="required">Kelas</label>
             <select id="kelas"><option value="">Sila Pilih</option></select>
@@ -255,11 +264,12 @@
             <div id="kehadiranSubtext" class="kehadiran-subtext">Kehadiran hari ini: -</div>
             <div class="catatan-field" id="catatanField">
               <label class="required">Catatan Keberadaan Murid Tidak Hadir</label>
-              <textarea id="catatanKeberadaan" placeholder="Contoh: Ali - perjumpaan pengawas"></textarea>
+              <textarea id="catatanKeberadaan" placeholder="Contoh: Ali - perjumpaan pengawas, Siti - ke bilik kesihatan"></textarea>
             </div>
           </div>
           <button class="btn-submit" id="btnSave">HANTAR</button>
         </div>
+
         <div class="section-title">Maklumat Sahsiah Murid (tidak wajib)</div>
         <div class="input-card">
           <div class="field">
@@ -272,10 +282,12 @@
               </div>
             </div>
           </div>
+
           <div class="toggle-row">
             <button type="button" class="toggle-btn active" id="btnGood">Amalan Baik</button>
             <button type="button" class="toggle-btn" id="btnBad">Kesalahan Disiplin</button>
           </div>
+
           <div id="panelGood">
             <div class="field">
               <label>Kategori Amalan Baik</label>
@@ -303,6 +315,7 @@
               <textarea id="keteranganAmalan" placeholder="Contoh: Menolong rakan yang kesusahan tanpa diminta."></textarea>
             </div>
           </div>
+
           <div id="panelBad" style="display:none;">
             <div class="field">
               <label>Kategori Kes</label>
@@ -325,125 +338,135 @@
               <textarea id="keteranganKes" placeholder="Contoh: Didapati menggunakan telefon bimbit di dalam kelas."></textarea>
             </div>
           </div>
+
           <div class="btn-row">
             <button type="button" class="btn-secondary" id="btnClearForm">Reset Semua</button>
           </div>
         </div>
       </div>
+
+      <!-- Rekod Hari Ini -->
       <div id="rekodTodayView" style="display:none;">
         <div class="section-title">Jadual Guru Mengikut Waktu (Semua Kelas - Hari Ini)</div>
         <div style="overflow-x:auto;">
-          <table id="allClassSchedule"><thead id="allClassHead"><tr style="background:#047857;color:white;"><th>Kelas</th></tr></thead><tbody id="allClassBody"><tr><td colspan="14" style="text-align:center;">Loading...</td></tr></tbody></table>
+          <table id="allClassSchedule" border="0" cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse;">
+            <thead id="allClassHead">
+              <tr style="background:#047857; color:white;">
+                <th>Kelas</th>
+              </tr>
+            </thead>
+            <tbody id="allClassBody">
+              <tr><td colspan="14" style="text-align:center;">Loading...</td></tr>
+            </tbody>
+          </table>
         </div>
         <div style="margin-top:10px;font-size:0.7rem;color:#6b7280;">
-          <span class="pill-mp pill-bc">BC</span> Bahasa Cina 
-          <span class="pill-mp pill-ba">BA</span> Bahasa Arab 
-          <span class="pill-mp pill-pemulihan">PEM-BM</span> Pemulihan BM 
-          <span class="pill-mp pill-pemulihan-mt">PEM-MT</span> Pemulihan MT 
-          <span style="background:#dbeafe;padding:2px 6px;border-radius:4px;font-size:0.65rem;">📋 Ada Pemantauan</span>
+          <span class="pill-mp pill-bc">BC</span> Bahasa Cina &nbsp;
+          <span class="pill-mp pill-ba">BA</span> Bahasa Arab &nbsp;
+          <span class="pill-mp pill-pemulihan">PEM</span> Pemulihan
         </div>
       </div>
     </div>
+
     <!-- SEMAK REKOD -->
     <div id="semakView" style="display:none;">
-      <div class="section-title">📊 Semak Rekod Mengikut Tarikh & Kelas</div>
+      <div class="section-title">Semak Rekod Mengikut Tarikh & Kelas</div>
       <div class="input-card">
-        <div class="field"><label class="required">Tarikh</label><input type="date" id="semakTarikh" /></div>
-        <div class="field"><label class="required">Kelas</label><select id="semakKelas"><option value="">Sila Pilih</option></select></div>
+        <div class="field">
+          <label class="required">Tarikh</label>
+          <input type="date" id="semakTarikh" />
+        </div>
+        <div class="field">
+          <label class="required">Kelas</label>
+          <select id="semakKelas"><option value="">Sila Pilih</option></select>
+        </div>
         <button class="btn-submit" style="margin-top:4px;" id="btnSemakLoad">SEMAK REKOD</button>
         <div id="semakSummary" class="empty-state">Sila pilih tarikh dan kelas untuk semak rekod.</div>
       </div>
+
       <div class="section-title">Jadual Guru Mengikut Waktu</div>
       <div class="table-wrapper" id="semakTableWrapper" style="display:none;">
-        <table><thead><tr id="semakHeadRow"></tr></thead><tbody><tr id="semakBodyRow"></tr></tbody></table>
+        <table>
+          <thead><tr id="semakHeadRow"></tr></thead>
+          <tbody><tr id="semakBodyRow"></tr></tbody>
+        </table>
+      </div>
+
+      <div id="semakDetailCard" class="input-card" style="margin-top:10px; display:none;">
+        <div class="section-title" style="margin-top:0;">Butiran Rekod</div>
+        <div id="semakDetailContent" style="font-size:.82rem;color:#374151;"></div>
       </div>
     </div>
-    <!-- SAHSIAH -->
-    <div id="sahsiahView" style="display:none;">
-      <div class="section-title">👥 Rekod Sahsiah Murid (Semua)</div>
+    
+    <!-- ADMIN VIEW -->
+    <div id="adminView" style="display:none;">
+      <div class="section-title">📋 Rekod Sahsiah Murid (Semua)</div>
       <p style="font-size:0.8rem;color:#6b7280;margin-bottom:12px;">Senarai lengkap laporan sahsiah murid.</p>
-      <div id="adminSahsiahList"><div class="empty-state">Loading...</div></div>
-    </div>
-    <!-- PEMULIHAN CONFIG -->
-    <div id="pemulihanView" style="display:none;">
-      <div class="section-title">📚 Tetapan Kelas Pecahan (BC, BA, Pemulihan)</div>
-      <p style="font-size:0.8rem;color:#6b7280;margin-bottom:12px;">Tetapkan senarai murid untuk kelas pecahan.</p>
-      <div class="input-card" style="margin-bottom:14px;">
-        <div class="field"><label class="required">Jenis Kelas Pecahan</label>
-          <select id="pemulihanJenis"><option value="">Sila Pilih</option><option value="BC">Bahasa Cina (BC)</option><option value="BA">Bahasa Arab (BA)</option><option value="PEMULIHAN_BM">Pemulihan BM</option><option value="PEMULIHAN_MT">Pemulihan Matematik</option></select>
-        </div>
-        <div class="field"><label class="required">Kelas</label><select id="pemulihanKelas"><option value="">Sila Pilih</option></select></div>
-        <div class="field"><label class="required">Senarai Nama Murid (satu nama per baris)</label><textarea id="pemulihanNama" placeholder="AHMAD BIN ALI&#10;SITI BINTI ABU&#10;..." style="min-height:120px;"></textarea></div>
-        <button class="btn-submit" id="btnSavePemulihan">💾 SIMPAN TETAPAN</button>
-      </div>
-      <div class="section-title">Senarai Tetapan Sedia Ada</div>
-      <div id="pemulihanList"><div class="empty-state">Loading...</div></div>
-    </div>
-    <!-- PEMANTAUAN -->
-    <div id="pemantauanView" style="display:none;">
-      <div class="section-title">🔍 Pemantauan Pentadbir/Pelawat</div>
-      <p style="font-size:0.8rem;color:#6b7280;margin-bottom:12px;">Klik pada mana-mana sel kelas untuk membuat laporan pemantauan.</p>
-      <div style="overflow-x:auto;">
-        <table id="pemantauanSchedule"><thead id="pemantauanHead"><tr style="background:#2563eb;color:white;"><th style="border:2px solid #000;">Kelas</th></tr></thead><tbody id="pemantauanBody"><tr><td colspan="14" style="text-align:center;border:2px solid #000;">Loading...</td></tr></tbody></table>
-      </div>
-      <div id="pemantauanFormWrapper" style="display:none;">
-        <div class="pemantauan-form">
-          <h3>📝 Laporan Pemantauan - <span id="pemantauanKelasLabel">-</span> (<span id="pemantauanWaktuLabel">-</span>)</h3>
-          <div class="field"><label class="required">Nama Pentadbir/Pelawat</label><input type="text" id="pemantauanNama" placeholder="Contoh: En. Ahmad (GPK HEM)" /></div>
-          <div class="field"><label>Catatan Pemantauan</label><textarea id="pemantauanCatatan" placeholder="Catatan tentang keadaan kelas, PdP, dll..."></textarea></div>
-          <div class="field"><label>Muat Naik Gambar</label>
-            <div class="image-upload-area" id="imageUploadArea">
-              <div id="imageUploadText">📷 Klik atau seret gambar ke sini</div>
-              <img id="imagePreview" class="image-preview" style="display:none;" />
-              <input type="file" id="imageInput" accept="image/*" style="display:none;" />
-            </div>
-          </div>
-          <div class="field"><label>Tandatangan</label><canvas id="signaturePad" class="signature-pad" width="300" height="150"></canvas>
-            <div class="signature-actions"><button type="button" class="btn-clear-sig" id="btnClearSignature">🗑️ Padam Tandatangan</button></div>
-          </div>
-          <div class="btn-row" style="margin-top:14px;">
-            <button type="button" class="btn-secondary" id="btnCancelPemantauan">Batal</button>
-            <button type="button" class="btn-submit" style="width:auto;" id="btnSavePemantauan">💾 SIMPAN LAPORAN</button>
-          </div>
-        </div>
+      <div id="adminSahsiahList">
+        <div class="empty-state">Loading...</div>
       </div>
     </div>
   </div>
 </div>
+
 <!-- Admin Login Modal -->
 <div id="adminLoginModal" class="modal-backdrop">
-  <div class="modal-card"><h2>🔐 Login Admin</h2><p>Masukkan kata laluan untuk akses panel admin.</p>
-    <div class="field"><input type="password" id="adminPassword" placeholder="Kata laluan" /></div>
-    <div class="modal-buttons"><button type="button" class="btn-modal-cancel" id="adminCancelBtn">Batal</button><button type="button" class="btn-modal-primary" id="adminLoginBtn">Login</button></div>
+  <div class="modal-card">
+    <h2>🔐 Login Admin</h2>
+    <p>Masukkan kata laluan untuk akses panel admin.</p>
+    <div class="field">
+      <input type="password" id="adminPassword" placeholder="Kata laluan" />
+    </div>
+    <div class="modal-buttons">
+      <button type="button" class="btn-modal-cancel" id="adminCancelBtn">Batal</button>
+      <button type="button" class="btn-modal-primary" id="adminLoginBtn">Login</button>
+    </div>
   </div>
 </div>
+
 <!-- Detail Popup Modal -->
 <div id="detailPopupModal" class="modal-backdrop">
-  <div class="modal-card detail-popup" style="max-width:500px;">
+  <div class="modal-card detail-popup">
     <button type="button" class="btn-close-modal" id="closeDetailPopup">&times;</button>
     <h2 id="detailPopupTitle">Maklumat Rekod</h2>
     <div id="detailPopupContent"></div>
   </div>
 </div>
+
 <!-- Install Banner -->
 <div id="installBanner" class="install-banner">
-  <div class="install-banner-text"><strong>Pasang Aplikasi</strong>Muat turun untuk akses lebih pantas</div>
+  <div class="install-banner-text">
+    <strong>Pasang Aplikasi</strong>
+    Muat turun untuk akses lebih pantas
+  </div>
   <button class="btn-install" id="btnInstall">Pasang</button>
   <button class="btn-dismiss" id="btnDismiss">Nanti</button>
 </div>
+
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 <script src="database.js"></script>
+
 <script>
+// =====================================================
+// GLOBAL VARIABLES & HELPERS
+// =====================================================
 let isAdminLoggedIn = false;
 const ADMIN_PASSWORD = "admin123";
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxk0UX2u5m5ME7rzgcNME0r9FmFIZscldreuvGbEeS7epNqaflwL2kmBasHFnwXqk_5/exec";
 
 const periods = [
-  {code:"W1",start:"7.40",end:"8.10"},{code:"W2",start:"8.10",end:"8.40"},{code:"W3",start:"8.40",end:"9.10"},
-  {code:"W4",start:"9.10",end:"9.40"},{code:"W5",start:"9.40",end:"10.10"},{code:"W6",start:"10.10",end:"10.40"},
-  {code:"W7",start:"10.40",end:"11.10"},{code:"W8",start:"11.10",end:"11.40"},{code:"W9",start:"11.40",end:"12.10"},
-  {code:"W10",start:"12.10",end:"12.40"},{code:"W11",start:"12.40",end:"13.10"},{code:"W12",start:"13.10",end:"13.40"},
+  {code:"W1",start:"7.40",end:"8.10"},
+  {code:"W2",start:"8.10",end:"8.40"},
+  {code:"W3",start:"8.40",end:"9.10"},
+  {code:"W4",start:"9.10",end:"9.40"},
+  {code:"W5",start:"9.40",end:"10.10"},
+  {code:"W6",start:"10.10",end:"10.40"},
+  {code:"W7",start:"10.40",end:"11.10"},
+  {code:"W8",start:"11.10",end:"11.40"},
+  {code:"W9",start:"11.40",end:"12.10"},
+  {code:"W10",start:"12.10",end:"12.40"},
+  {code:"W11",start:"12.40",end:"13.10"},
+  {code:"W12",start:"13.10",end:"13.40"},
   {code:"W13",start:"13.40",end:"14.10"}
 ];
 const TOTAL_WAKTU = 13;
@@ -455,14 +478,35 @@ function getRehatWaktu(kelas) {
   return null;
 }
 
-function timeToMinutes(str) { const [h, m] = str.split(".").map(Number); return h * 60 + m; }
-function formatDate(d) { return String(d.getDate()).padStart(2, "0") + "/" + String(d.getMonth() + 1).padStart(2, "0") + "/" + d.getFullYear(); }
-function formatDateKey(d) { return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
-function formatTime(d) { return String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0") + ":" + String(d.getSeconds()).padStart(2, "0"); }
+function timeToMinutes(str) {
+  const [h, m] = str.split(".").map(Number);
+  return h * 60 + m;
+}
+
+function formatDate(d) {
+  return String(d.getDate()).padStart(2, "0") + "/" + 
+         String(d.getMonth() + 1).padStart(2, "0") + "/" + 
+         d.getFullYear();
+}
+
+function formatDateKey(d) {
+  return d.getFullYear() + "-" + 
+         String(d.getMonth() + 1).padStart(2, "0") + "-" + 
+         String(d.getDate()).padStart(2, "0");
+}
+
+function formatTime(d) {
+  return String(d.getHours()).padStart(2, "0") + ":" + 
+         String(d.getMinutes()).padStart(2, "0") + ":" + 
+         String(d.getSeconds()).padStart(2, "0");
+}
 
 function getCurrentPeriod(now) {
   const mn = now.getHours() * 60 + now.getMinutes();
-  for (const p of periods) { const s = timeToMinutes(p.start), e = timeToMinutes(p.end); if (mn >= s && mn < e) return p; }
+  for (const p of periods) {
+    const s = timeToMinutes(p.start), e = timeToMinutes(p.end);
+    if (mn >= s && mn < e) return p;
+  }
   return null;
 }
 
@@ -478,48 +522,96 @@ function updateDateTimeUI() {
 function updateWaktuPreview() {
   const waktuPreview = document.getElementById("waktuPreview");
   if (!waktuPreview) return;
+  
   const now = new Date();
   const p = getCurrentPeriod(now);
   const waktuMengajar = parseInt(document.getElementById("waktuMengajar")?.value) || 1;
-  if (!p) { waktuPreview.textContent = "Rekod akan diisi: Luar waktu PdP"; return; }
+  
+  if (!p) {
+    waktuPreview.textContent = "Rekod akan diisi: Luar waktu PdP";
+    return;
+  }
+  
   const startIndex = parseInt(p.code.replace('W', '')) - 1;
   const waktuList = [];
-  for (let i = 0; i < waktuMengajar && (startIndex + i) < TOTAL_WAKTU; i++) { waktuList.push("W" + (startIndex + 1 + i)); }
-  if (waktuList.length > 0) { waktuPreview.textContent = "Rekod akan diisi: " + waktuList.join(", "); waktuPreview.style.color = "#047857"; }
-  else { waktuPreview.textContent = "Rekod akan diisi: -"; }
+  
+  for (let i = 0; i < waktuMengajar && (startIndex + i) < TOTAL_WAKTU; i++) {
+    waktuList.push("W" + (startIndex + 1 + i));
+  }
+  
+  if (waktuList.length > 0) {
+    waktuPreview.textContent = "Rekod akan diisi: " + waktuList.join(", ");
+    waktuPreview.style.color = "#047857";
+  } else {
+    waktuPreview.textContent = "Rekod akan diisi: -";
+  }
 }
 
-// PWA
-if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW failed:', err)); }); }
+// =====================================================
+// SERVICE WORKER & PWA
+// =====================================================
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(reg => console.log('SW registered'))
+      .catch(err => console.log('SW failed:', err));
+  });
+}
+
 let deferredPrompt;
 const installBanner = document.getElementById('installBanner');
 const btnInstall = document.getElementById('btnInstall');
 const btnDismiss = document.getElementById('btnDismiss');
-window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; installBanner.classList.add('show'); });
-btnInstall.addEventListener('click', async () => { if (!deferredPrompt) return; deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt = null; installBanner.classList.remove('show'); });
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  installBanner.classList.add('show');
+});
+
+btnInstall.addEventListener('click', async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  installBanner.classList.remove('show');
+});
+
 btnDismiss.addEventListener('click', () => installBanner.classList.remove('show'));
 
-// View Navigation
-const mainView = document.getElementById("mainView");
+// =====================================================
+// TABS NAVIGATION
+// =====================================================
+const tabRekod = document.getElementById("tabRekod");
+const tabSemak = document.getElementById("tabSemak");
+const tabAdmin = document.getElementById("tabAdmin");
+const rekodView = document.getElementById("rekodView");
 const semakView = document.getElementById("semakView");
-const sahsiahView = document.getElementById("sahsiahView");
-const pemulihanView = document.getElementById("pemulihanView");
-const pemantauanView = document.getElementById("pemantauanView");
+const adminView = document.getElementById("adminView");
 const adminTabRow = document.getElementById("adminTabRow");
-const adminFunctionSelect = document.getElementById("adminFunctionSelect");
 
-function hideAllViews() { mainView.style.display = "none"; semakView.style.display = "none"; sahsiahView.style.display = "none"; pemulihanView.style.display = "none"; pemantauanView.style.display = "none"; }
-function showMainView() { hideAllViews(); mainView.style.display = "block"; adminFunctionSelect.value = ""; }
+function setMainTab(tab) {
+  tabRekod.classList.remove("active");
+  tabSemak.classList.remove("active");
+  rekodView.style.display = "none";
+  semakView.style.display = "none";
+  adminView.style.display = "none";
+  
+  if (tab === "rekod") {
+    tabRekod.classList.add("active");
+    rekodView.style.display = "block";
+  } else if (tab === "semak") {
+    tabSemak.classList.add("active");
+    semakView.style.display = "block";
+  } else if (tab === "admin") {
+    adminView.style.display = "block";
+    loadAllSahsiahRecords();
+  }
+}
 
-adminFunctionSelect.addEventListener("change", function() {
-  const val = this.value;
-  hideAllViews();
-  if (val === "") mainView.style.display = "block";
-  else if (val === "semak") semakView.style.display = "block";
-  else if (val === "sahsiah") { sahsiahView.style.display = "block"; loadAllSahsiahRecords(); }
-  else if (val === "pemulihan") { pemulihanView.style.display = "block"; loadPemulihanConfig(); }
-  else if (val === "pemantauan") { pemantauanView.style.display = "block"; loadPemantauanSchedule(); }
-});
+tabRekod.addEventListener("click", () => setMainTab("rekod"));
+tabSemak.addEventListener("click", () => setMainTab("semak"));
+tabAdmin.addEventListener("click", () => setMainTab("admin"));
 
 const subTabForm = document.getElementById("subTabForm");
 const subTabToday = document.getElementById("subTabToday");
@@ -527,30 +619,70 @@ const rekodFormView = document.getElementById("rekodFormView");
 const rekodTodayView = document.getElementById("rekodTodayView");
 
 function setSubTab(tab) {
-  if (tab === "form") { subTabForm.classList.add("active"); subTabToday.classList.remove("active"); rekodFormView.style.display = "block"; rekodTodayView.style.display = "none"; }
-  else { subTabForm.classList.remove("active"); subTabToday.classList.add("active"); rekodFormView.style.display = "none"; rekodTodayView.style.display = "block"; loadAllClassesToday(); }
+  if (tab === "form") {
+    subTabForm.classList.add("active");
+    subTabToday.classList.remove("active");
+    rekodFormView.style.display = "block";
+    rekodTodayView.style.display = "none";
+  } else {
+    subTabForm.classList.remove("active");
+    subTabToday.classList.add("active");
+    rekodFormView.style.display = "none";
+    rekodTodayView.style.display = "block";
+    loadAllClassesToday();
+  }
 }
+
 subTabForm.addEventListener("click", () => setSubTab("form"));
 subTabToday.addEventListener("click", () => setSubTab("today"));
 
-// Jenis Kelas
+// =====================================================
+// JENIS KELAS (PENUH / PECAHAN)
+// =====================================================
 const jenisKelasP = document.getElementById("jenisKelasP");
 const jenisKelasC = document.getElementById("jenisKelasC");
 const mpField = document.getElementById("mpField");
-function updateJenisKelas() { if (jenisKelasC.checked) { mpField.classList.add("show"); } else { mpField.classList.remove("show"); document.getElementById("mataPelajaran").value = ""; } }
+
+function updateJenisKelas() {
+  if (jenisKelasC.checked) {
+    mpField.classList.add("show");
+  } else {
+    mpField.classList.remove("show");
+    document.getElementById("mataPelajaran").value = "";
+  }
+}
+
 jenisKelasP.addEventListener("change", updateJenisKelas);
 jenisKelasC.addEventListener("change", updateJenisKelas);
 
-// Sahsiah Toggle
+// =====================================================
+// SAHSIAH TOGGLE
+// =====================================================
 const btnGood = document.getElementById("btnGood");
 const btnBad = document.getElementById("btnBad");
 const panelGood = document.getElementById("panelGood");
 const panelBad = document.getElementById("panelBad");
-function setMode(mode) { if (mode === "good") { btnGood.classList.add("active"); btnBad.classList.remove("active"); panelGood.style.display = "block"; panelBad.style.display = "none"; } else { btnGood.classList.remove("active"); btnBad.classList.add("active"); panelGood.style.display = "none"; panelBad.style.display = "block"; } }
+
+function setMode(mode) {
+  if (mode === "good") {
+    btnGood.classList.add("active");
+    btnBad.classList.remove("active");
+    panelGood.style.display = "block";
+    panelBad.style.display = "none";
+  } else {
+    btnGood.classList.remove("active");
+    btnBad.classList.add("active");
+    panelGood.style.display = "none";
+    panelBad.style.display = "block";
+  }
+}
+
 btnGood.addEventListener("click", () => setMode("good"));
 btnBad.addEventListener("click", () => setMode("bad"));
 
-// Multi-Select Murid
+// =====================================================
+// MULTI-SELECT MURID
+// =====================================================
 const kelasSelect = document.getElementById("kelas");
 const namaMuridDisplay = document.getElementById("namaMuridDisplay");
 const namaMuridDropdown = document.getElementById("namaMuridDropdown");
@@ -559,9 +691,13 @@ const namaMuridWrapper = document.getElementById("namaMuridWrapper");
 let selectedMurids = [];
 
 function updateNamaMuridDisplay() {
-  if (selectedMurids.length === 0) namaMuridDisplay.value = "";
-  else if (selectedMurids.length <= 2) namaMuridDisplay.value = selectedMurids.join(", ");
-  else namaMuridDisplay.value = selectedMurids.length + " murid dipilih";
+  if (selectedMurids.length === 0) {
+    namaMuridDisplay.value = "";
+  } else if (selectedMurids.length <= 2) {
+    namaMuridDisplay.value = selectedMurids.join(", ");
+  } else {
+    namaMuridDisplay.value = selectedMurids.length + " murid dipilih";
+  }
 }
 
 function rebuildNamaMuridOptions() {
@@ -569,62 +705,139 @@ function rebuildNamaMuridOptions() {
   updateNamaMuridDisplay();
   namaMuridOptions.innerHTML = "";
   const kelasVal = kelasSelect.value.trim();
-  if (!kelasVal) { namaMuridOptions.innerHTML = '<div class="multi-empty">Sila pilih kelas terlebih dahulu.</div>'; return; }
+  if (!kelasVal) {
+    namaMuridOptions.innerHTML = '<div class="multi-empty">Sila pilih kelas terlebih dahulu.</div>';
+    return;
+  }
+  
+  // Check if kelas pecahan and load specific MP students
   const isPecahan = jenisKelasC.checked;
   const mp = document.getElementById("mataPelajaran").value;
+  
   let path = "config/classes/classData/" + kelasVal;
-  if (isPecahan && mp) path = "config/mp/" + mp + "/" + kelasVal;
+  if (isPecahan && mp) {
+    // Load from MP specific list if available
+    path = "config/mp/" + mp + "/" + kelasVal;
+  }
+  
   db.ref(path).once("value").then(snap => {
     let data = snap.val();
-    if (!data) return db.ref("config/classes/classData/" + kelasVal).once("value");
+    if (!data) {
+      // Fallback to class list
+      return db.ref("config/classes/classData/" + kelasVal).once("value");
+    }
     return Promise.resolve(snap);
   }).then(snap => {
     const data = snap.val();
-    if (!data) { namaMuridOptions.innerHTML = '<div class="multi-empty">Tiada data murid.</div>'; return; }
+    if (!data) {
+      namaMuridOptions.innerHTML = '<div class="multi-empty">Tiada data murid.</div>';
+      return;
+    }
     const senarai = Object.values(data);
-    if (!senarai.length) { namaMuridOptions.innerHTML = '<div class="multi-empty">Tiada data murid.</div>'; return; }
+    if (!senarai.length) {
+      namaMuridOptions.innerHTML = '<div class="multi-empty">Tiada data murid.</div>';
+      return;
+    }
     senarai.forEach(name => {
       const row = document.createElement("label");
       row.className = "multi-option-row";
       const cb = document.createElement("input");
-      cb.type = "checkbox"; cb.value = name;
-      cb.addEventListener("change", () => { if (cb.checked) { if (!selectedMurids.includes(name)) selectedMurids.push(name); } else { selectedMurids = selectedMurids.filter(n => n !== name); } updateNamaMuridDisplay(); });
-      const span = document.createElement("span"); span.textContent = name;
-      row.appendChild(cb); row.appendChild(span); namaMuridOptions.appendChild(row);
+      cb.type = "checkbox";
+      cb.value = name;
+      cb.addEventListener("change", () => {
+        if (cb.checked) {
+          if (!selectedMurids.includes(name)) selectedMurids.push(name);
+        } else {
+          selectedMurids = selectedMurids.filter(n => n !== name);
+        }
+        updateNamaMuridDisplay();
+      });
+      const span = document.createElement("span");
+      span.textContent = name;
+      row.appendChild(cb);
+      row.appendChild(span);
+      namaMuridOptions.appendChild(row);
     });
-  }).catch(() => { namaMuridOptions.innerHTML = '<div class="multi-empty">Ralat semasa ambil data murid.</div>'; });
+  }).catch(() => {
+    namaMuridOptions.innerHTML = '<div class="multi-empty">Ralat semasa ambil data murid.</div>';
+  });
 }
 
-kelasSelect.addEventListener("change", () => { rebuildNamaMuridOptions(); loadKehadiranForKelas(); });
-document.getElementById("mataPelajaran").addEventListener("change", rebuildNamaMuridOptions);
-namaMuridDisplay.addEventListener("click", () => { const h = namaMuridDropdown.style.display === "none" || namaMuridDropdown.style.display === ""; namaMuridDropdown.style.display = h ? "block" : "none"; });
-document.addEventListener("click", e => { if (!namaMuridWrapper.contains(e.target)) namaMuridDropdown.style.display = "none"; });
+kelasSelect.addEventListener("change", () => {
+  rebuildNamaMuridOptions();
+  loadKehadiranForKelas();
+});
 
-// Kehadiran
+document.getElementById("mataPelajaran").addEventListener("change", rebuildNamaMuridOptions);
+
+namaMuridDisplay.addEventListener("click", () => {
+  const h = namaMuridDropdown.style.display === "none" || namaMuridDropdown.style.display === "";
+  namaMuridDropdown.style.display = h ? "block" : "none";
+});
+
+document.addEventListener("click", e => {
+  if (!namaMuridWrapper.contains(e.target)) namaMuridDropdown.style.display = "none";
+});
+
+// =====================================================
+// LOAD KEHADIRAN
+// =====================================================
 let presentMuridKelas = 0;
 let totalMuridKelas = 0;
+
 function loadKehadiranForKelas() {
   const kelasVal = kelasSelect.value.trim();
   const ratioEl = document.getElementById("kehadiranRatio");
   const subtextEl = document.getElementById("kehadiranSubtext");
   const catatanField = document.getElementById("catatanField");
-  if (!kelasVal) { ratioEl.textContent = "/ -"; subtextEl.textContent = "Kehadiran hari ini: -"; catatanField.classList.remove("show"); presentMuridKelas = 0; totalMuridKelas = 0; return; }
+  
+  if (!kelasVal) {
+    ratioEl.textContent = "/ -";
+    subtextEl.textContent = "Kehadiran hari ini: -";
+    catatanField.classList.remove("show");
+    presentMuridKelas = 0;
+    totalMuridKelas = 0;
+    return;
+  }
+  
   const today = formatDateKey(new Date());
   const path = "kehadiran/" + today + "/" + kelasVal;
+  
   db.ref(path).once("value").then(snap => {
     const data = snap.val();
-    if (data && data.present !== undefined && data.total !== undefined) { ratioEl.textContent = "/ " + data.present; subtextEl.textContent = "Kehadiran hari ini: " + data.present + "/" + data.total; presentMuridKelas = data.present; totalMuridKelas = data.total; }
-    else { ratioEl.textContent = "/ -"; subtextEl.textContent = "Kehadiran hari ini: Tiada data"; presentMuridKelas = 0; totalMuridKelas = 0; }
-  }).catch(err => { ratioEl.textContent = "/ -"; subtextEl.textContent = "Kehadiran hari ini: Ralat"; presentMuridKelas = 0; totalMuridKelas = 0; });
+    if (data && data.present !== undefined && data.total !== undefined) {
+      ratioEl.textContent = "/ " + data.present;
+      subtextEl.textContent = "Kehadiran hari ini: " + data.present + "/" + data.total;
+      presentMuridKelas = data.present;
+      totalMuridKelas = data.total;
+    } else {
+      ratioEl.textContent = "/ -";
+      subtextEl.textContent = "Kehadiran hari ini: Tiada data";
+      presentMuridKelas = 0;
+      totalMuridKelas = 0;
+    }
+  }).catch(err => {
+    ratioEl.textContent = "/ -";
+    subtextEl.textContent = "Kehadiran hari ini: Ralat";
+    presentMuridKelas = 0;
+    totalMuridKelas = 0;
+  });
 }
+
 document.getElementById("jumlahMurid").addEventListener("input", function() {
   const jumlah = parseInt(this.value) || 0;
   const catatanField = document.getElementById("catatanField");
-  if (presentMuridKelas > 0 && jumlah < presentMuridKelas) catatanField.classList.add("show");
-  else catatanField.classList.remove("show");
+  
+  if (presentMuridKelas > 0 && jumlah < presentMuridKelas) {
+    catatanField.classList.add("show");
+  } else {
+    catatanField.classList.remove("show");
+  }
 });
 
-// Form Helpers
+// =====================================================
+// FORM HELPERS
+// =====================================================
 function hasSahsiahData() {
   const hasNama = selectedMurids.length > 0;
   const amalan = document.getElementById("amalanBaik").value;
@@ -663,24 +876,104 @@ function clearForm() {
   totalMuridKelas = 0;
   updateWaktuPreview();
 }
+
 document.getElementById("btnClearForm").addEventListener("click", clearForm);
 document.getElementById("waktuMengajar").addEventListener("change", updateWaktuPreview);
 
-function saveRecordToFirebase(rec) { const key = db.ref("kehadiran").push().key; return db.ref("kehadiran/" + key).set(rec); }
+function saveRecordToFirebase(rec) {
+  const key = db.ref("kehadiran").push().key;
+  return db.ref("kehadiran/" + key).set(rec);
+}
+
 function createSahsiahNotification(record) {
-  const notif = { tarikh: record.tarikh, masa: record.masaRekod, kelas: record.kelas, tempat: record.tempat, namaGuru: record.namaGuru, namaMurid: record.namaMurid, jenis: record.jenis, kategori: record.kategori, keterangan: record.keterangan, status: "pending", createdAt: Date.now() };
+  const notif = {
+    tarikh: record.tarikh,
+    masa: record.masaRekod,
+    kelas: record.kelas,
+    tempat: record.tempat,
+    namaGuru: record.namaGuru,
+    namaMurid: record.namaMurid,
+    jenis: record.jenis,
+    kategori: record.kategori,
+    keterangan: record.keterangan,
+    status: "pending",
+    createdAt: Date.now()
+  };
   db.ref("notifications").push(notif);
 }
- "", namaMuridList = [];
+
+// =====================================================
+// SAVE RECORD
+// =====================================================
+document.getElementById("btnSave").addEventListener("click", () => {
+  const namaGuru = document.getElementById("namaGuru").value.trim();
+  const guruGanti = document.getElementById("guruGanti").checked;
+  const isPecahan = jenisKelasC.checked;
+  const mataPelajaran = document.getElementById("mataPelajaran").value;
+  const kelas = kelasSelect.value;
+  const tempat = document.getElementById("tempat").value;
+  const jumlahMurid = document.getElementById("jumlahMurid").value;
+  const waktuMengajar = parseInt(document.getElementById("waktuMengajar").value) || 1;
+  const catatanKeberadaan = document.getElementById("catatanKeberadaan").value.trim();
+  
+  if (!namaGuru || !kelas || !tempat || jumlahMurid === "") {
+    alert("Sila lengkapkan Nama Guru, Kelas, Tempat dan Jumlah Murid.");
+    return;
+  }
+  
+  if (isPecahan && !mataPelajaran) {
+    alert("Sila pilih Mata Pelajaran untuk kelas pecahan.");
+    return;
+  }
+  
+  const jumlah = parseInt(jumlahMurid) || 0;
+  
+  // For kelas penuh, check against presentMuridKelas
+  // For kelas pecahan, no need to check (different count)
+  if (!isPecahan && presentMuridKelas > 0 && jumlah < presentMuridKelas && !catatanKeberadaan) {
+    alert("Sila nyatakan keberadaan " + (presentMuridKelas - jumlah) + " murid yang tidak berada dalam kelas.");
+    return;
+  }
+  
+  const now = new Date();
+  const tarikh = formatDate(now);
+  const masaRekod = formatTime(now);
+  const p = getCurrentPeriod(now);
+  const currentWaktuCode = p ? p.code : null;
+  
+  let startWaktuIndex = -1;
+  if (currentWaktuCode) {
+    startWaktuIndex = parseInt(currentWaktuCode.replace('W', '')) - 1;
+  }
+  
+  if (startWaktuIndex < 0) {
+    alert("Anda berada di luar waktu PdP. Sila rekod semasa waktu mengajar.");
+    return;
+  }
+  
+  if (startWaktuIndex + waktuMengajar > TOTAL_WAKTU) {
+    alert("Waktu mengajar melebihi waktu yang tersedia.");
+    return;
+  }
+  
+  let jenis = null, kategori = "", keterangan = "", namaMuridText = "", namaMuridList = [];
   const adaSahsiah = hasSahsiahData();
+  
   if (adaSahsiah) {
-    if (selectedMurids.length === 0) { alert("Sila pilih sekurang-kurangnya seorang murid untuk rekod sahsiah."); return; }
+    if (selectedMurids.length === 0) {
+      alert("Sila pilih sekurang-kurangnya seorang murid untuk rekod sahsiah.");
+      return;
+    }
     namaMuridList = selectedMurids.slice();
     namaMuridText = namaMuridList.join(", ");
     const isGood = btnGood.classList.contains("active");
+    
     if (isGood) {
       const amalan = document.getElementById("amalanBaik").value;
-      if (!amalan) { alert("Sila pilih kategori Amalan Baik."); return; }
+      if (!amalan) {
+        alert("Sila pilih kategori Amalan Baik.");
+        return;
+      }
       const perincian = document.getElementById("perincianAmalan").value;
       const ket = document.getElementById("keteranganAmalan").value.trim();
       jenis = "baik";
@@ -688,7 +981,10 @@ function createSahsiahNotification(record) {
       keterangan = ket;
     } else {
       const kategoriKes = document.getElementById("kategoriKes").value;
-      if (!kategoriKes) { alert("Sila pilih Kategori Kes."); return; }
+      if (!kategoriKes) {
+        alert("Sila pilih Kategori Kes.");
+        return;
+      }
       const punca = document.getElementById("puncaKes").value.trim();
       const ketKes = document.getElementById("keteranganKes").value.trim();
       jenis = "jahat";
@@ -696,21 +992,56 @@ function createSahsiahNotification(record) {
       keterangan = [punca, ketKes].filter(Boolean).join(" | ");
     }
   }
+  
   const waktuList = [];
-  for (let i = 0; i < waktuMengajar; i++) waktuList.push("W" + (startWaktuIndex + 1 + i));
+  for (let i = 0; i < waktuMengajar; i++) {
+    waktuList.push("W" + (startWaktuIndex + 1 + i));
+  }
+  
   const savePromises = waktuList.map(waktuCode => {
-    const newRecord = { tarikh, waktu: waktuCode, masaRekod, namaGuru, kelas, tempat, guruGanti, jenisKelas: isPecahan ? "pecahan" : "penuh", mataPelajaran: isPecahan ? mataPelajaran : null, jumlahMurid: Number(jumlahMurid), presentMurid: presentMuridKelas || null, totalMurid: totalMuridKelas || null, waktuMengajar, waktuMula: waktuList[0], waktuAkhir: waktuList[waktuList.length - 1], catatanKeberadaan: catatanKeberadaan || null, namaMurid: namaMuridText || null, namaMuridList: namaMuridList.length ? namaMuridList : null, jenis, kategori, keterangan };
+    const newRecord = {
+      tarikh,
+      waktu: waktuCode,
+      masaRekod,
+      namaGuru,
+      kelas,
+      tempat,
+      guruGanti,
+      jenisKelas: isPecahan ? "pecahan" : "penuh",
+      mataPelajaran: isPecahan ? mataPelajaran : null,
+      jumlahMurid: Number(jumlahMurid),
+      presentMurid: presentMuridKelas || null,
+      totalMurid: totalMuridKelas || null,
+      waktuMengajar,
+      waktuMula: waktuList[0],
+      waktuAkhir: waktuList[waktuList.length - 1],
+      catatanKeberadaan: catatanKeberadaan || null,
+      namaMurid: namaMuridText || null,
+      namaMuridList: namaMuridList.length ? namaMuridList : null,
+      jenis, kategori, keterangan
+    };
     return saveRecordToFirebase(newRecord);
   });
+  
   Promise.all(savePromises).then(() => {
-    if (adaSahsiah) { const notifRecord = { tarikh, waktu: waktuList.join(', '), masaRekod, namaGuru, kelas, tempat, namaMurid: namaMuridText, jenis, kategori, keterangan }; createSahsiahNotification(notifRecord); }
+    if (adaSahsiah) {
+      const notifRecord = {
+        tarikh, waktu: waktuList.join(', '), masaRekod, namaGuru, kelas, tempat,
+        namaMurid: namaMuridText, jenis, kategori, keterangan
+      };
+      createSahsiahNotification(notifRecord);
+    }
     const mpLabel = isPecahan ? " (" + mataPelajaran + ")" : "";
     alert("Rekod berjaya disimpan untuk " + waktuList.join(", ") + mpLabel);
     clearForm();
-  }).catch(() => { alert("Gagal simpan rekod. Sila cuba lagi."); });
+  }).catch(() => {
+    alert("Gagal simpan rekod. Sila cuba lagi.");
+  });
 });
 
-// Semak Rekod
+// =====================================================
+// SEMAK REKOD
+// =====================================================
 const semakTarikhInput = document.getElementById("semakTarikh");
 const semakKelasSelect = document.getElementById("semakKelas");
 const btnSemakLoad = document.getElementById("btnSemakLoad");
@@ -719,41 +1050,63 @@ const semakTableWrapper = document.getElementById("semakTableWrapper");
 const semakHeadRow = document.getElementById("semakHeadRow");
 const semakBodyRow = document.getElementById("semakBodyRow");
 
-function dateInputToKey(val) { const parts = val.split("-"); if (parts.length !== 3) return ""; const [y, m, d] = parts; return d + "/" + m + "/" + y; }
-function buildHeadRow() { semakHeadRow.innerHTML = ""; periods.forEach(p => { const th = document.createElement("th"); th.innerHTML = p.code + "<br><small>" + p.start + "-" + p.end + "</small>"; semakHeadRow.appendChild(th); }); }
+function dateInputToKey(val) {
+  const parts = val.split("-");
+  if (parts.length !== 3) return "";
+  const [y, m, d] = parts;
+  return d + "/" + m + "/" + y;
+}
+
+function buildHeadRow() {
+  semakHeadRow.innerHTML = "";
+  periods.forEach(p => {
+    const th = document.createElement("th");
+    th.innerHTML = p.code + "<br><small>" + p.start + "-" + p.end + "</small>";
+    semakHeadRow.appendChild(th);
+  });
+}
 buildHeadRow();
 
 btnSemakLoad.addEventListener("click", () => {
   const t = semakTarikhInput.value;
   const k = semakKelasSelect.value;
-  if (!t || !k) { alert("Sila pilih tarikh dan kelas."); return; }
+  if (!t || !k) {
+    alert("Sila pilih tarikh dan kelas.");
+    return;
+  }
   const tarikhKey = dateInputToKey(t);
+  
   db.ref("kehadiran").orderByChild("tarikh").equalTo(tarikhKey).once("value").then(snap => {
     const data = snap.val();
-    if (!data) { semakSummary.textContent = "Tiada rekod dijumpai."; semakTableWrapper.style.display = "none"; return; }
+    if (!data) {
+      semakSummary.textContent = "Tiada rekod dijumpai.";
+      semakTableWrapper.style.display = "none";
+      return;
+    }
     const rowsByW = {};
     periods.forEach(p => rowsByW[p.code] = []);
-    Object.values(data).forEach(rec => { if (rec.kelas === k && rowsByW[rec.waktu]) rowsByW[rec.waktu].push(rec); });
+    Object.values(data).forEach(rec => {
+      if (rec.kelas === k && rowsByW[rec.waktu]) rowsByW[rec.waktu].push(rec);
+    });
+    
     semakBodyRow.innerHTML = "";
     periods.forEach(p => {
       const td = document.createElement("td");
       const list = rowsByW[p.code];
-      if (!list.length) td.textContent = "-";
-      else {
+      if (!list.length) {
+        td.textContent = "-";
+      } else {
         list.forEach(r => {
           const div = document.createElement("div");
           div.style.marginBottom = "4px";
           let mpBadge = "";
           if (r.mataPelajaran) {
-            let mpClass = "pill-pemulihan";
-            let mpText = r.mataPelajaran;
-            if (r.mataPelajaran === "BC") { mpClass = "pill-bc"; }
-            else if (r.mataPelajaran === "BA") { mpClass = "pill-ba"; }
-            else if (r.mataPelajaran === "PEMULIHAN_MT") { mpClass = "pill-pemulihan-mt"; mpText = "PEM-MT"; }
-            else if (r.mataPelajaran === "PEMULIHAN_BM") { mpText = "PEM-BM"; }
-            mpBadge = '<span class="pill-mp ' + mpClass + '">' + mpText + '</span>';
+            const mpClass = r.mataPelajaran === "BC" ? "pill-bc" : r.mataPelajaran === "BA" ? "pill-ba" : "pill-pemulihan";
+            mpBadge = '<span class="pill-mp ' + mpClass + '">' + r.mataPelajaran + '</span>';
           }
-          div.innerHTML = "<strong>" + r.namaGuru + "</strong>" + (r.guruGanti ? ' <span class="pill-ganti">GANTI</span>' : '') + "<br>" + r.tempat + mpBadge;
+          div.innerHTML = "<strong>" + r.namaGuru + "</strong>" + 
+            (r.guruGanti ? ' <span class="pill-ganti">GANTI</span>' : '') +
+            "<br>" + r.tempat + mpBadge;
           td.appendChild(div);
         });
       }
@@ -764,43 +1117,55 @@ btnSemakLoad.addEventListener("click", () => {
   });
 });
 
-// Detail Popup
+// =====================================================
+// DETAIL POPUP
+// =====================================================
 const detailPopupModal = document.getElementById("detailPopupModal");
 const detailPopupTitle = document.getElementById("detailPopupTitle");
 const detailPopupContent = document.getElementById("detailPopupContent");
 const closeDetailPopup = document.getElementById("closeDetailPopup");
-closeDetailPopup.addEventListener("click", () => detailPopupModal.style.display = "none");
-detailPopupModal.addEventListener("click", (e) => { if (e.target === detailPopupModal) detailPopupModal.style.display = "none"; });
 
-function showDetailPopup(records, kelas, waktu, pemantauanData) {
+closeDetailPopup.addEventListener("click", () => detailPopupModal.style.display = "none");
+detailPopupModal.addEventListener("click", (e) => {
+  if (e.target === detailPopupModal) detailPopupModal.style.display = "none";
+});
+
+function showDetailPopup(records, kelas, waktu) {
   detailPopupTitle.textContent = "Maklumat Rekod - " + kelas + " (" + waktu + ")";
+  
   let html = '';
-  if (records.length === 0) html = '<div class="info-row">Tiada rekod kawalan kelas</div>';
-  else {
+  
+  if (records.length === 0) {
+    html = '<div class="info-row">Tiada rekod</div>';
+  } else {
     records.forEach((record, idx) => {
-      let mpClass = "";
-      if (record.mataPelajaran === "BC") mpClass = "bc";
-      else if (record.mataPelajaran === "BA") mpClass = "ba";
-      else if (record.mataPelajaran && record.mataPelajaran.includes("PEMULIHAN")) mpClass = "pemulihan";
+      const mpClass = record.mataPelajaran === "BC" ? "bc" : record.mataPelajaran === "BA" ? "ba" : record.mataPelajaran === "PEMULIHAN" ? "pemulihan" : "";
       const sectionClass = mpClass ? "record-section " + mpClass : "record-section";
+      
       let mpLabel = "";
       if (record.mataPelajaran) {
-        if (record.mataPelajaran === "BC") mpLabel = " - Bahasa Cina";
-        else if (record.mataPelajaran === "BA") mpLabel = " - Bahasa Arab";
-        else if (record.mataPelajaran === "PEMULIHAN_BM") mpLabel = " - Pemulihan BM";
-        else if (record.mataPelajaran === "PEMULIHAN_MT") mpLabel = " - Pemulihan MT";
+        mpLabel = " - " + (record.mataPelajaran === "BC" ? "Bahasa Cina" : record.mataPelajaran === "BA" ? "Bahasa Arab" : "Pemulihan");
       }
+      
       html += '<div class="' + sectionClass + '">';
-      if (records.length > 1) html += '<div style="font-weight:600;margin-bottom:6px;color:#047857;">📚 Rekod ' + (idx + 1) + mpLabel + '</div>';
+      if (records.length > 1) {
+        html += '<div style="font-weight:600;margin-bottom:6px;color:#047857;">📚 Rekod ' + (idx + 1) + mpLabel + '</div>';
+      }
       html += '<div class="info-row"><strong>👨‍🏫 Guru:</strong> ' + record.namaGuru + (record.guruGanti ? ' <span class="pill-ganti">GURU GANTI</span>' : '') + '</div>';
       html += '<div class="info-row"><strong>📍 Tempat:</strong> ' + record.tempat + '</div>';
       html += '<div class="info-row"><strong>🕐 Masa:</strong> ' + record.masaRekod + '</div>';
       html += '<div class="info-row"><strong>👥 Murid:</strong> ' + record.jumlahMurid + ' orang</div>';
-      if (record.catatanKeberadaan) html += '<div class="info-row"><strong>📝 Catatan:</strong> ' + record.catatanKeberadaan + '</div>';
+      
+      if (record.catatanKeberadaan) {
+        html += '<div class="info-row"><strong>📝 Catatan:</strong> ' + record.catatanKeberadaan + '</div>';
+      }
+      
       if (record.jenis) {
         const sahsiahClass = record.jenis === 'baik' ? 'baik' : 'jahat';
         const sahsiahLabel = record.jenis === 'baik' ? '✅ Amalan Baik' : '⚠️ Kesalahan';
-        html += '<div class="sahsiah-section ' + sahsiahClass + '"><strong>' + sahsiahLabel + '</strong><br>Kategori: ' + (record.kategori || '-') + '<br>';
+        html += '<div class="sahsiah-section ' + sahsiahClass + '">';
+        html += '<strong>' + sahsiahLabel + '</strong><br>';
+        html += 'Kategori: ' + (record.kategori || '-') + '<br>';
         if (record.keterangan) html += 'Keterangan: ' + record.keterangan + '<br>';
         if (record.namaMurid) html += 'Murid: ' + record.namaMurid;
         html += '</div>';
@@ -808,130 +1173,172 @@ function showDetailPopup(records, kelas, waktu, pemantauanData) {
       html += '</div>';
     });
   }
-  if (pemantauanData) {
-    html += '<div class="pemantauan-section"><h4>📋 Laporan Pemantauan</h4>';
-    html += '<div class="info-row"><strong>Pentadbir:</strong> ' + (pemantauanData.namaPentadbir || '-') + '</div>';
-    html += '<div class="info-row"><strong>Masa:</strong> ' + (pemantauanData.masa || '-') + '</div>';
-    if (pemantauanData.catatan) html += '<div class="info-row"><strong>Catatan:</strong> ' + pemantauanData.catatan + '</div>';
-    if (pemantauanData.gambarUrl) html += '<img src="' + pemantauanData.gambarUrl + '" alt="Gambar Pemantauan" />';
-    if (pemantauanData.tandatanganUrl) html += '<div style="margin-top:8px;"><strong>Tandatangan:</strong></div><img src="' + pemantauanData.tandatanganUrl + '" alt="Tandatangan" style="max-height:80px;" />';
-    html += '</div>';
-  }
+  
   detailPopupContent.innerHTML = html;
   detailPopupModal.style.display = "flex";
 }
 
-// All Classes Today
+// =====================================================
+// REKOD HARI INI - ALL CLASSES
+// =====================================================
 let allRecordsToday = {};
-let allPemantauanToday = {};
 
 function loadAllClassesToday() {
   const head = document.getElementById("allClassHead");
   const body = document.getElementById("allClassBody");
   if (!head || !body || typeof firebase === "undefined") return;
-  let headerHTML = '<tr style="background:#047857;color:white;"><th style="border:2px solid #000;">Kelas</th>';
-  for (let i = 1; i <= TOTAL_WAKTU; i++) { const p = periods[i-1]; headerHTML += '<th style="border:2px solid #000;"><span class="waktu-code">' + p.code + '</span><span class="waktu-time">' + p.start + '</span></th>'; }
+  
+  let headerHTML = '<tr style="background:#047857; color:white;"><th style="border:2px solid #000;">Kelas</th>';
+  for (let i = 1; i <= TOTAL_WAKTU; i++) {
+    const p = periods[i-1];
+    headerHTML += '<th style="border:2px solid #000;"><span class="waktu-code">' + p.code + '</span><span class="waktu-time">' + p.start + '</span></th>';
+  }
   headerHTML += '</tr>';
   head.innerHTML = headerHTML;
+  
   const today = formatDate(new Date());
-  const todayKey = formatDateKey(new Date());
   body.innerHTML = '<tr><td colspan="' + (TOTAL_WAKTU + 1) + '" style="text-align:center;border:2px solid #000;">Loading...</td></tr>';
   
-  db.ref("pemantauan/" + todayKey).once("value").then(pemantauanSnap => {
-    allPemantauanToday = pemantauanSnap.val() || {};
-    return db.ref("config/classes/classData").once("value");
-  }).then(configSnap => {
+  db.ref("config/classes/classData").once("value").then(configSnap => {
     const allClasses = configSnap.val() ? Object.keys(configSnap.val()).sort() : [];
+    
     return db.ref("kehadiran").orderByChild("tarikh").equalTo(today).once("value").then(snapshot => {
       body.innerHTML = "";
+      
       const kelasMap = {};
       allRecordsToday = {};
-      allClasses.forEach(kelas => { kelasMap[kelas] = {}; for (let i = 1; i <= TOTAL_WAKTU; i++) kelasMap[kelas]["W" + i] = []; });
+      
+      allClasses.forEach(kelas => {
+        kelasMap[kelas] = {};
+        for (let i = 1; i <= TOTAL_WAKTU; i++) {
+          kelasMap[kelas]["W" + i] = [];
+        }
+      });
+      
       if (snapshot.exists()) {
         snapshot.forEach(child => {
           const rec = child.val();
           if (!rec || !rec.kelas) return;
+          
           const kelas = rec.kelas;
           const waktu = rec.waktu || "W1";
-          if (!kelasMap[kelas]) { kelasMap[kelas] = {}; for (let i = 1; i <= TOTAL_WAKTU; i++) kelasMap[kelas]["W" + i] = []; }
+          
+          if (!kelasMap[kelas]) {
+            kelasMap[kelas] = {};
+            for (let i = 1; i <= TOTAL_WAKTU; i++) {
+              kelasMap[kelas]["W" + i] = [];
+            }
+          }
+          
           kelasMap[kelas][waktu].push(rec);
+          
           const key = kelas + "_" + waktu;
           if (!allRecordsToday[key]) allRecordsToday[key] = [];
           allRecordsToday[key].push(rec);
         });
       }
+      
       const kelasList = Object.keys(kelasMap).sort();
-      if (kelasList.length === 0) { body.innerHTML = '<tr><td colspan="' + (TOTAL_WAKTU + 1) + '" style="text-align:center;border:2px solid #000;">Tiada kelas</td></tr>'; return; }
+      
+      if (kelasList.length === 0) {
+        body.innerHTML = '<tr><td colspan="' + (TOTAL_WAKTU + 1) + '" style="text-align:center;border:2px solid #000;">Tiada kelas didaftarkan</td></tr>';
+        return;
+      }
+      
       kelasList.forEach(kelas => {
         const tr = document.createElement("tr");
         const rehatWaktu = getRehatWaktu(kelas);
+        
         let row = '<td style="font-weight:600;background:#f0fdf4;text-align:center;border:2px solid #000;">' + kelas + '</td>';
+        
         for (let i = 1; i <= TOTAL_WAKTU; i++) {
           const waktuKey = "W" + i;
           const records = kelasMap[kelas][waktuKey];
-          const pemantauanKey = kelas + "_" + waktuKey;
-          const hasPemantauan = allPemantauanToday[pemantauanKey];
-          if (waktuKey === rehatWaktu) row += '<td class="cell-rehat" style="border:2px solid #000;cursor:default;">REHAT</td>';
-          else if (records && records.length > 0) {
-            let cellClass = records.length > 1 ? "cell-multi" : "cell-filled";
-            if (hasPemantauan) cellClass += " cell-has-pemantauan";
+          
+          if (waktuKey === rehatWaktu) {
+            row += '<td class="cell-rehat" style="border:2px solid #000;cursor:default;">REHAT</td>';
+          } else if (records && records.length > 0) {
+            const cellClass = records.length > 1 ? "cell-multi" : "cell-filled";
             let cellContent = '';
+            
             records.forEach((rec, idx) => {
-              let mpBadge = "";
-              if (rec.mataPelajaran) {
-                let mpClass = "pill-pemulihan";
-                let mpText = "PEM";
-                if (rec.mataPelajaran === "BC") { mpClass = "pill-bc"; mpText = "BC"; }
-                else if (rec.mataPelajaran === "BA") { mpClass = "pill-ba"; mpText = "BA"; }
-                else if (rec.mataPelajaran === "PEMULIHAN_MT") { mpClass = "pill-pemulihan-mt"; mpText = "PEM-MT"; }
-                else if (rec.mataPelajaran === "PEMULIHAN_BM") { mpText = "PEM-BM"; }
-                mpBadge = '<span class="pill-mp ' + mpClass + '">' + mpText + '</span>';
-              }
+              const mpBadge = rec.mataPelajaran ? 
+                '<span class="pill-mp pill-' + rec.mataPelajaran.toLowerCase() + '">' + 
+                (rec.mataPelajaran === "PEMULIHAN" ? "PEM" : rec.mataPelajaran) + '</span>' : '';
               const gantiHtml = rec.guruGanti ? '<span class="guru-ganti-badge">G</span>' : '';
-              if (records.length > 1) cellContent += '<div class="multi-record">';
+              
+              if (records.length > 1) {
+                cellContent += '<div class="multi-record">';
+              }
               cellContent += '<span class="guru-name">' + rec.namaGuru + '</span>' + gantiHtml;
               cellContent += '<span class="guru-tempat">' + rec.tempat + '</span>' + mpBadge;
-              if (records.length > 1) cellContent += '</div>';
+              if (records.length > 1) {
+                cellContent += '</div>';
+              }
             });
-            if (hasPemantauan) cellContent += '<div style="font-size:0.55rem;color:#2563eb;margin-top:2px;">📋</div>';
+            
             row += '<td class="' + cellClass + '" style="border:2px solid #000;" data-kelas="' + kelas + '" data-waktu="' + waktuKey + '">' + cellContent + '</td>';
-          } else row += '<td class="cell-empty" style="border:2px solid #000;">-</td>';
+          } else {
+            row += '<td class="cell-empty" style="border:2px solid #000;">-</td>';
+          }
         }
+        
         tr.innerHTML = row;
         body.appendChild(tr);
       });
+      
+      // Add click listeners
       document.querySelectorAll('#allClassBody td[data-kelas]').forEach(td => {
         td.addEventListener('click', function() {
           const kelas = this.getAttribute('data-kelas');
           const waktu = this.getAttribute('data-waktu');
           const key = kelas + "_" + waktu;
           const records = allRecordsToday[key] || [];
-          const pemantauanKey = kelas + "_" + waktu;
-          const pemantauanData = allPemantauanToday[pemantauanKey] || null;
-          showDetailPopup(records, kelas, waktu, pemantauanData);
+          showDetailPopup(records, kelas, waktu);
         });
       });
     });
-  }).catch(err => { console.error("Load error:", err); body.innerHTML = '<tr><td colspan="' + (TOTAL_WAKTU + 1) + '" style="text-align:center;border:2px solid #000;">Ralat memuat data</td></tr>'; });
+  }).catch(err => {
+    console.error("Load error:", err);
+    body.innerHTML = '<tr><td colspan="' + (TOTAL_WAKTU + 1) + '" style="text-align:center;border:2px solid #000;">Ralat memuat data</td></tr>';
+  });
 }
 
-// Sahsiah Records
+// =====================================================
+// ADMIN PANEL
+// =====================================================
 function loadAllSahsiahRecords() {
   const container = document.getElementById("adminSahsiahList");
   if (!container) return;
+  
   container.innerHTML = '<div class="empty-state">Loading...</div>';
+  
   db.ref("notifications").orderByChild("createdAt").once("value").then(snap => {
     container.innerHTML = "";
-    if (!snap.exists()) { container.innerHTML = '<div class="empty-state">Tiada rekod sahsiah.</div>'; return; }
+    
+    if (!snap.exists()) {
+      container.innerHTML = '<div class="empty-state">Tiada rekod sahsiah.</div>';
+      return;
+    }
+    
     const records = [];
     snap.forEach(child => records.push({ key: child.key, ...child.val() }));
     records.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+    
     records.forEach(r => {
       const card = document.createElement("div");
       card.className = "sahsiah-card";
-      const jenisBadge = r.jenis === "baik" ? '<span class="badge badge-baik">✓ Amalan Baik</span>' : '<span class="badge badge-jahat">✗ Kesalahan</span>';
-      const statusBadge = r.status === "confirmed" ? '<span class="badge badge-confirmed">Disahkan</span>' : '<span class="badge badge-pending">Menunggu</span>';
-      card.innerHTML = '<div class="header"><div>' + jenisBadge + ' ' + statusBadge + '</div></div>' +
+      
+      const jenisBadge = r.jenis === "baik" ? 
+        '<span class="badge badge-baik">✓ Amalan Baik</span>' : 
+        '<span class="badge badge-jahat">✗ Kesalahan</span>';
+      
+      const statusBadge = r.status === "confirmed" ?
+        '<span class="badge badge-confirmed">Disahkan</span>' :
+        '<span class="badge badge-pending">Menunggu</span>';
+      
+      card.innerHTML = 
+        '<div class="header"><div>' + jenisBadge + ' ' + statusBadge + '</div></div>' +
         '<div class="info-row"><strong>📅 Tarikh:</strong> ' + (r.tarikh || "-") + '</div>' +
         '<div class="info-row"><strong>🕐 Masa:</strong> ' + (r.masa || "-") + '</div>' +
         '<div class="info-row"><strong>📍 Tempat:</strong> ' + (r.tempat || "-") + '</div>' +
@@ -940,273 +1347,19 @@ function loadAllSahsiahRecords() {
         '<div class="info-row"><strong>📝 Kategori:</strong> ' + (r.kategori || "-") + '</div>' +
         (r.keterangan ? '<div class="info-row"><strong>💬 Keterangan:</strong> ' + r.keterangan + '</div>' : '') +
         '<div class="murid-list"><strong>👤 Murid:</strong> ' + (r.namaMurid || "-") + '</div>' +
-        (r.status === "pending" ? '<button onclick="sahkanLaporan(\'' + r.key + '\')" style="margin-top:8px;background:#047857;color:#fff;border:none;padding:6px 14px;border-radius:999px;font-size:0.75rem;cursor:pointer;">✓ Sahkan</button>' : '');
+        (r.status === "pending" ? 
+          '<button onclick="sahkanLaporan(\'' + r.key + '\')" style="margin-top:8px;background:#047857;color:#fff;border:none;padding:6px 14px;border-radius:999px;font-size:0.75rem;cursor:pointer;">✓ Sahkan</button>' : '');
+      
       container.appendChild(card);
     });
-  }).catch(err => { container.innerHTML = '<div class="empty-state" style="color:#dc2626;">Ralat memuat data.</div>'; });
-}
-
-function sahkanLaporan(key) { if (!key) return; db.ref("notifications/" + key + "/status").set("confirmed").then(() => loadAllSahsiahRecords()); }
-window.sahkanLaporan = sahkanLaporan;
-
-// Pemulihan Config
-const pemulihanJenis = document.getElementById("pemulihanJenis");
-const pemulihanKelas = document.getElementById("pemulihanKelas");
-const pemulihanNama = document.getElementById("pemulihanNama");
-const btnSavePemulihan = document.getElementById("btnSavePemulihan");
-const pemulihanList = document.getElementById("pemulihanList");
-
-function loadPemulihanConfig() {
-  pemulihanList.innerHTML = '<div class="empty-state">Loading...</div>';
-  db.ref("config/mp").once("value").then(snap => {
-    pemulihanList.innerHTML = "";
-    const data = snap.val();
-    if (!data) { pemulihanList.innerHTML = '<div class="empty-state">Tiada tetapan kelas pecahan.</div>'; return; }
-    Object.keys(data).forEach(mpType => {
-      const mpData = data[mpType];
-      if (!mpData) return;
-      let mpDisplay = mpType;
-      if (mpType === "BC") mpDisplay = "Bahasa Cina (BC)";
-      else if (mpType === "BA") mpDisplay = "Bahasa Arab (BA)";
-      else if (mpType === "PEMULIHAN_BM") mpDisplay = "Pemulihan BM";
-      else if (mpType === "PEMULIHAN_MT") mpDisplay = "Pemulihan Matematik";
-      Object.keys(mpData).forEach(kelas => {
-        const muridList = mpData[kelas];
-        if (!muridList) return;
-        const muridArray = Array.isArray(muridList) ? muridList : Object.values(muridList);
-        const card = document.createElement("div");
-        card.className = "pemulihan-card";
-        card.innerHTML = '<div class="header"><div><span class="kelas-name">' + kelas + '</span><span class="pill-mp ' + (mpType === "BC" ? "pill-bc" : mpType === "BA" ? "pill-ba" : mpType === "PEMULIHAN_MT" ? "pill-pemulihan-mt" : "pill-pemulihan") + '" style="margin-left:8px;">' + mpDisplay + '</span></div><div><button class="btn-edit" onclick="editPemulihanConfig(\'' + mpType + '\', \'' + kelas + '\')">✏️ Edit</button><button class="btn-delete" onclick="deletePemulihanConfig(\'' + mpType + '\', \'' + kelas + '\')">🗑️</button></div></div><div class="mp-list">' + muridArray.length + ' murid: ' + muridArray.slice(0, 3).join(", ") + (muridArray.length > 3 ? "..." : "") + '</div>';
-        pemulihanList.appendChild(card);
-      });
-    });
-    if (pemulihanList.children.length === 0) pemulihanList.innerHTML = '<div class="empty-state">Tiada tetapan kelas pecahan.</div>';
-  }).catch(err => { pemulihanList.innerHTML = '<div class="empty-state" style="color:#dc2626;">Ralat memuat data.</div>'; });
-}
-
-function editPemulihanConfig(mpType, kelas) {
-  pemulihanJenis.value = mpType;
-  pemulihanKelas.value = kelas;
-  db.ref("config/mp/" + mpType + "/" + kelas).once("value").then(snap => {
-    const data = snap.val();
-    if (data) { const muridArray = Array.isArray(data) ? data : Object.values(data); pemulihanNama.value = muridArray.join("\n"); }
+  }).catch(err => {
+    container.innerHTML = '<div class="empty-state" style="color:#dc2626;">Ralat memuat data.</div>';
   });
 }
-window.editPemulihanConfig = editPemulihanConfig;
 
-function deletePemulihanConfig(mpType, kelas) {
-  if (!confirm("Padam tetapan " + mpType + " untuk kelas " + kelas + "?")) return;
-  db.ref("config/mp/" + mpType + "/" + kelas).remove().then(() => { alert("Berjaya dipadam!"); loadPemulihanConfig(); }).catch(err => { alert("Gagal padam: " + err.message); });
-}
-window.deletePemulihanConfig = deletePemulihanConfig;
-
-btnSavePemulihan.addEventListener("click", () => {
-  const jenis = pemulihanJenis.value;
-  const kelas = pemulihanKelas.value;
-  const namaText = pemulihanNama.value.trim();
-  if (!jenis || !kelas || !namaText) { alert("Sila lengkapkan semua maklumat."); return; }
-  const namaList = namaText.split("\n").map(n => n.trim()).filter(n => n);
-  if (namaList.length === 0) { alert("Sila masukkan sekurang-kurangnya satu nama murid."); return; }
-  db.ref("config/mp/" + jenis + "/" + kelas).set(namaList).then(() => { alert("Berjaya disimpan!"); pemulihanJenis.value = ""; pemulihanKelas.value = ""; pemulihanNama.value = ""; loadPemulihanConfig(); }).catch(err => { alert("Gagal simpan: " + err.message); });
-});
-
-// Pemantauan
-let currentPemantauanKelas = "";
-let currentPemantauanWaktu = "";
-let pemantauanImageData = null;
-let signaturePadCtx = null;
-let isDrawing = false;
-
-function loadPemantauanSchedule() {
-  const head = document.getElementById("pemantauanHead");
-  const body = document.getElementById("pemantauanBody");
-  if (!head || !body) return;
-  let headerHTML = '<tr style="background:#2563eb;color:white;"><th style="border:2px solid #000;">Kelas</th>';
-  for (let i = 1; i <= TOTAL_WAKTU; i++) { const p = periods[i-1]; headerHTML += '<th style="border:2px solid #000;"><span class="waktu-code">' + p.code + '</span><span class="waktu-time">' + p.start + '</span></th>'; }
-  headerHTML += '</tr>';
-  head.innerHTML = headerHTML;
-  const today = formatDate(new Date());
-  const todayKey = formatDateKey(new Date());
-  body.innerHTML = '<tr><td colspan="' + (TOTAL_WAKTU + 1) + '" style="text-align:center;border:2px solid #000;">Loading...</td></tr>';
-
-  db.ref("pemantauan/" + todayKey).once("value").then(pemantauanSnap => {
-    const pemantauanData = pemantauanSnap.val() || {};
-    return db.ref("config/classes/classData").once("value").then(configSnap => {
-      const allClasses = configSnap.val() ? Object.keys(configSnap.val()).sort() : [];
-      return db.ref("kehadiran").orderByChild("tarikh").equalTo(today).once("value").then(snapshot => {
-        body.innerHTML = "";
-        const kelasMap = {};
-        allClasses.forEach(kelas => { kelasMap[kelas] = {}; for (let i = 1; i <= TOTAL_WAKTU; i++) kelasMap[kelas]["W" + i] = []; });
-        if (snapshot.exists()) {
-          snapshot.forEach(child => {
-            const rec = child.val();
-            if (!rec || !rec.kelas) return;
-            const kelas = rec.kelas;
-            const waktu = rec.waktu || "W1";
-            if (!kelasMap[kelas]) { kelasMap[kelas] = {}; for (let i = 1; i <= TOTAL_WAKTU; i++) kelasMap[kelas]["W" + i] = []; }
-            kelasMap[kelas][waktu].push(rec);
-          });
-        }
-        const kelasList = Object.keys(kelasMap).sort();
-        if (kelasList.length === 0) { body.innerHTML = '<tr><td colspan="' + (TOTAL_WAKTU + 1) + '" style="text-align:center;border:2px solid #000;">Tiada kelas</td></tr>'; return; }
-        kelasList.forEach(kelas => {
-          const tr = document.createElement("tr");
-          const rehatWaktu = getRehatWaktu(kelas);
-          let row = '<td style="font-weight:600;background:#eff6ff;text-align:center;border:2px solid #000;">' + kelas + '</td>';
-          for (let i = 1; i <= TOTAL_WAKTU; i++) {
-            const waktuKey = "W" + i;
-            const records = kelasMap[kelas][waktuKey];
-            const pemantauanKey = kelas + "_" + waktuKey;
-            const hasPemantauan = pemantauanData[pemantauanKey];
-            if (waktuKey === rehatWaktu) row += '<td style="background:#059669;color:#fff;font-weight:600;border:2px solid #000;cursor:default;text-align:center;">REHAT</td>';
-            else {
-              let bgColor = records.length > 0 ? "#fff" : "#fef9c3";
-              let cellContent = "";
-              if (records.length > 0) records.forEach(rec => { cellContent += '<span style="font-weight:600;font-size:0.7rem;">' + rec.namaGuru + '</span><br>'; });
-              else cellContent = '<span style="color:#854d0e;font-size:0.7rem;">-</span>';
-              if (hasPemantauan) { bgColor = "#dbeafe"; cellContent += '<div style="font-size:0.6rem;color:#2563eb;margin-top:2px;">✓ Dipantau</div>'; }
-              row += '<td style="background:' + bgColor + ';border:2px solid #000;cursor:pointer;text-align:center;padding:4px;" data-kelas="' + kelas + '" data-waktu="' + waktuKey + '">' + cellContent + '</td>';
-            }
-          }
-          tr.innerHTML = row;
-          body.appendChild(tr);
-        });
-        document.querySelectorAll('#pemantauanBody td[data-kelas]').forEach(td => {
-          td.addEventListener('click', function() {
-            const kelas = this.getAttribute('data-kelas');
-            const waktu = this.getAttribute('data-waktu');
-            openPemantauanForm(kelas, waktu);
-          });
-        });
-      });
-    });
-  }).catch(err => { console.error("Load error:", err); body.innerHTML = '<tr><td colspan="' + (TOTAL_WAKTU + 1) + '" style="text-align:center;border:2px solid #000;">Ralat memuat data</td></tr>'; });
-}
-
-function openPemantauanForm(kelas, waktu) {
-  currentPemantauanKelas = kelas;
-  currentPemantauanWaktu = waktu;
-  document.getElementById("pemantauanKelasLabel").textContent = kelas;
-  document.getElementById("pemantauanWaktuLabel").textContent = waktu;
-  document.getElementById("pemantauanFormWrapper").style.display = "block";
-  document.getElementById("pemantauanNama").value = "";
-  document.getElementById("pemantauanCatatan").value = "";
-  pemantauanImageData = null;
-  document.getElementById("imagePreview").style.display = "none";
-  document.getElementById("imageUploadText").style.display = "block";
-  document.getElementById("imageUploadArea").classList.remove("has-image");
-  initSignaturePad();
-  clearSignature();
-  document.getElementById("pemantauanFormWrapper").scrollIntoView({ behavior: 'smooth' });
-}
-
-// Image upload
-const imageUploadArea = document.getElementById("imageUploadArea");
-const imageInput = document.getElementById("imageInput");
-const imagePreview = document.getElementById("imagePreview");
-const imageUploadText = document.getElementById("imageUploadText");
-
-imageUploadArea.addEventListener("click", () => imageInput.click());
-imageUploadArea.addEventListener("dragover", (e) => { e.preventDefault(); imageUploadArea.style.borderColor = "#3b82f6"; });
-imageUploadArea.addEventListener("dragleave", () => { imageUploadArea.style.borderColor = "#93c5fd"; });
-imageUploadArea.addEventListener("drop", (e) => { e.preventDefault(); imageUploadArea.style.borderColor = "#93c5fd"; const file = e.dataTransfer.files[0]; if (file && file.type.startsWith("image/")) handleImageFile(file); });
-imageInput.addEventListener("change", (e) => { const file = e.target.files[0]; if (file) handleImageFile(file); });
-
-function handleImageFile(file) {
-  const reader = new FileReader();
-  reader.onload = (e) => { pemantauanImageData = e.target.result; imagePreview.src = pemantauanImageData; imagePreview.style.display = "block"; imageUploadText.style.display = "none"; imageUploadArea.classList.add("has-image"); };
-  reader.readAsDataURL(file);
-}
-
-// Signature pad
-function initSignaturePad() {
-  const canvas = document.getElementById("signaturePad");
-  signaturePadCtx = canvas.getContext("2d");
-  signaturePadCtx.fillStyle = "#fff";
-  signaturePadCtx.fillRect(0, 0, canvas.width, canvas.height);
-  canvas.addEventListener("mousedown", startDrawing);
-  canvas.addEventListener("mousemove", draw);
-  canvas.addEventListener("mouseup", stopDrawing);
-  canvas.addEventListener("mouseout", stopDrawing);
-  canvas.addEventListener("touchstart", handleTouchStart);
-  canvas.addEventListener("touchmove", handleTouchMove);
-  canvas.addEventListener("touchend", stopDrawing);
-}
-
-function startDrawing(e) { isDrawing = true; draw(e); }
-function draw(e) {
-  if (!isDrawing) return;
-  const canvas = document.getElementById("signaturePad");
-  const rect = canvas.getBoundingClientRect();
-  const x = e.clientX - rect.left;
-  const y = e.clientY - rect.top;
-  signaturePadCtx.lineWidth = 2;
-  signaturePadCtx.lineCap = "round";
-  signaturePadCtx.strokeStyle = "#000";
-  signaturePadCtx.lineTo(x, y);
-  signaturePadCtx.stroke();
-  signaturePadCtx.beginPath();
-  signaturePadCtx.moveTo(x, y);
-}
-
-function handleTouchStart(e) {
-  e.preventDefault();
-  isDrawing = true;
-  const touch = e.touches[0];
-  const canvas = document.getElementById("signaturePad");
-  const rect = canvas.getBoundingClientRect();
-  const x = touch.clientX - rect.left;
-  const y = touch.clientY - rect.top;
-  signaturePadCtx.beginPath();
-  signaturePadCtx.moveTo(x, y);
-}
-
-function handleTouchMove(e) {
-  e.preventDefault();
-  if (!isDrawing) return;
-  const touch = e.touches[0];
-  const canvas = document.getElementById("signaturePad");
-  const rect = canvas.getBoundingClientRect();
-  const x = touch.clientX - rect.left;
-  const y = touch.clientY - rect.top;
-  signaturePadCtx.lineWidth = 2;
-  signaturePadCtx.lineCap = "round";
-  signaturePadCtx.strokeStyle = "#000";
-  signaturePadCtx.lineTo(x, y);
-  signaturePadCtx.stroke();
-  signaturePadCtx.beginPath();
-  signaturePadCtx.moveTo(x, y);
-}
-
-function stopDrawing() { isDrawing = false; signaturePadCtx.beginPath(); }
-function clearSignature() { const canvas = document.getElementById("signaturePad"); if (signaturePadCtx) { signaturePadCtx.fillStyle = "#fff"; signaturePadCtx.fillRect(0, 0, canvas.width, canvas.height); } }
-document.getElementById("btnClearSignature").addEventListener("click", clearSignature);
-document.getElementById("btnCancelPemantauan").addEventListener("click", () => { document.getElementById("pemantauanFormWrapper").style.display = "none"; currentPemantauanKelas = ""; currentPemantauanWaktu = ""; });
-
-document.getElementById("btnSavePemantauan").addEventListener("click", () => {
-  const namaPentadbir = document.getElementById("pemantauanNama").value.trim();
-  const catatan = document.getElementById("pemantauanCatatan").value.trim();
-  if (!namaPentadbir) { alert("Sila masukkan nama pentadbir/pelawat."); return; }
-  if (!currentPemantauanKelas || !currentPemantauanWaktu) { alert("Ralat: Tiada kelas/waktu dipilih."); return; }
-  const now = new Date();
-  const todayKey = formatDateKey(now);
-  const pemantauanKey = currentPemantauanKelas + "_" + currentPemantauanWaktu;
-  const canvas = document.getElementById("signaturePad");
-  const signatureData = canvas.toDataURL("image/png");
-  const pemantauanRecord = { namaPentadbir: namaPentadbir, catatan: catatan, kelas: currentPemantauanKelas, waktu: currentPemantauanWaktu, tarikh: formatDate(now), masa: formatTime(now), gambarUrl: pemantauanImageData || null, tandatanganUrl: signatureData, createdAt: Date.now() };
-  db.ref("pemantauan/" + todayKey + "/" + pemantauanKey).set(pemantauanRecord).then(() => {
-    if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== "YOUR_APPS_SCRIPT_WEB_APP_URL") savePemantauanToSpreadsheet(pemantauanRecord);
-    alert("Laporan pemantauan berjaya disimpan!");
-    document.getElementById("pemantauanFormWrapper").style.display = "none";
-    loadPemantauanSchedule();
-  }).catch(err => { alert("Gagal simpan: " + err.message); });
-});
-
-function savePemantauanToSpreadsheet(record) {
-  fetch(APPS_SCRIPT_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "savePemantauan", data: record }) }).catch(err => { console.error("Failed to save to spreadsheet:", err); });
-}
-
-// Load Kelas
+// =====================================================
+// LOAD KELAS FROM FIREBASE
+// =====================================================
 function loadKelasFromFirebase() {
   db.ref("config/classes/classData").once("value").then(snapshot => {
     const data = snapshot.val();
@@ -1214,16 +1367,16 @@ function loadKelasFromFirebase() {
     const classList = Object.keys(data).sort();
     kelasSelect.innerHTML = '<option value="">Sila Pilih</option>';
     semakKelasSelect.innerHTML = '<option value="">Sila Pilih</option>';
-    pemulihanKelas.innerHTML = '<option value="">Sila Pilih</option>';
     classList.forEach(kls => {
       kelasSelect.innerHTML += '<option value="' + kls + '">' + kls + '</option>';
       semakKelasSelect.innerHTML += '<option value="' + kls + '">' + kls + '</option>';
-      pemulihanKelas.innerHTML += '<option value="' + kls + '">' + kls + '</option>';
     });
   }).catch(err => console.error("Gagal load kelas:", err));
 }
 
-// Admin Login
+// =====================================================
+// ADMIN LOGIN
+// =====================================================
 const sksaLogo = document.getElementById("sksaLogo");
 const adminLoginModal = document.getElementById("adminLoginModal");
 const adminLoginBtn = document.getElementById("adminLoginBtn");
@@ -1231,28 +1384,61 @@ const adminCancelBtn = document.getElementById("adminCancelBtn");
 const adminPasswordInput = document.getElementById("adminPassword");
 const notifBadge = document.getElementById("notifBadge");
 
-sksaLogo.addEventListener("click", () => { if (!isAdminLoggedIn) { adminLoginModal.style.display = "flex"; adminPasswordInput.value = ""; adminPasswordInput.focus(); } });
+sksaLogo.addEventListener("click", () => {
+  if (!isAdminLoggedIn) {
+    adminLoginModal.style.display = "flex";
+    adminPasswordInput.value = "";
+    adminPasswordInput.focus();
+  } else {
+    setMainTab("admin");
+  }
+});
+
 adminCancelBtn.addEventListener("click", () => adminLoginModal.style.display = "none");
-adminLoginBtn.addEventListener("click", () => { if (adminPasswordInput.value === ADMIN_PASSWORD) { isAdminLoggedIn = true; adminLoginModal.style.display = "none"; adminTabRow.classList.add("show"); } else { alert("Kata laluan salah!"); } });
-adminPasswordInput.addEventListener("keypress", (e) => { if (e.key === "Enter") adminLoginBtn.click(); });
-document.getElementById("btnLogout").addEventListener("click", () => { isAdminLoggedIn = false; adminTabRow.classList.remove("show"); adminFunctionSelect.value = ""; showMainView(); });
+
+adminLoginBtn.addEventListener("click", () => {
+  if (adminPasswordInput.value === ADMIN_PASSWORD) {
+    isAdminLoggedIn = true;
+    adminLoginModal.style.display = "none";
+    adminTabRow.classList.add("show");
+    setMainTab("admin");
+  } else {
+    alert("Kata laluan salah!");
+  }
+});
+
+adminPasswordInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") adminLoginBtn.click();
+});
+
+function sahkanLaporan(key) {
+  if (!key) return;
+  db.ref("notifications/" + key + "/status").set("confirmed").then(() => loadAllSahsiahRecords());
+}
+window.sahkanLaporan = sahkanLaporan;
 
 function listenNotifications() {
   db.ref("notifications").orderByChild("status").equalTo("pending").on("value", snap => {
     const data = snap.val();
-    if (data) { notifBadge.textContent = Object.keys(data).length; notifBadge.style.display = "block"; }
-    else { notifBadge.style.display = "none"; }
+    if (data) {
+      notifBadge.textContent = Object.keys(data).length;
+      notifBadge.style.display = "block";
+    } else {
+      notifBadge.style.display = "none";
+    }
   });
 }
 
-// Init
+// =====================================================
+// INIT
+// =====================================================
 document.addEventListener("DOMContentLoaded", () => {
   setInterval(updateDateTimeUI, 1000);
   updateDateTimeUI();
   loadKelasFromFirebase();
   listenNotifications();
-  initSignaturePad();
 });
 </script>
+
 </body>
 </html>
