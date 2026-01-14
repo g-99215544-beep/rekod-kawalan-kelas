@@ -27,7 +27,7 @@
     .app-card{background:#fff;border-radius:0;padding:28px 24px 34px;box-shadow:none;min-height:100vh;width:100%}
     @media (min-width: 768px){
       html,body{background:#e5ecf4}
-      .app-shell{max-width:600px;margin:20px auto;min-height:auto}
+      .app-shell{max-width:700px;margin:20px auto;min-height:auto}
       .app-card{border-radius:20px;min-height:auto;box-shadow:0 10px 30px rgba(15,23,42,.18)}
     }
     .logo-wrap{display:flex;flex-direction:column;align-items:center;margin-bottom:12px;position:relative}
@@ -63,6 +63,7 @@
     tbody tr:nth-child(even){background:#f9fafb}
     .pill-good{background:#e0f2fe;color:#0369a1;padding:2px 6px;border-radius:999px;font-size:.7rem;font-weight:500}
     .pill-bad{background:#fee2e2;color:#b91c1c;padding:2px 6px;border-radius:999px;font-size:.7rem;font-weight:500}
+    .pill-ganti{background:#fef3c7;color:#92400e;padding:2px 6px;border-radius:999px;font-size:.65rem;font-weight:500}
     .empty-state{font-size:.8rem;color:#6b7280;margin-top:4px}
     .multi-select{position:relative}
     .multi-select input[readonly]{cursor:pointer;background-color:#eef2ff}
@@ -72,13 +73,15 @@
     .multi-option-row span{flex:1;line-height:1.25}
     .multi-footer{margin-top:4px;font-size:.7rem;color:#6b7280;border-top:1px dashed #e5e7eb;padding-top:4px}
     .multi-empty{font-size:.8rem;color:#6b7280;padding:4px 2px}
-    .modal-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:center;justify-content:center;z-index:1000}
-    .modal-card{background:#fff;border-radius:18px;padding:20px 22px 18px;width:100%;max-width:360px;box-shadow:0 18px 40px rgba(15,23,42,.45)}
+    .modal-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px}
+    .modal-card{background:#fff;border-radius:18px;padding:20px 22px 18px;width:100%;max-width:400px;box-shadow:0 18px 40px rgba(15,23,42,.45);position:relative;max-height:90vh;overflow-y:auto}
     .modal-card h2{margin:0 0 6px 0;font-size:1.1rem;font-weight:600;color:#111827}
     .modal-card p{margin:0 0 14px 0;font-size:.85rem;color:#4b5563}
     .modal-buttons{margin-top:14px;display:flex;justify-content:flex-end;gap:8px}
     .btn-modal-cancel{border-radius:999px;border:none;padding:7px 16px;background:#e5e7eb;color:#374151;font-size:.82rem;cursor:pointer}
     .btn-modal-primary{border-radius:999px;border:none;padding:7px 18px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;font-size:.82rem;font-weight:500;cursor:pointer}
+    .btn-close-modal{position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:50%;border:none;background:#f3f4f6;color:#6b7280;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
+    .btn-close-modal:hover{background:#e5e7eb;color:#111827}
     .install-banner{display:none;position:fixed;bottom:0;left:0;right:0;background:linear-gradient(135deg,#047857,#059669);color:#fff;padding:14px 16px;box-shadow:0 -4px 20px rgba(0,0,0,.2);z-index:999}
     .install-banner.show{display:flex;align-items:center;justify-content:space-between;gap:12px}
     .install-banner-text{font-size:.85rem;flex:1}
@@ -86,16 +89,36 @@
     .btn-install{background:#fff;color:#047857;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;font-weight:600;cursor:pointer}
     .btn-dismiss{background:transparent;color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.4);padding:6px 12px;border-radius:999px;font-size:.8rem;cursor:pointer}
     
-    /* Jadual Hari Ini Styles - UPDATED with thick black borders */
+    /* Checkbox inline style */
+    .checkbox-inline{display:flex;align-items:center;gap:8px;margin-top:6px}
+    .checkbox-inline input[type="checkbox"]{width:18px;height:18px;cursor:pointer}
+    .checkbox-inline label{margin:0;font-size:.85rem;cursor:pointer}
+    
+    /* Catatan keberadaan */
+    .catatan-field{margin-top:8px;display:none}
+    .catatan-field.show{display:block}
+    .catatan-field label{color:#dc2626}
+    
+    /* Jadual Hari Ini Styles */
     #allClassSchedule{border:2px solid #000}
     #allClassSchedule th{text-align:center;padding:8px 4px;font-size:0.75rem;line-height:1.2;border:2px solid #000}
     #allClassSchedule th .waktu-code{display:block;font-weight:600;font-size:0.8rem}
     #allClassSchedule th .waktu-time{display:block;font-weight:400;font-size:0.65rem;opacity:0.9}
-    #allClassSchedule td{text-align:center;padding:8px 4px;font-size:0.72rem;vertical-align:middle;border:2px solid #000}
+    #allClassSchedule td{text-align:center;padding:8px 4px;font-size:0.72rem;vertical-align:middle;border:2px solid #000;cursor:pointer}
     #allClassSchedule .cell-empty{background-color:#fef9c3;color:#854d0e}
     #allClassSchedule .cell-filled{background-color:#fff}
+    #allClassSchedule .cell-rehat{background-color:#059669;color:#fff;font-weight:600;cursor:default}
     #allClassSchedule .guru-name{font-weight:600;color:#111827;display:block}
     #allClassSchedule .guru-tempat{font-size:0.65rem;color:#6b7280;display:block;margin-top:2px}
+    #allClassSchedule .guru-ganti-badge{font-size:0.6rem;background:#fbbf24;color:#78350f;padding:1px 4px;border-radius:4px;margin-top:2px;display:inline-block}
+    
+    /* Detail Popup Card */
+    .detail-popup .info-row{font-size:0.82rem;color:#374151;margin-bottom:6px;padding:6px 0;border-bottom:1px dashed #e5e7eb}
+    .detail-popup .info-row:last-child{border-bottom:none}
+    .detail-popup .info-row strong{color:#111827;display:inline-block;min-width:100px}
+    .detail-popup .sahsiah-section{margin-top:12px;padding:10px;background:#fef3c7;border-radius:10px}
+    .detail-popup .sahsiah-section.baik{background:#dcfce7}
+    .detail-popup .sahsiah-section.jahat{background:#fee2e2}
     
     /* Admin Panel Styles */
     .admin-tab-row{display:none;margin-bottom:14px}
@@ -151,6 +174,11 @@
           <div class="field">
             <label class="required">Nama Guru</label>
             <input type="text" id="namaGuru" placeholder="Contoh: Cikgu Sufian" />
+            <!-- Guru Ganti Checkbox (Change #3) -->
+            <div class="checkbox-inline">
+              <input type="checkbox" id="guruGanti" />
+              <label for="guruGanti">Guru Ganti</label>
+            </div>
           </div>
           <div class="field">
             <label class="required">Kelas</label>
@@ -177,6 +205,11 @@
               <span id="kehadiranRatio" class="kehadiran-ratio">/ -</span>
             </div>
             <div id="kehadiranSubtext" class="kehadiran-subtext">Kehadiran hari ini: -</div>
+            <!-- Catatan Keberadaan (Change #4) -->
+            <div class="catatan-field" id="catatanField">
+              <label class="required">Catatan Keberadaan Murid Tidak Hadir</label>
+              <textarea id="catatanKeberadaan" placeholder="Contoh: Ali bin Abu - MC (demam), Siti binti Ahmad - Tidak hadir tanpa sebab"></textarea>
+            </div>
           </div>
           <button class="btn-submit" id="btnSave">HANTAR</button>
         </div>
@@ -267,7 +300,7 @@
               </tr>
             </thead>
             <tbody id="allClassBody">
-              <tr><td colspan="10" style="text-align:center;">Loading...</td></tr>
+              <tr><td colspan="14" style="text-align:center;">Loading...</td></tr>
             </tbody>
           </table>
         </div>
@@ -304,7 +337,7 @@
       </div>
     </div>
     
-    <!-- ADMIN VIEW (new) -->
+    <!-- ADMIN VIEW -->
     <div id="adminView" style="display:none;">
       <div class="section-title">📋 Rekod Sahsiah Murid (Semua)</div>
       <p style="font-size:0.8rem;color:#6b7280;margin-bottom:12px;">Senarai lengkap laporan sahsiah murid. Data ini kekal walaupun sudah disahkan.</p>
@@ -327,6 +360,15 @@
       <button type="button" class="btn-modal-cancel" id="adminCancelBtn">Batal</button>
       <button type="button" class="btn-modal-primary" id="adminLoginBtn">Login</button>
     </div>
+  </div>
+</div>
+
+<!-- Detail Popup Modal (Change #2) -->
+<div id="detailPopupModal" class="modal-backdrop">
+  <div class="modal-card detail-popup">
+    <button type="button" class="btn-close-modal" id="closeDetailPopup">&times;</button>
+    <h2 id="detailPopupTitle">Maklumat Rekod</h2>
+    <div id="detailPopupContent"></div>
   </div>
 </div>
 
@@ -356,9 +398,9 @@ const periods = [
   {code:"W2",start:"8.10",end:"8.40"},
   {code:"W3",start:"8.40",end:"9.10"},
   {code:"W4",start:"9.10",end:"9.40"},
-  {code:"W5",start:"9.40",end:"10.10"},
+  {code:"W5",start:"9.40",end:"10.10"},   // REHAT Tahap 1
   {code:"W6",start:"10.10",end:"10.40"},
-  {code:"W7",start:"10.40",end:"11.10"},
+  {code:"W7",start:"10.40",end:"11.10"},  // REHAT Tahap 2
   {code:"W8",start:"11.10",end:"11.40"},
   {code:"W9",start:"11.40",end:"12.10"},
   {code:"W10",start:"12.10",end:"12.40"},
@@ -367,6 +409,20 @@ const periods = [
   {code:"W13",start:"13.40",end:"14.10"}
 ];
 const TOTAL_WAKTU = 13;
+
+// Tahap 1: Tahun 1, 2, 3 (kelas bermula dengan 1, 2, 3)
+// Tahap 2: Tahun 4, 5, 6 (kelas bermula dengan 4, 5, 6)
+// Rehat Tahap 1: W5 (9.40-10.10)
+// Rehat Tahap 2: W7 (10.40-11.10)
+function getRehatWaktu(kelas) {
+  const tahun = kelas.charAt(0);
+  if (['1', '2', '3'].includes(tahun)) {
+    return 'W5'; // Tahap 1 rehat pada W5
+  } else if (['4', '5', '6'].includes(tahun)) {
+    return 'W7'; // Tahap 2 rehat pada W7
+  }
+  return null;
+}
 
 function timeToMinutes(str) {
   const [h, m] = str.split(".").map(Number);
@@ -459,7 +515,6 @@ const adminView = document.getElementById("adminView");
 const adminTabRow = document.getElementById("adminTabRow");
 
 function setMainTab(tab) {
-  // Reset all tabs
   tabRekod.classList.remove("active");
   tabSemak.classList.remove("active");
   rekodView.style.display = "none";
@@ -507,7 +562,7 @@ subTabForm.addEventListener("click", () => setSubTab("form"));
 subTabToday.addEventListener("click", () => setSubTab("today"));
 
 // =====================================================
-// SAHSIAH TOGGLE (Amalan Baik / Kesalahan)
+// SAHSIAH TOGGLE
 // =====================================================
 const btnGood = document.getElementById("btnGood");
 const btnBad = document.getElementById("btnBad");
@@ -612,16 +667,21 @@ document.addEventListener("click", e => {
 });
 
 // =====================================================
-// LOAD KEHADIRAN DATA FOR SELECTED KELAS
+// LOAD KEHADIRAN & CHECK FOR CATATAN (Change #4)
 // =====================================================
+let totalMuridKelas = 0;
+
 function loadKehadiranForKelas() {
   const kelasVal = kelasSelect.value.trim();
   const ratioEl = document.getElementById("kehadiranRatio");
   const subtextEl = document.getElementById("kehadiranSubtext");
+  const catatanField = document.getElementById("catatanField");
   
   if (!kelasVal) {
     ratioEl.textContent = "/ -";
     subtextEl.textContent = "Kehadiran hari ini: -";
+    catatanField.classList.remove("show");
+    totalMuridKelas = 0;
     return;
   }
   
@@ -633,16 +693,31 @@ function loadKehadiranForKelas() {
     if (data && data.present !== undefined && data.total !== undefined) {
       ratioEl.textContent = "/ " + data.total;
       subtextEl.textContent = "Kehadiran hari ini: " + data.present + "/" + data.total;
+      totalMuridKelas = data.total;
     } else {
       ratioEl.textContent = "/ -";
       subtextEl.textContent = "Kehadiran hari ini: Tiada data";
+      totalMuridKelas = 0;
     }
   }).catch(err => {
     console.error("Load kehadiran error:", err);
     ratioEl.textContent = "/ -";
     subtextEl.textContent = "Kehadiran hari ini: Ralat";
+    totalMuridKelas = 0;
   });
 }
+
+// Check if jumlah murid < total and show catatan field
+document.getElementById("jumlahMurid").addEventListener("input", function() {
+  const jumlah = parseInt(this.value) || 0;
+  const catatanField = document.getElementById("catatanField");
+  
+  if (totalMuridKelas > 0 && jumlah < totalMuridKelas) {
+    catatanField.classList.add("show");
+  } else {
+    catatanField.classList.remove("show");
+  }
+});
 
 // =====================================================
 // FORM HELPERS
@@ -660,9 +735,12 @@ function hasSahsiahData() {
 
 function clearForm() {
   document.getElementById("namaGuru").value = "";
+  document.getElementById("guruGanti").checked = false;
   kelasSelect.value = "";
   document.getElementById("tempat").value = "";
   document.getElementById("jumlahMurid").value = "";
+  document.getElementById("catatanKeberadaan").value = "";
+  document.getElementById("catatanField").classList.remove("show");
   selectedMurids = [];
   updateNamaMuridDisplay();
   namaMuridOptions.innerHTML = "";
@@ -674,6 +752,7 @@ function clearForm() {
   document.getElementById("keteranganKes").value = "";
   document.getElementById("kehadiranRatio").textContent = "/ -";
   document.getElementById("kehadiranSubtext").textContent = "Kehadiran hari ini: -";
+  totalMuridKelas = 0;
 }
 
 document.getElementById("btnClearForm").addEventListener("click", clearForm);
@@ -705,12 +784,21 @@ function createSahsiahNotification(record) {
 // =====================================================
 document.getElementById("btnSave").addEventListener("click", () => {
   const namaGuru = document.getElementById("namaGuru").value.trim();
+  const guruGanti = document.getElementById("guruGanti").checked;
   const kelas = kelasSelect.value;
   const tempat = document.getElementById("tempat").value;
   const jumlahMurid = document.getElementById("jumlahMurid").value;
+  const catatanKeberadaan = document.getElementById("catatanKeberadaan").value.trim();
   
   if (!namaGuru || !kelas || !tempat || jumlahMurid === "") {
     alert("Sila lengkapkan Nama Guru, Kelas, Tempat dan Jumlah Murid.");
+    return;
+  }
+  
+  // Validate catatan if jumlah < total
+  const jumlah = parseInt(jumlahMurid) || 0;
+  if (totalMuridKelas > 0 && jumlah < totalMuridKelas && !catatanKeberadaan) {
+    alert("Sila nyatakan keberadaan murid yang tidak hadir dalam catatan.");
     return;
   }
   
@@ -759,7 +847,10 @@ document.getElementById("btnSave").addEventListener("click", () => {
   
   const newRecord = {
     tarikh, waktu, masaRekod, namaGuru, kelas, tempat,
+    guruGanti: guruGanti,
     jumlahMurid: Number(jumlahMurid),
+    totalMurid: totalMuridKelas || null,
+    catatanKeberadaan: catatanKeberadaan || null,
     namaMurid: namaMuridText || null,
     namaMuridList: namaMuridList.length ? namaMuridList : null,
     jenis, kategori, keterangan
@@ -839,16 +930,17 @@ btnSemakLoad.addEventListener("click", () => {
           let jenisHtml = "-";
           if (r.jenis === "baik") jenisHtml = '<span class="pill-good">Amalan Baik</span>';
           else if (r.jenis === "jahat") jenisHtml = '<span class="pill-bad">Kesalahan</span>';
-          div.innerHTML = "<strong>" + r.namaGuru + "</strong><br>" + r.tempat + "<br>" + jenisHtml;
+          div.innerHTML = "<strong>" + r.namaGuru + "</strong>" + (r.guruGanti ? ' <span class="pill-ganti">GANTI</span>' : '') + "<br>" + r.tempat + "<br>" + jenisHtml;
           div.style.cursor = "pointer";
           div.addEventListener("click", () => {
             semakDetailCard.style.display = "block";
             semakDetailContent.innerHTML = 
-              "<strong>Guru:</strong> " + r.namaGuru + "<br>" +
+              "<strong>Guru:</strong> " + r.namaGuru + (r.guruGanti ? ' (Guru Ganti)' : '') + "<br>" +
               "<strong>Kelas:</strong> " + r.kelas + "<br>" +
               "<strong>Tempat:</strong> " + r.tempat + "<br>" +
               "<strong>Waktu:</strong> " + r.waktu + " (" + p.start + "-" + p.end + ")<br>" +
-              "<strong>Jumlah Murid:</strong> " + r.jumlahMurid + "<br>" +
+              "<strong>Jumlah Murid:</strong> " + r.jumlahMurid + (r.totalMurid ? "/" + r.totalMurid : "") + "<br>" +
+              (r.catatanKeberadaan ? "<strong>Catatan Keberadaan:</strong> " + r.catatanKeberadaan + "<br>" : "") +
               "<strong>Nama Murid:</strong> " + (r.namaMurid || "-") + "<br>" +
               "<strong>Jenis:</strong> " + (r.jenis || "-") + "<br>" +
               "<strong>Kategori:</strong> " + (r.kategori || "-") + "<br>" +
@@ -865,8 +957,61 @@ btnSemakLoad.addEventListener("click", () => {
 });
 
 // =====================================================
-// REKOD HARI INI - ALL CLASSES
+// DETAIL POPUP MODAL (Change #2)
 // =====================================================
+const detailPopupModal = document.getElementById("detailPopupModal");
+const detailPopupTitle = document.getElementById("detailPopupTitle");
+const detailPopupContent = document.getElementById("detailPopupContent");
+const closeDetailPopup = document.getElementById("closeDetailPopup");
+
+closeDetailPopup.addEventListener("click", () => {
+  detailPopupModal.style.display = "none";
+});
+
+detailPopupModal.addEventListener("click", (e) => {
+  if (e.target === detailPopupModal) {
+    detailPopupModal.style.display = "none";
+  }
+});
+
+function showDetailPopup(record) {
+  detailPopupTitle.textContent = "Maklumat Rekod - " + record.kelas;
+  
+  let html = '';
+  html += '<div class="info-row"><strong>👨‍🏫 Guru:</strong> ' + record.namaGuru + (record.guruGanti ? ' <span class="pill-ganti">GURU GANTI</span>' : '') + '</div>';
+  html += '<div class="info-row"><strong>🏫 Kelas:</strong> ' + record.kelas + '</div>';
+  html += '<div class="info-row"><strong>📍 Tempat:</strong> ' + record.tempat + '</div>';
+  html += '<div class="info-row"><strong>🕐 Waktu:</strong> ' + record.waktu + ' (' + record.masaRekod + ')</div>';
+  html += '<div class="info-row"><strong>👥 Kehadiran:</strong> ' + record.jumlahMurid + (record.totalMurid ? '/' + record.totalMurid : '') + ' murid</div>';
+  
+  if (record.catatanKeberadaan) {
+    html += '<div class="info-row"><strong>📝 Catatan Keberadaan:</strong><br>' + record.catatanKeberadaan + '</div>';
+  }
+  
+  if (record.jenis) {
+    const sahsiahClass = record.jenis === 'baik' ? 'baik' : 'jahat';
+    const sahsiahLabel = record.jenis === 'baik' ? '✅ Amalan Baik' : '⚠️ Kesalahan Disiplin';
+    html += '<div class="sahsiah-section ' + sahsiahClass + '">';
+    html += '<strong>' + sahsiahLabel + '</strong><br>';
+    html += '<strong>Kategori:</strong> ' + (record.kategori || '-') + '<br>';
+    if (record.keterangan) {
+      html += '<strong>Keterangan:</strong> ' + record.keterangan + '<br>';
+    }
+    if (record.namaMurid) {
+      html += '<strong>Murid Terlibat:</strong> ' + record.namaMurid;
+    }
+    html += '</div>';
+  }
+  
+  detailPopupContent.innerHTML = html;
+  detailPopupModal.style.display = "flex";
+}
+
+// =====================================================
+// REKOD HARI INI - ALL CLASSES (with Rehat - Change #1)
+// =====================================================
+let allRecordsToday = {};
+
 function loadAllClassesToday() {
   const head = document.getElementById("allClassHead");
   const body = document.getElementById("allClassBody");
@@ -890,6 +1035,7 @@ function loadAllClassesToday() {
       body.innerHTML = "";
       
       const kelasMap = {};
+      allRecordsToday = {};
       
       allClasses.forEach(kelas => {
         kelasMap[kelas] = {};
@@ -902,11 +1048,13 @@ function loadAllClassesToday() {
           
           const kelas = rec.kelas;
           const waktu = rec.waktu || "W1";
-          const guru = rec.namaGuru || "-";
-          const tempat = rec.tempat || "";
           
           if (!kelasMap[kelas]) kelasMap[kelas] = {};
-          kelasMap[kelas][waktu] = { guru: guru, tempat: tempat };
+          kelasMap[kelas][waktu] = rec;
+          
+          // Store for popup
+          const key = kelas + "_" + waktu;
+          allRecordsToday[key] = rec;
         });
       }
       
@@ -919,6 +1067,7 @@ function loadAllClassesToday() {
       
       kelasList.forEach((kelas, index) => {
         const tr = document.createElement("tr");
+        const rehatWaktu = getRehatWaktu(kelas);
         
         let row = '<td style="font-weight:600;background:#f0fdf4;text-align:center;border:2px solid #000;">' + kelas + '</td>';
         
@@ -926,10 +1075,15 @@ function loadAllClassesToday() {
           const waktuKey = "W" + i;
           const data = kelasMap[kelas][waktuKey];
           
-          if (data && data.guru) {
-            row += '<td class="cell-filled" style="border:2px solid #000;">' +
-                   '<span class="guru-name">' + data.guru + '</span>' +
+          // Check if this is rehat time for this class
+          if (waktuKey === rehatWaktu) {
+            row += '<td class="cell-rehat" style="border:2px solid #000;cursor:default;">REHAT</td>';
+          } else if (data && data.namaGuru) {
+            const gantiHtml = data.guruGanti ? '<span class="guru-ganti-badge">GANTI</span>' : '';
+            row += '<td class="cell-filled" style="border:2px solid #000;" data-kelas="' + kelas + '" data-waktu="' + waktuKey + '">' +
+                   '<span class="guru-name">' + data.namaGuru + '</span>' +
                    '<span class="guru-tempat">' + data.tempat + '</span>' +
+                   gantiHtml +
                    '</td>';
           } else {
             row += '<td class="cell-empty" style="border:2px solid #000;">-</td>';
@@ -939,15 +1093,27 @@ function loadAllClassesToday() {
         tr.innerHTML = row;
         body.appendChild(tr);
       });
+      
+      // Add click listeners for cells with data
+      document.querySelectorAll('#allClassBody td[data-kelas]').forEach(td => {
+        td.addEventListener('click', function() {
+          const kelas = this.getAttribute('data-kelas');
+          const waktu = this.getAttribute('data-waktu');
+          const key = kelas + "_" + waktu;
+          if (allRecordsToday[key]) {
+            showDetailPopup(allRecordsToday[key]);
+          }
+        });
+      });
     });
   }).catch(err => {
     console.error("Load all classes error:", err);
-    body.innerHTML = '<tr><td colspan="10" style="text-align:center;border:2px solid #000;">Ralat memuat data</td></tr>';
+    body.innerHTML = '<tr><td colspan="' + (TOTAL_WAKTU + 1) + '" style="text-align:center;border:2px solid #000;">Ralat memuat data</td></tr>';
   });
 }
 
 // =====================================================
-// ADMIN PANEL - LOAD ALL SAHSIAH RECORDS (NEW)
+// ADMIN PANEL - LOAD ALL SAHSIAH RECORDS
 // =====================================================
 function loadAllSahsiahRecords() {
   const container = document.getElementById("adminSahsiahList");
@@ -955,7 +1121,6 @@ function loadAllSahsiahRecords() {
   
   container.innerHTML = '<div class="empty-state">Loading...</div>';
   
-  // Load ALL notifications (not just pending)
   db.ref("notifications").orderByChild("createdAt").once("value").then(snap => {
     container.innerHTML = "";
     
@@ -969,7 +1134,6 @@ function loadAllSahsiahRecords() {
       records.push({ key: child.key, ...child.val() });
     });
     
-    // Sort by createdAt descending (newest first)
     records.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
     
     records.forEach(r => {
@@ -1051,7 +1215,6 @@ sksaLogo.addEventListener("click", () => {
     adminPasswordInput.value = "";
     adminPasswordInput.focus();
   } else {
-    // Already logged in, go to admin panel
     setMainTab("admin");
   }
 });
@@ -1065,9 +1228,7 @@ adminLoginBtn.addEventListener("click", () => {
   if (pass === ADMIN_PASSWORD) {
     isAdminLoggedIn = true;
     adminLoginModal.style.display = "none";
-    // Show admin tab
     adminTabRow.classList.add("show");
-    // Go to admin panel
     setMainTab("admin");
   } else {
     alert("Kata laluan salah!");
@@ -1080,7 +1241,6 @@ adminPasswordInput.addEventListener("keypress", (e) => {
   }
 });
 
-// Confirm/resolve report (keeps record, just changes status)
 function sahkanLaporan(key) {
   if (!key) return;
   db.ref("notifications/" + key + "/status").set("confirmed").then(() => {
