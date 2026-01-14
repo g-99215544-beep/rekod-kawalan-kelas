@@ -693,10 +693,12 @@ function loadKehadiranForKelas() {
   db.ref(path).once("value").then(snap => {
     const data = snap.val();
     if (data && data.present !== undefined && data.total !== undefined) {
-      ratioEl.textContent = "/ " + data.present;  // Show present count as max
+      // Bubble hijau tunjuk murid yang HADIR (present), bukan jumlah keseluruhan (total)
+      // Contoh: Kehadiran 21/24 → Bubble tunjuk "/21"
+      ratioEl.textContent = "/ " + data.present;
       subtextEl.textContent = "Kehadiran hari ini: " + data.present + "/" + data.total;
-      presentMuridKelas = data.present;  // Murid yang hadir
-      totalMuridKelas = data.total;      // Jumlah keseluruhan
+      presentMuridKelas = data.present;  // Murid yang hadir (contoh: 21)
+      totalMuridKelas = data.total;      // Jumlah keseluruhan (contoh: 24)
     } else {
       ratioEl.textContent = "/ -";
       subtextEl.textContent = "Kehadiran hari ini: Tiada data";
