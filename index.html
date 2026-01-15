@@ -166,11 +166,16 @@
       white-space: normal;
       background: #047857;
       color: #fff;
+      position: sticky; /* Make header sticky */
+      top: 0; /* Stick to top */
+      z-index: 10; /* Above other content */
     }
 
     /* Special width for 'Kelas' column */
     #allClassSchedule th:first-child {
       width: 35px;
+      left: 0; /* Stick to left */
+      z-index: 20; /* Above other headers */
     }
 
     #allClassSchedule td {
@@ -193,6 +198,9 @@
       vertical-align: middle;
       font-weight: 600;
       background: #f0fdf4;
+      position: sticky; /* Make first column sticky */
+      left: 0; /* Stick to left */
+      z-index: 5; /* Above other cells */
     }
 
     /* Internal Cell Elements */
