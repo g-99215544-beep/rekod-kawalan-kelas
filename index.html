@@ -571,6 +571,20 @@ function getRehatWaktu(kelas) {
   return null;
 }
 
+function isTahap1(kelas) {
+  // Check if kelas is pra sekolah or tahun 1, 2, 3
+  const kelasUpper = kelas.toUpperCase();
+
+  // Check for pra sekolah variants
+  if (kelasUpper.startsWith('PRA') || kelasUpper.startsWith('PS')) {
+    return true;
+  }
+
+  // Check if tahun 1, 2, or 3
+  const firstChar = kelas.charAt(0);
+  return ['1', '2', '3'].includes(firstChar);
+}
+
 function timeToMinutes(str) {
   const [h, m] = str.split(".").map(Number);
   return h * 60 + m;
@@ -1385,9 +1399,12 @@ function loadAllClassesToday() {
         for (let i = 1; i <= TOTAL_WAKTU; i++) {
           const waktuKey = "W" + i;
           const records = kelasMap[kelas][waktuKey];
-          
+
           if (waktuKey === rehatWaktu) {
             row += '<td class="cell-rehat" style="border:2px solid #000;cursor:default;">REHAT</td>';
+          } else if (waktuKey === 'W13' && isTahap1(kelas)) {
+            // Tahap 1 students go home at 13:10, so W13 is marked as PULANG
+            row += '<td class="cell-rehat" style="border:2px solid #000;cursor:default;">PULANG</td>';
           } else if (records && records.length > 0) {
             const cellClass = records.length > 1 ? "cell-multi" : "cell-filled";
             let cellContent = '';
