@@ -33,13 +33,25 @@
     .logo-wrap{display:flex;flex-direction:column;align-items:center;margin-bottom:12px;position:relative}
     .logo-wrap img{width:80px;height:80px;border-radius:50%;object-fit:cover;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.25)}
     .logo-wrap h1{margin:10px 0 0;text-align:center;font-size:1.2rem;letter-spacing:.04em;font-weight:600}
-    #notifBadge{position:absolute;top:0;right:calc(50% - 50px);background:red;color:#fff;font-size:12px;padding:2px 6px;border-radius:999px;display:none}
+    #notifBadge{position:absolute;top:0;right:calc(50% - 50px);background:red;color:#fff;font-size:12px;padding:2px 6px;border-radius:999px;display:none;border:2px solid #fff;}
     .status-row{display:flex;justify-content:center;gap:10px;font-size:.85rem;color:#4b5563;margin:6px 0 14px;flex-wrap:wrap}
     .status-pill{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;background:#f3f4f6}
-    .tab-row{display:inline-flex;border-radius:999px;padding:3px;background:#e5f3ec;margin-bottom:14px}
-    .tab-btn{border:none;background:transparent;padding:6px 20px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:500;color:#166534}
+    
+    /* Sub Tabs (Isi Rekod vs Rekod Hari Ini) */
+    .tab-row{display:inline-flex;border-radius:999px;padding:3px;background:#e5f3ec;margin-bottom:14px; width: 100%; justify-content: center;}
+    .tab-btn{border:none;background:transparent;padding:6px 20px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:500;color:#166534; flex: 1; text-align: center;}
     .tab-btn.active{background:#059669;color:#fff;box-shadow:0 2px 6px rgba(5,150,105,.45)}
-    .tab-btn-admin{border:none;background:#dc2626;padding:6px 20px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:500;color:#fff;box-shadow:0 2px 6px rgba(220,38,38,.45)}
+    
+    /* Admin Header */
+    .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; background: #fee2e2; padding: 10px 15px; border-radius: 12px; border: 1px solid #fecaca; }
+    .admin-title { font-weight: 600; color: #b91c1c; display: flex; align-items: center; gap: 6px; }
+    .btn-exit-admin { background: #fff; border: 1px solid #b91c1c; color: #b91c1c; padding: 4px 12px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; cursor: pointer; }
+    
+    /* Admin Dropdown */
+    .admin-controls { margin-bottom: 20px; }
+    .admin-controls label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.9rem; color: #111827; }
+    .admin-select { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #d1d5db; font-size: 1rem; background-color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); outline: none; appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 1rem center; background-size: 1em; }
+
     .input-card{background:#f9fafb;border-radius:16px;padding:14px 12px;border:1px solid #e5e7eb}
     .field{margin-bottom:10px}
     label{font-size:.8rem;font-weight:500;display:flex;align-items:center;gap:6px;margin-bottom:3px;color:#4b5563}
@@ -142,19 +154,18 @@
     .detail-popup .sahsiah-section.jahat{background:#fee2e2}
     
     /* Admin Panel Styles */
-    .admin-tab-row{display:none;margin-bottom:14px}
-    .admin-tab-row.show{display:inline-flex;border-radius:999px;padding:3px;background:#fef2f2}
     .sahsiah-card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:12px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
     .sahsiah-card .header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
     .sahsiah-card .badge{font-size:0.7rem;padding:3px 8px;border-radius:999px;font-weight:500}
     .sahsiah-card .badge-baik{background:#dcfce7;color:#166534}
     .sahsiah-card .badge-jahat{background:#fee2e2;color:#991b1b}
     .sahsiah-card .badge-pending{background:#fef3c7;color:#92400e}
-    .sahsiah-card .badge-confirmed{background:#dbeafe;color:#1e40af}
+    .sahsiah-card .badge-confirmed{background:#e0e7ff;color:#3730a3}
     .sahsiah-card .info-row{font-size:0.78rem;color:#4b5563;margin-bottom:4px}
     .sahsiah-card .info-row strong{color:#111827}
     .sahsiah-card .murid-list{font-size:0.75rem;color:#6b7280;background:#f9fafb;padding:6px 8px;border-radius:8px;margin-top:6px}
   </style>
+<link rel="stylesheet" href="/index.css">
 </head>
 <body>
 <div class="app-shell">
@@ -171,25 +182,14 @@
       <div class="status-pill"><span id="headerWaktu">Luar Waktu PdP</span></div>
     </div>
 
-    <!-- Main Tabs -->
-    <div class="tab-row" id="mainTabRow">
-      <button id="tabRekod" class="tab-btn active">REKOD SEMASA</button>
-      <button id="tabSemak" class="tab-btn">SEMAK REKOD</button>
-    </div>
-    
-    <!-- Admin Tab (only shows after login) -->
-    <div class="admin-tab-row" id="adminTabRow">
-      <button id="tabAdmin" class="tab-btn-admin">📋 PANEL ADMIN</button>
-    </div>
-
-    <!-- REKOD SEMASA -->
-    <div id="rekodView">
-      <div class="tab-row" style="margin-top:10px;">
+    <!-- PUBLIC VIEW CONTAINER -->
+    <div id="publicView">
+      <div class="tab-row">
         <button id="subTabForm" class="tab-btn active">ISI REKOD</button>
         <button id="subTabToday" class="tab-btn">REKOD HARI INI</button>
       </div>
 
-      <!-- Form -->
+      <!-- Form (Default View) -->
       <div id="rekodFormView">
         <div class="input-card">
           <div class="field">
@@ -367,43 +367,54 @@
         </div>
       </div>
     </div>
-
-    <!-- SEMAK REKOD -->
-    <div id="semakView" style="display:none;">
-      <div class="section-title">Semak Rekod Mengikut Tarikh & Kelas</div>
-      <div class="input-card">
-        <div class="field">
-          <label class="required">Tarikh</label>
-          <input type="date" id="semakTarikh" />
-        </div>
-        <div class="field">
-          <label class="required">Kelas</label>
-          <select id="semakKelas"><option value="">Sila Pilih</option></select>
-        </div>
-        <button class="btn-submit" style="margin-top:4px;" id="btnSemakLoad">SEMAK REKOD</button>
-        <div id="semakSummary" class="empty-state">Sila pilih tarikh dan kelas untuk semak rekod.</div>
-      </div>
-
-      <div class="section-title">Jadual Guru Mengikut Waktu</div>
-      <div class="table-wrapper" id="semakTableWrapper" style="display:none;">
-        <table>
-          <thead><tr id="semakHeadRow"></tr></thead>
-          <tbody><tr id="semakBodyRow"></tr></tbody>
-        </table>
-      </div>
-
-      <div id="semakDetailCard" class="input-card" style="margin-top:10px; display:none;">
-        <div class="section-title" style="margin-top:0;">Butiran Rekod</div>
-        <div id="semakDetailContent" style="font-size:.82rem;color:#374151;"></div>
-      </div>
-    </div>
     
-    <!-- ADMIN VIEW -->
+    <!-- ADMIN VIEW CONTAINER -->
     <div id="adminView" style="display:none;">
-      <div class="section-title">📋 Rekod Sahsiah Murid (Semua)</div>
-      <p style="font-size:0.8rem;color:#6b7280;margin-bottom:12px;">Senarai lengkap laporan sahsiah murid.</p>
-      <div id="adminSahsiahList">
-        <div class="empty-state">Loading...</div>
+      <div class="admin-header">
+         <div class="admin-title">🔐 Panel Admin</div>
+         <button class="btn-exit-admin" id="btnExitAdmin">Keluar</button>
+      </div>
+
+      <div class="admin-controls">
+         <label for="adminFunctionSelect">Pilih Fungsi Admin:</label>
+         <select id="adminFunctionSelect" class="admin-select">
+            <option value="sahsiah">Semak Laporan Sahsiah</option>
+            <option value="semakRekod">Semak Rekod Kehadiran</option>
+         </select>
+      </div>
+
+      <!-- Content: Semak Laporan Sahsiah -->
+      <div id="adminSahsiahContainer">
+        <div class="section-title">Rekod Sahsiah Murid</div>
+        <p style="font-size:0.8rem;color:#6b7280;margin-bottom:12px;">Klik 'Sahkan' untuk menyemak laporan baru.</p>
+        <div id="adminSahsiahList">
+          <div class="empty-state">Loading...</div>
+        </div>
+      </div>
+
+      <!-- Content: Semak Rekod (Moved from Main Tab) -->
+      <div id="adminSemakContainer" style="display:none;">
+        <div class="section-title">Semak Rekod Mengikut Tarikh & Kelas</div>
+        <div class="input-card">
+          <div class="field">
+            <label class="required">Tarikh</label>
+            <input type="date" id="semakTarikh" />
+          </div>
+          <div class="field">
+            <label class="required">Kelas</label>
+            <select id="semakKelas"><option value="">Sila Pilih</option></select>
+          </div>
+          <button class="btn-submit" style="margin-top:4px;" id="btnSemakLoad">SEMAK REKOD</button>
+          <div id="semakSummary" class="empty-state">Sila pilih tarikh dan kelas untuk semak rekod.</div>
+        </div>
+
+        <div class="section-title">Jadual Guru Mengikut Waktu</div>
+        <div class="table-wrapper" id="semakTableWrapper" style="display:none;">
+          <table>
+            <thead><tr id="semakHeadRow"></tr></thead>
+            <tbody><tr id="semakBodyRow"></tr></tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
@@ -580,39 +591,12 @@ btnInstall.addEventListener('click', async () => {
 btnDismiss.addEventListener('click', () => installBanner.classList.remove('show'));
 
 // =====================================================
-// TABS NAVIGATION
+// NAVIGATION & VIEW CONTROLLER
 // =====================================================
-const tabRekod = document.getElementById("tabRekod");
-const tabSemak = document.getElementById("tabSemak");
-const tabAdmin = document.getElementById("tabAdmin");
-const rekodView = document.getElementById("rekodView");
-const semakView = document.getElementById("semakView");
+const publicView = document.getElementById("publicView");
 const adminView = document.getElementById("adminView");
-const adminTabRow = document.getElementById("adminTabRow");
 
-function setMainTab(tab) {
-  tabRekod.classList.remove("active");
-  tabSemak.classList.remove("active");
-  rekodView.style.display = "none";
-  semakView.style.display = "none";
-  adminView.style.display = "none";
-  
-  if (tab === "rekod") {
-    tabRekod.classList.add("active");
-    rekodView.style.display = "block";
-  } else if (tab === "semak") {
-    tabSemak.classList.add("active");
-    semakView.style.display = "block";
-  } else if (tab === "admin") {
-    adminView.style.display = "block";
-    loadAllSahsiahRecords();
-  }
-}
-
-tabRekod.addEventListener("click", () => setMainTab("rekod"));
-tabSemak.addEventListener("click", () => setMainTab("semak"));
-tabAdmin.addEventListener("click", () => setMainTab("admin"));
-
+// Sub-tabs (Form vs Today)
 const subTabForm = document.getElementById("subTabForm");
 const subTabToday = document.getElementById("subTabToday");
 const rekodFormView = document.getElementById("rekodFormView");
@@ -1040,7 +1024,7 @@ document.getElementById("btnSave").addEventListener("click", () => {
 });
 
 // =====================================================
-// SEMAK REKOD
+// SEMAK REKOD (Now inside Admin)
 // =====================================================
 const semakTarikhInput = document.getElementById("semakTarikh");
 const semakKelasSelect = document.getElementById("semakKelas");
@@ -1305,8 +1289,28 @@ function loadAllClassesToday() {
 }
 
 // =====================================================
-// ADMIN PANEL
+// ADMIN PANEL LOGIC
 // =====================================================
+
+// Dropdown Controller
+const adminFunctionSelect = document.getElementById("adminFunctionSelect");
+const adminSahsiahContainer = document.getElementById("adminSahsiahContainer");
+const adminSemakContainer = document.getElementById("adminSemakContainer");
+const btnExitAdmin = document.getElementById("btnExitAdmin");
+
+adminFunctionSelect.addEventListener("change", (e) => {
+   const val = e.target.value;
+   adminSahsiahContainer.style.display = "none";
+   adminSemakContainer.style.display = "none";
+   
+   if(val === "sahsiah") {
+      adminSahsiahContainer.style.display = "block";
+      loadAllSahsiahRecords();
+   } else if (val === "semakRekod") {
+      adminSemakContainer.style.display = "block";
+   }
+});
+
 function loadAllSahsiahRecords() {
   const container = document.getElementById("adminSahsiahList");
   if (!container) return;
@@ -1323,6 +1327,7 @@ function loadAllSahsiahRecords() {
     
     const records = [];
     snap.forEach(child => records.push({ key: child.key, ...child.val() }));
+    // Sort descending by time
     records.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
     
     records.forEach(r => {
@@ -1357,6 +1362,15 @@ function loadAllSahsiahRecords() {
   });
 }
 
+function sahkanLaporan(key) {
+  if (!key) return;
+  // Confirming updates status in DB, listener will update badge automatically
+  db.ref("notifications/" + key + "/status").set("confirmed").then(() => {
+     loadAllSahsiahRecords(); // Refresh list to update badge UI
+  });
+}
+window.sahkanLaporan = sahkanLaporan;
+
 // =====================================================
 // LOAD KELAS FROM FIREBASE
 // =====================================================
@@ -1375,7 +1389,7 @@ function loadKelasFromFirebase() {
 }
 
 // =====================================================
-// ADMIN LOGIN
+// ADMIN LOGIN & FLOW
 // =====================================================
 const sksaLogo = document.getElementById("sksaLogo");
 const adminLoginModal = document.getElementById("adminLoginModal");
@@ -1384,13 +1398,28 @@ const adminCancelBtn = document.getElementById("adminCancelBtn");
 const adminPasswordInput = document.getElementById("adminPassword");
 const notifBadge = document.getElementById("notifBadge");
 
+function toggleAdminView(showAdmin) {
+   if (showAdmin) {
+      publicView.style.display = "none";
+      adminView.style.display = "block";
+      // Reset Admin View to default state
+      adminFunctionSelect.value = "sahsiah";
+      adminSahsiahContainer.style.display = "block";
+      adminSemakContainer.style.display = "none";
+      loadAllSahsiahRecords();
+   } else {
+      publicView.style.display = "block";
+      adminView.style.display = "none";
+   }
+}
+
 sksaLogo.addEventListener("click", () => {
   if (!isAdminLoggedIn) {
     adminLoginModal.style.display = "flex";
     adminPasswordInput.value = "";
     adminPasswordInput.focus();
   } else {
-    setMainTab("admin");
+    toggleAdminView(true);
   }
 });
 
@@ -1400,8 +1429,7 @@ adminLoginBtn.addEventListener("click", () => {
   if (adminPasswordInput.value === ADMIN_PASSWORD) {
     isAdminLoggedIn = true;
     adminLoginModal.style.display = "none";
-    adminTabRow.classList.add("show");
-    setMainTab("admin");
+    toggleAdminView(true);
   } else {
     alert("Kata laluan salah!");
   }
@@ -1411,17 +1439,24 @@ adminPasswordInput.addEventListener("keypress", (e) => {
   if (e.key === "Enter") adminLoginBtn.click();
 });
 
-function sahkanLaporan(key) {
-  if (!key) return;
-  db.ref("notifications/" + key + "/status").set("confirmed").then(() => loadAllSahsiahRecords());
-}
-window.sahkanLaporan = sahkanLaporan;
+btnExitAdmin.addEventListener("click", () => {
+   toggleAdminView(false);
+});
 
 function listenNotifications() {
-  db.ref("notifications").orderByChild("status").equalTo("pending").on("value", snap => {
+  // Listen to ALL notifications to filter client-side for badge count
+  db.ref("notifications").on("value", snap => {
     const data = snap.val();
+    let pendingCount = 0;
+    
     if (data) {
-      notifBadge.textContent = Object.keys(data).length;
+      Object.values(data).forEach(item => {
+         if(item.status === 'pending') pendingCount++;
+      });
+    }
+
+    if (pendingCount > 0) {
+      notifBadge.textContent = pendingCount;
       notifBadge.style.display = "block";
     } else {
       notifBadge.style.display = "none";
@@ -1440,5 +1475,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 
+<script type="module" src="/index.tsx"></script>
 </body>
 </html>
