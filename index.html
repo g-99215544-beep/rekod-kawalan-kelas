@@ -125,20 +125,87 @@
     .catatan-field.show{display:block}
     .catatan-field label{color:#dc2626}
     
-    /* Jadual Hari Ini Styles */
-    #allClassSchedule{border:2px solid #000}
-    #allClassSchedule th{text-align:center;padding:8px 4px;font-size:0.75rem;line-height:1.2;border:2px solid #000}
-    #allClassSchedule th .waktu-code{display:block;font-weight:600;font-size:0.8rem}
-    #allClassSchedule th .waktu-time{display:block;font-weight:400;font-size:0.65rem;opacity:0.9}
-    #allClassSchedule td{text-align:center;padding:6px 3px;font-size:0.7rem;vertical-align:middle;border:2px solid #000;cursor:pointer}
+    /* ========================================= */
+    /* NEW STYLES FOR ZOOM & FIXED TABLE SIZE    */
+    /* ========================================= */
+    
+    /* Container for the zoomable table */
+    .zoom-container {
+      width: 100%;
+      height: 70vh; /* Fixed viewport height */
+      overflow: auto; /* Allow standard scrolling */
+      background: #e5e7eb;
+      border: 1px solid #ccc;
+      position: relative;
+      touch-action: none; /* Handled by JS for pinch */
+    }
+    
+    /* Content wrapper to be transformed */
+    .zoom-content {
+      transform-origin: 0 0;
+      width: fit-content;
+      transition: transform 0.05s linear; /* Smoothness */
+    }
+
+    /* Fixed Layout Table Styles */
+    #allClassSchedule {
+      table-layout: fixed; /* STRICT FIXED LAYOUT */
+      width: 1600px; /* FIXED TOTAL WIDTH */
+      border-collapse: collapse;
+      background: #fff;
+    }
+
+    #allClassSchedule th {
+      border: 2px solid #000;
+      text-align: center;
+      padding: 4px;
+      font-size: 0.75rem;
+      line-height: 1.2;
+      width: 110px; /* Fixed column width */
+      overflow: hidden;
+      white-space: normal;
+      background: #047857;
+      color: #fff;
+    }
+    
+    /* Special width for 'Kelas' column */
+    #allClassSchedule th:first-child {
+      width: 70px; 
+    }
+
+    #allClassSchedule td {
+      border: 2px solid #000;
+      text-align: center;
+      padding: 4px;
+      width: 110px; /* Match header */
+      height: 80px; /* FIXED ROW HEIGHT */
+      max-height: 80px; /* Force limit */
+      overflow: hidden; /* Hide overflow content */
+      font-size: 0.7rem;
+      vertical-align: top;
+      cursor: pointer;
+      word-wrap: break-word; /* Wrap text if possible */
+    }
+    
+    /* Special width for 'Kelas' column data */
+    #allClassSchedule td:first-child {
+      width: 70px;
+      vertical-align: middle;
+      font-weight: 600;
+      background: #f0fdf4;
+    }
+
+    /* Internal Cell Elements */
+    #allClassSchedule .waktu-code{display:block;font-weight:600;font-size:0.8rem}
+    #allClassSchedule .waktu-time{display:block;font-weight:400;font-size:0.65rem;opacity:0.9}
     #allClassSchedule .cell-empty{background-color:#fef9c3;color:#854d0e}
     #allClassSchedule .cell-filled{background-color:#fff}
     #allClassSchedule .cell-multi{background-color:#f0fdf4}
-    #allClassSchedule .cell-rehat{background-color:#059669;color:#fff;font-weight:600;cursor:default}
-    #allClassSchedule .guru-name{font-weight:600;color:#111827;display:block;font-size:0.7rem}
-    #allClassSchedule .guru-tempat{font-size:0.6rem;color:#6b7280;display:block}
+    #allClassSchedule .cell-rehat{background-color:#059669;color:#fff;font-weight:600;cursor:default;vertical-align:middle;}
+    #allClassSchedule .guru-name{font-weight:600;color:#111827;display:block;font-size:0.7rem;white-space: normal; line-height:1.1;}
+    #allClassSchedule .guru-tempat{font-size:0.6rem;color:#6b7280;display:block; margin-top:2px;}
     #allClassSchedule .guru-ganti-badge{font-size:0.55rem;background:#fbbf24;color:#78350f;padding:1px 3px;border-radius:3px;display:inline-block}
-    #allClassSchedule .multi-record{border-bottom:1px dashed #d1d5db;padding:4px 0;margin-bottom:2px}
+    #allClassSchedule .multi-record{border-bottom:1px dashed #d1d5db;padding:2px 0;margin-bottom:2px}
     #allClassSchedule .multi-record:last-child{border-bottom:none;margin-bottom:0}
     
     /* Detail Popup Card */
@@ -349,17 +416,23 @@
       <!-- Rekod Hari Ini -->
       <div id="rekodTodayView" style="display:none;">
         <div class="section-title">Jadual Guru Mengikut Waktu (Semua Kelas - Hari Ini)</div>
-        <div style="overflow-x:auto;">
-          <table id="allClassSchedule" border="0" cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse;">
-            <thead id="allClassHead">
-              <tr style="background:#047857; color:white;">
-                <th>Kelas</th>
-              </tr>
-            </thead>
-            <tbody id="allClassBody">
-              <tr><td colspan="14" style="text-align:center;">Loading...</td></tr>
-            </tbody>
-          </table>
+        <div style="font-size: 0.75rem; color: #666; margin-bottom: 5px;">
+           <small>Gunakan dua jari untuk zoom in/out.</small>
+        </div>
+        <!-- Zoom Container -->
+        <div id="zoomContainer" class="zoom-container">
+          <div id="zoomContent" class="zoom-content">
+            <table id="allClassSchedule">
+              <thead id="allClassHead">
+                <tr style="background:#047857; color:white;">
+                  <th>Kelas</th>
+                </tr>
+              </thead>
+              <tbody id="allClassBody">
+                <tr><td colspan="14" style="text-align:center;">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
         <div style="margin-top:10px;font-size:0.7rem;color:#6b7280;">
           <span class="pill-mp pill-bc">BC</span> Bahasa Cina &nbsp;
@@ -1200,6 +1273,7 @@ function loadAllClassesToday() {
   const body = document.getElementById("allClassBody");
   if (!head || !body || typeof firebase === "undefined") return;
   
+  // Header is static in HTML, but we check if we need to rebuild
   let headerHTML = '<tr style="background:#047857; color:white;"><th style="border:2px solid #000;">Kelas</th>';
   for (let i = 1; i <= TOTAL_WAKTU; i++) {
     const p = periods[i-1];
@@ -1274,6 +1348,9 @@ function loadAllClassesToday() {
             const cellClass = records.length > 1 ? "cell-multi" : "cell-filled";
             let cellContent = '';
             
+            // Wrap content for fixed height handling
+            cellContent += '<div class="cell-content-wrapper">';
+            
             records.forEach((rec, idx) => {
               const mpBadge = rec.mataPelajaran ? 
                 '<span class="pill-mp pill-' + rec.mataPelajaran.toLowerCase() + '">' + 
@@ -1289,6 +1366,7 @@ function loadAllClassesToday() {
                 cellContent += '</div>';
               }
             });
+            cellContent += '</div>';
             
             row += '<td class="' + cellClass + '" style="border:2px solid #000;" data-kelas="' + kelas + '" data-waktu="' + waktuKey + '">' + cellContent + '</td>';
           } else {
@@ -1494,6 +1572,47 @@ function listenNotifications() {
       notifBadge.style.display = "none";
     }
   });
+}
+
+// =====================================================
+// PINCH ZOOM LOGIC FOR TABLE
+// =====================================================
+const zoomContainer = document.getElementById('zoomContainer');
+const zoomContent = document.getElementById('zoomContent');
+
+if (zoomContainer && zoomContent) {
+  let startScale = 1;
+  let currentScale = 1;
+  let initialDistance = 0;
+
+  zoomContainer.addEventListener('touchstart', (e) => {
+    if (e.touches.length === 2) {
+      // Calculate initial distance between two fingers
+      initialDistance = Math.hypot(
+        e.touches[0].pageX - e.touches[1].pageX,
+        e.touches[0].pageY - e.touches[1].pageY
+      );
+      startScale = currentScale;
+    }
+  }, { passive: false });
+
+  zoomContainer.addEventListener('touchmove', (e) => {
+    if (e.touches.length === 2) {
+      e.preventDefault(); // Prevent default browser zoom behavior
+      
+      const newDistance = Math.hypot(
+        e.touches[0].pageX - e.touches[1].pageX,
+        e.touches[0].pageY - e.touches[1].pageY
+      );
+      
+      const ratio = newDistance / initialDistance;
+      
+      // Limit zoom between 0.5x and 3x
+      currentScale = Math.min(Math.max(0.5, startScale * ratio), 3);
+      
+      zoomContent.style.transform = `scale(${currentScale})`;
+    }
+  }, { passive: false });
 }
 
 // =====================================================
