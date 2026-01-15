@@ -166,22 +166,27 @@
       white-space: normal;
       background: #047857;
       color: #fff;
+      position: sticky; /* Make header sticky */
+      top: 0; /* Stick to top */
+      z-index: 10; /* Above other content */
     }
 
     /* Special width for 'Kelas' column */
     #allClassSchedule th:first-child {
       width: 35px;
+      left: 0; /* Stick to left */
+      z-index: 20; /* Above other headers */
     }
 
     #allClassSchedule td {
       border: 2px solid #000;
       text-align: center;
-      padding: 3px;
+      padding: 2px;
       width: 55px; /* Match header - Reduced to 50% */
-      height: 60px; /* FIXED ROW HEIGHT - Reduced */
-      max-height: 60px; /* Force limit */
+      height: 42px; /* FIXED ROW HEIGHT - 30% smaller than 60px */
+      max-height: 42px; /* Force limit */
       overflow: hidden; /* Hide overflow content */
-      font-size: 0.6rem;
+      font-size: 0.55rem;
       vertical-align: top;
       cursor: pointer;
       word-wrap: break-word; /* Wrap text if possible */
@@ -193,18 +198,21 @@
       vertical-align: middle;
       font-weight: 600;
       background: #f0fdf4;
+      position: sticky; /* Make first column sticky */
+      left: 0; /* Stick to left */
+      z-index: 5; /* Above other cells */
     }
 
     /* Internal Cell Elements */
-    #allClassSchedule .waktu-code{display:block;font-weight:600;font-size:0.65rem}
-    #allClassSchedule .waktu-time{display:block;font-weight:400;font-size:0.55rem;opacity:0.9}
+    #allClassSchedule .waktu-code{display:block;font-weight:600;font-size:0.6rem}
+    #allClassSchedule .waktu-time{display:block;font-weight:400;font-size:0.5rem;opacity:0.9}
     #allClassSchedule .cell-empty{background-color:#fef9c3;color:#854d0e}
     #allClassSchedule .cell-filled{background-color:#fff}
     #allClassSchedule .cell-multi{background-color:#f0fdf4}
     #allClassSchedule .cell-rehat{background-color:#059669;color:#fff;font-weight:600;cursor:default;vertical-align:middle;}
-    #allClassSchedule .guru-name{font-weight:600;color:#111827;display:block;font-size:0.6rem;white-space: normal; line-height:1.1;}
-    #allClassSchedule .guru-tempat{font-size:0.5rem;color:#6b7280;display:block; margin-top:2px;}
-    #allClassSchedule .guru-ganti-badge{font-size:0.45rem;background:#fbbf24;color:#78350f;padding:1px 2px;border-radius:2px;display:inline-block}
+    #allClassSchedule .guru-name{font-weight:600;color:#111827;display:block;font-size:0.55rem;white-space: normal; line-height:1;}
+    #allClassSchedule .guru-tempat{font-size:0.45rem;color:#6b7280;display:block; margin-top:1px;}
+    #allClassSchedule .guru-ganti-badge{font-size:0.4rem;background:#fbbf24;color:#78350f;padding:1px 2px;border-radius:2px;display:inline-block}
     #allClassSchedule .multi-record{border-bottom:1px dashed #d1d5db;padding:2px 0;margin-bottom:2px}
     #allClassSchedule .multi-record:last-child{border-bottom:none;margin-bottom:0}
     
@@ -453,7 +461,7 @@
          <label for="adminFunctionSelect">Pilih Fungsi Admin:</label>
          <select id="adminFunctionSelect" class="admin-select">
             <option value="sahsiah">Semak Laporan Sahsiah</option>
-            <option value="semakRekod">Semak Rekod Kehadiran</option>
+            <option value="semakRekod">Semak Rekod Kawalan</option>
          </select>
       </div>
 
@@ -638,8 +646,32 @@ function updateWaktuPreview() {
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('./sw.js')
-      .then(reg => console.log('SW registered'))
+      .then(reg => {
+        console.log('SW registered');
+
+        // Check for updates every 60 seconds
+        setInterval(() => {
+          reg.update();
+        }, 60000);
+
+        // Auto-reload when new service worker is activated
+        reg.addEventListener('updatefound', () => {
+          const newWorker = reg.installing;
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'activated' && navigator.serviceWorker.controller) {
+              console.log('New version available! Reloading...');
+              window.location.reload();
+            }
+          });
+        });
+      })
       .catch(err => console.log('SW failed:', err));
+  });
+
+  // Listen for controller change (when new SW takes over)
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    console.log('Controller changed, reloading page...');
+    window.location.reload();
   });
 }
 
@@ -1179,8 +1211,15 @@ btnSemakLoad.addEventListener("click", () => {
       const td = document.createElement("td");
       const list = rowsByW[p.code];
       if (!list.length) {
+        // Tiada rekod - warna kuning
         td.textContent = "-";
+        td.style.backgroundColor = "#fef9c3";
+        td.style.color = "#854d0e";
+        td.style.cursor = "default";
       } else {
+        // Ada rekod - clickable untuk lihat detail
+        td.style.cursor = "pointer";
+        td.style.backgroundColor = "#fff";
         list.forEach(r => {
           const div = document.createElement("div");
           div.style.marginBottom = "4px";
@@ -1189,10 +1228,15 @@ btnSemakLoad.addEventListener("click", () => {
             const mpClass = r.mataPelajaran === "BC" ? "pill-bc" : r.mataPelajaran === "BA" ? "pill-ba" : "pill-pemulihan";
             mpBadge = '<span class="pill-mp ' + mpClass + '">' + r.mataPelajaran + '</span>';
           }
-          div.innerHTML = "<strong>" + r.namaGuru + "</strong>" + 
+          div.innerHTML = "<strong>" + r.namaGuru + "</strong>" +
             (r.guruGanti ? ' <span class="pill-ganti">GANTI</span>' : '') +
             "<br>" + r.tempat + mpBadge;
           td.appendChild(div);
+        });
+
+        // Add click event to show full details
+        td.addEventListener('click', function() {
+          showDetailPopup(list, k, p.code);
         });
       }
       semakBodyRow.appendChild(td);
