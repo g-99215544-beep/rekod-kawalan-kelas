@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Rekod Pemantauan Kelas SKSA</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes" />
   
   <!-- PWA Meta Tags -->
   <meta name="theme-color" content="#047857" />
@@ -137,7 +137,8 @@
       background: #e5e7eb;
       border: 1px solid #ccc;
       position: relative;
-      touch-action: none; /* Handled by JS for pinch */
+      touch-action: pan-x pan-y pinch-zoom; /* Allow scrolling and pinch zoom */
+      -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
     }
     
     /* Content wrapper to be transformed */
