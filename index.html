@@ -143,7 +143,6 @@
     
     /* Content wrapper to be transformed */
     .zoom-content {
-      transform-origin: 0 0;
       width: fit-content;
       transition: transform 0.05s linear; /* Smoothness */
     }
@@ -151,7 +150,7 @@
     /* Fixed Layout Table Styles */
     #allClassSchedule {
       table-layout: fixed; /* STRICT FIXED LAYOUT */
-      width: 1600px; /* FIXED TOTAL WIDTH */
+      width: 800px; /* FIXED TOTAL WIDTH - Reduced to 50% */
       border-collapse: collapse;
       background: #fff;
     }
@@ -159,53 +158,53 @@
     #allClassSchedule th {
       border: 2px solid #000;
       text-align: center;
-      padding: 4px;
-      font-size: 0.75rem;
-      line-height: 1.2;
-      width: 110px; /* Fixed column width */
+      padding: 3px;
+      font-size: 0.65rem;
+      line-height: 1.1;
+      width: 55px; /* Fixed column width - Reduced to 50% */
       overflow: hidden;
       white-space: normal;
       background: #047857;
       color: #fff;
     }
-    
+
     /* Special width for 'Kelas' column */
     #allClassSchedule th:first-child {
-      width: 70px; 
+      width: 35px;
     }
 
     #allClassSchedule td {
       border: 2px solid #000;
       text-align: center;
-      padding: 4px;
-      width: 110px; /* Match header */
-      height: 80px; /* FIXED ROW HEIGHT */
-      max-height: 80px; /* Force limit */
+      padding: 3px;
+      width: 55px; /* Match header - Reduced to 50% */
+      height: 60px; /* FIXED ROW HEIGHT - Reduced */
+      max-height: 60px; /* Force limit */
       overflow: hidden; /* Hide overflow content */
-      font-size: 0.7rem;
+      font-size: 0.6rem;
       vertical-align: top;
       cursor: pointer;
       word-wrap: break-word; /* Wrap text if possible */
     }
-    
+
     /* Special width for 'Kelas' column data */
     #allClassSchedule td:first-child {
-      width: 70px;
+      width: 35px;
       vertical-align: middle;
       font-weight: 600;
       background: #f0fdf4;
     }
 
     /* Internal Cell Elements */
-    #allClassSchedule .waktu-code{display:block;font-weight:600;font-size:0.8rem}
-    #allClassSchedule .waktu-time{display:block;font-weight:400;font-size:0.65rem;opacity:0.9}
+    #allClassSchedule .waktu-code{display:block;font-weight:600;font-size:0.65rem}
+    #allClassSchedule .waktu-time{display:block;font-weight:400;font-size:0.55rem;opacity:0.9}
     #allClassSchedule .cell-empty{background-color:#fef9c3;color:#854d0e}
     #allClassSchedule .cell-filled{background-color:#fff}
     #allClassSchedule .cell-multi{background-color:#f0fdf4}
     #allClassSchedule .cell-rehat{background-color:#059669;color:#fff;font-weight:600;cursor:default;vertical-align:middle;}
-    #allClassSchedule .guru-name{font-weight:600;color:#111827;display:block;font-size:0.7rem;white-space: normal; line-height:1.1;}
-    #allClassSchedule .guru-tempat{font-size:0.6rem;color:#6b7280;display:block; margin-top:2px;}
-    #allClassSchedule .guru-ganti-badge{font-size:0.55rem;background:#fbbf24;color:#78350f;padding:1px 3px;border-radius:3px;display:inline-block}
+    #allClassSchedule .guru-name{font-weight:600;color:#111827;display:block;font-size:0.6rem;white-space: normal; line-height:1.1;}
+    #allClassSchedule .guru-tempat{font-size:0.5rem;color:#6b7280;display:block; margin-top:2px;}
+    #allClassSchedule .guru-ganti-badge{font-size:0.45rem;background:#fbbf24;color:#78350f;padding:1px 2px;border-radius:2px;display:inline-block}
     #allClassSchedule .multi-record{border-bottom:1px dashed #d1d5db;padding:2px 0;margin-bottom:2px}
     #allClassSchedule .multi-record:last-child{border-bottom:none;margin-bottom:0}
     
@@ -1585,6 +1584,8 @@ if (zoomContainer && zoomContent) {
   let startScale = 1;
   let currentScale = 1;
   let initialDistance = 0;
+  let originX = 0;
+  let originY = 0;
 
   zoomContainer.addEventListener('touchstart', (e) => {
     if (e.touches.length === 2) {
@@ -1593,6 +1594,25 @@ if (zoomContainer && zoomContent) {
         e.touches[0].pageX - e.touches[1].pageX,
         e.touches[0].pageY - e.touches[1].pageY
       );
+
+      // Calculate center point between two fingers
+      const containerRect = zoomContainer.getBoundingClientRect();
+      const touch1X = e.touches[0].pageX;
+      const touch1Y = e.touches[0].pageY;
+      const touch2X = e.touches[1].pageX;
+      const touch2Y = e.touches[1].pageY;
+
+      // Center point in page coordinates
+      const centerX = (touch1X + touch2X) / 2;
+      const centerY = (touch1Y + touch2Y) / 2;
+
+      // Convert to container-relative coordinates
+      originX = centerX - containerRect.left + zoomContainer.scrollLeft;
+      originY = centerY - containerRect.top + zoomContainer.scrollTop;
+
+      // Set transform origin to center of pinch
+      zoomContent.style.transformOrigin = `${originX}px ${originY}px`;
+
       startScale = currentScale;
     }
   }, { passive: false });
@@ -1600,17 +1620,17 @@ if (zoomContainer && zoomContent) {
   zoomContainer.addEventListener('touchmove', (e) => {
     if (e.touches.length === 2) {
       e.preventDefault(); // Prevent default browser zoom behavior
-      
+
       const newDistance = Math.hypot(
         e.touches[0].pageX - e.touches[1].pageX,
         e.touches[0].pageY - e.touches[1].pageY
       );
-      
+
       const ratio = newDistance / initialDistance;
-      
+
       // Limit zoom between 0.5x and 3x
       currentScale = Math.min(Math.max(0.5, startScale * ratio), 3);
-      
+
       zoomContent.style.transform = `scale(${currentScale})`;
     }
   }, { passive: false });
