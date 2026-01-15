@@ -461,7 +461,7 @@
          <label for="adminFunctionSelect">Pilih Fungsi Admin:</label>
          <select id="adminFunctionSelect" class="admin-select">
             <option value="sahsiah">Semak Laporan Sahsiah</option>
-            <option value="semakRekod">Semak Rekod Kehadiran</option>
+            <option value="semakRekod">Semak Rekod Kawalan</option>
          </select>
       </div>
 
@@ -1211,8 +1211,15 @@ btnSemakLoad.addEventListener("click", () => {
       const td = document.createElement("td");
       const list = rowsByW[p.code];
       if (!list.length) {
+        // Tiada rekod - warna kuning
         td.textContent = "-";
+        td.style.backgroundColor = "#fef9c3";
+        td.style.color = "#854d0e";
+        td.style.cursor = "default";
       } else {
+        // Ada rekod - clickable untuk lihat detail
+        td.style.cursor = "pointer";
+        td.style.backgroundColor = "#fff";
         list.forEach(r => {
           const div = document.createElement("div");
           div.style.marginBottom = "4px";
@@ -1221,10 +1228,15 @@ btnSemakLoad.addEventListener("click", () => {
             const mpClass = r.mataPelajaran === "BC" ? "pill-bc" : r.mataPelajaran === "BA" ? "pill-ba" : "pill-pemulihan";
             mpBadge = '<span class="pill-mp ' + mpClass + '">' + r.mataPelajaran + '</span>';
           }
-          div.innerHTML = "<strong>" + r.namaGuru + "</strong>" + 
+          div.innerHTML = "<strong>" + r.namaGuru + "</strong>" +
             (r.guruGanti ? ' <span class="pill-ganti">GANTI</span>' : '') +
             "<br>" + r.tempat + mpBadge;
           td.appendChild(div);
+        });
+
+        // Add click event to show full details
+        td.addEventListener('click', function() {
+          showDetailPopup(list, k, p.code);
         });
       }
       semakBodyRow.appendChild(td);
