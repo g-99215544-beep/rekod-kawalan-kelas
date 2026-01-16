@@ -484,8 +484,8 @@
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
           <p style="font-size:0.8rem;color:#6b7280;margin:0;">Klik 'Sahkan' untuk menyemak laporan baru.</p>
           <div class="toggle-row" style="margin:0;">
-            <button type="button" class="toggle-btn active" id="btnFilterPending">Menunggu Sahaja</button>
-            <button type="button" class="toggle-btn" id="btnFilterAll">Semua</button>
+            <button type="button" class="toggle-btn" id="btnFilterPending">Menunggu Sahaja</button>
+            <button type="button" class="toggle-btn active" id="btnFilterAll">Semua</button>
           </div>
         </div>
         <div id="adminSahsiahList">
@@ -1572,7 +1572,7 @@ adminFunctionSelect.addEventListener("change", (e) => {
    }
 });
 
-let sahsiahFilterMode = 'pending'; // 'pending' or 'all'
+let sahsiahFilterMode = 'all'; // 'pending' or 'all'
 
 function loadAllSahsiahRecords() {
   const container = document.getElementById("adminSahsiahList");
