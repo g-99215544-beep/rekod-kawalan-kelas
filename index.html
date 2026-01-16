@@ -1382,6 +1382,10 @@ function loadAllClassesToday() {
   head.innerHTML = headerHTML;
 
   const today = formatDate(new Date());
+  const todayDate = new Date();
+  const dayOfWeek = todayDate.getDay(); // 0=Sunday, 5=Friday
+  const isFriday = dayOfWeek === 5;
+
   body.innerHTML = '<tr><td colspan="' + (TOTAL_WAKTU + 1) + '" style="text-align:center;border:2px solid #000;">Loading...</td></tr>';
 
   // Load events first
@@ -1463,8 +1467,14 @@ function loadAllClassesToday() {
           const eventKey = kelas + "_" + waktuKey;
           const events = allEventsToday[eventKey] || [];
 
+          // Check if Friday and W10-W13 (all classes go home at 12:10 on Friday)
+          const isFridayPulang = isFriday && ['W10', 'W11', 'W12', 'W13'].includes(waktuKey);
+
           if (waktuKey === rehatWaktu) {
             row += '<td class="cell-rehat" style="border:2px solid #000;cursor:default;">REHAT</td>';
+          } else if (isFridayPulang) {
+            // Friday: All classes go home at 12:10 (W10-W13 marked as PULANG)
+            row += '<td class="cell-rehat" style="border:2px solid #000;cursor:default;">PULANG</td>';
           } else if (waktuKey === 'W13' && isTahap1(kelas)) {
             // Tahap 1 students go home at 13:10, so W13 is marked as PULANG
             row += '<td class="cell-rehat" style="border:2px solid #000;cursor:default;">PULANG</td>';
