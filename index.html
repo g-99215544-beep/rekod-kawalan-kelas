@@ -481,7 +481,13 @@
       <!-- Content: Semak Laporan Sahsiah -->
       <div id="adminSahsiahContainer">
         <div class="section-title">Rekod Sahsiah Murid</div>
-        <p style="font-size:0.8rem;color:#6b7280;margin-bottom:12px;">Klik 'Sahkan' untuk menyemak laporan baru.</p>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <p style="font-size:0.8rem;color:#6b7280;margin:0;">Klik 'Sahkan' untuk menyemak laporan baru.</p>
+          <div class="toggle-row" style="margin:0;">
+            <button type="button" class="toggle-btn active" id="btnFilterPending">Menunggu Sahaja</button>
+            <button type="button" class="toggle-btn" id="btnFilterAll">Semua</button>
+          </div>
+        </div>
         <div id="adminSahsiahList">
           <div class="empty-state">Loading...</div>
         </div>
@@ -1566,27 +1572,39 @@ adminFunctionSelect.addEventListener("change", (e) => {
    }
 });
 
+let sahsiahFilterMode = 'pending'; // 'pending' or 'all'
+
 function loadAllSahsiahRecords() {
   const container = document.getElementById("adminSahsiahList");
   if (!container) return;
-  
+
   container.innerHTML = '<div class="empty-state">Loading...</div>';
-  
+
   // Read from 'notifications' (Synced with JSON, where sahsiah items are stored)
   db.ref("notifications").orderByChild("createdAt").once("value").then(snap => {
     container.innerHTML = "";
-    
+
     if (!snap.exists()) {
       container.innerHTML = '<div class="empty-state">Tiada rekod sahsiah.</div>';
       return;
     }
-    
+
     const records = [];
     snap.forEach(child => records.push({ key: child.key, ...child.val() }));
     // Sort descending by time
     records.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-    
-    records.forEach(r => {
+
+    // Filter based on mode
+    const filteredRecords = sahsiahFilterMode === 'pending'
+      ? records.filter(r => r.status === 'pending')
+      : records;
+
+    if (filteredRecords.length === 0) {
+      container.innerHTML = '<div class="empty-state">Tiada rekod ' + (sahsiahFilterMode === 'pending' ? 'menunggu' : 'sahsiah') + '.</div>';
+      return;
+    }
+
+    filteredRecords.forEach(r => {
       const card = document.createElement("div");
       // Add class for confirmed records to grey them out visually
       const isConfirmed = r.status === "confirmed";
@@ -1628,6 +1646,21 @@ function sahkanLaporan(key) {
   });
 }
 window.sahkanLaporan = sahkanLaporan;
+
+// Filter buttons for sahsiah records
+document.getElementById("btnFilterPending")?.addEventListener("click", function() {
+  sahsiahFilterMode = 'pending';
+  this.classList.add("active");
+  document.getElementById("btnFilterAll").classList.remove("active");
+  loadAllSahsiahRecords();
+});
+
+document.getElementById("btnFilterAll")?.addEventListener("click", function() {
+  sahsiahFilterMode = 'all';
+  this.classList.add("active");
+  document.getElementById("btnFilterPending").classList.remove("active");
+  loadAllSahsiahRecords();
+});
 
 // =====================================================
 // EVENT MANAGEMENT
