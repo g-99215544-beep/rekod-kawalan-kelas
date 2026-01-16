@@ -282,7 +282,9 @@
         <div class="input-card">
           <div class="field">
             <label class="required">Nama Guru</label>
-            <input type="text" id="namaGuru" placeholder="Contoh: Cikgu Sufian" />
+            <select id="namaGuru">
+              <option value="">Sila Pilih Nama Guru</option>
+            </select>
             <div class="checkbox-inline">
               <input type="checkbox" id="guruGanti" />
               <label for="guruGanti">Guru Ganti</label>
@@ -585,6 +587,7 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 <script src="database.js"></script>
+<script src="teachers-db.js"></script>
 
 <script>
 // =====================================================
@@ -1821,6 +1824,69 @@ function loadKelasFromFirebase() {
   }).catch(err => console.error("Gagal load kelas:", err));
 }
 
+// Load Guru Names from Teachers Firebase Database
+function loadGuruFromFirebase() {
+  const namaGuruSelect = document.getElementById("namaGuru");
+
+  if (typeof teachersDb === 'undefined' || !teachersDb) {
+    console.error("Teachers database not initialized");
+    return;
+  }
+
+  // Assuming teachers are stored at root or under a specific path
+  // Try common paths: root, "teachers", "guru", "daftarGuru"
+  teachersDb.ref("/").once("value").then(snapshot => {
+    const data = snapshot.val();
+    if (!data) {
+      console.warn("No data found in teachers database");
+      return;
+    }
+
+    let teachersList = [];
+
+    // Check if data is an array or object
+    if (Array.isArray(data)) {
+      teachersList = data.filter(name => name); // Filter out empty values
+    } else if (typeof data === 'object') {
+      // If it's an object, try to extract teacher names
+      // Check common structures
+      if (data.teachers) {
+        teachersList = Array.isArray(data.teachers) ? data.teachers : Object.values(data.teachers);
+      } else if (data.guru) {
+        teachersList = Array.isArray(data.guru) ? data.guru : Object.values(data.guru);
+      } else if (data.daftarGuru) {
+        teachersList = Array.isArray(data.daftarGuru) ? data.daftarGuru : Object.values(data.daftarGuru);
+      } else {
+        // If no specific key, treat all values as potential teacher names
+        teachersList = Object.values(data);
+      }
+    }
+
+    // Filter and clean teacher names
+    teachersList = teachersList.filter(name =>
+      name && typeof name === 'string' && name.trim() !== ''
+    );
+
+    if (teachersList.length === 0) {
+      console.warn("No teacher names found in database");
+      return;
+    }
+
+    // Reset dropdown
+    namaGuruSelect.innerHTML = '<option value="">Sila Pilih Nama Guru</option>';
+
+    // Add teachers with numbers (1) NAMA GURU, 2) NAMA GURU, etc.)
+    teachersList.forEach((teacherName, index) => {
+      const numberedName = (index + 1) + ") " + teacherName.trim().toUpperCase();
+      namaGuruSelect.innerHTML += '<option value="' + teacherName.trim() + '">' + numberedName + '</option>';
+    });
+
+    console.log("Successfully loaded " + teachersList.length + " teachers");
+  }).catch(err => {
+    console.error("Gagal load senarai guru:", err);
+  });
+}
+
 // =====================================================
 // ADMIN LOGIN & FLOW
 // =====================================================
@@ -1966,6 +2032,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setInterval(updateDateTimeUI, 1000);
   updateDateTimeUI();
   loadKelasFromFirebase();
+  loadGuruFromFirebase();
   listenNotifications();
 });
 </script>
