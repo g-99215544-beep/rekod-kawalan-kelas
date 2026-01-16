@@ -1,0 +1,262 @@
+{
+  "guru": {
+    "guru_001": {
+      "nama": "MAHATHIR BIN MD SAHAK",
+      "gred": "DG6",
+      "telefon": "01155590863",
+      "jawatan": "Guru Besar"
+    },
+    "guru_002": {
+      "nama": "MUHAIZAM BIN MD MOKHTAR",
+      "gred": "DG10",
+      "telefon": "0125632329",
+      "jawatan": "PK Pentadbiran"
+    },
+    "guru_003": {
+      "nama": "SHARIMAH BINTI ZAIN",
+      "gred": "DG12",
+      "telefon": "0135137814",
+      "jawatan": "PK Klem"
+    },
+    "guru_004": {
+      "nama": "SANGARA NANDA A/P KARUPPIAH",
+      "gred": "DG10",
+      "telefon": "0125087724",
+      "jawatan": "PK Kokurikulum"
+    },
+    "guru_005": {
+      "nama": "AFFIQ NAGIUDDIN B. ALIAS",
+      "gred": "DG9",
+      "telefon": "0107925173",
+      "jawatan": "B. Melayu"
+    },
+    "guru_006": {
+      "nama": "AFIEYEAH BT YUSSOF ALIM",
+      "gred": "DG10",
+      "telefon": "0132825183",
+      "jawatan": "P. Islam"
+    },
+    "guru_007": {
+      "nama": "AINA AMIRAH BT HALIM",
+      "gred": "DG9",
+      "telefon": "01113204297",
+      "jawatan": "P. Islam"
+    },
+    "guru_008": {
+      "nama": "AMIRUL ARIFF BIN YUSOF",
+      "gred": "DG10",
+      "telefon": "0195894671",
+      "jawatan": "Sains"
+    },
+    "guru_009": {
+      "nama": "ASQALANI BIN SUHAIMI",
+      "gred": "DG9",
+      "telefon": "0145169410",
+      "jawatan": "Pemulihan"
+    },
+    "guru_010": {
+      "nama": "CHIN JIN NING",
+      "gred": "DG12",
+      "telefon": "0125557780",
+      "jawatan": "Sains"
+    },
+    "guru_011": {
+      "nama": "HAMDINA NURARIFAH BINTI AHMAD @ ZAMRI",
+      "gred": "DG9",
+      "telefon": "0104154864",
+      "jawatan": "Prasekolah"
+    },
+    "guru_012": {
+      "nama": "MAGALECHUMI A/P VEERAPPEN",
+      "gred": "DG9",
+      "telefon": "0143400166",
+      "jawatan": "B. Tamil"
+    },
+    "guru_013": {
+      "nama": "MOHAMAD SOLEHHAFIZ B NOHAMI",
+      "gred": "DG9",
+      "telefon": "0135918252",
+      "jawatan": "Sejarah"
+    },
+    "guru_014": {
+      "nama": "MUHAMMAD AMMAR BIN MUSTAFFA",
+      "gred": "DG9",
+      "telefon": "0194135145",
+      "jawatan": "P. Islam"
+    },
+    "guru_015": {
+      "nama": "MUHAMMAD IHSAN B. SHAIK ALI",
+      "gred": "DG9",
+      "telefon": "0103949498",
+      "jawatan": "P. Seni"
+    },
+    "guru_016": {
+      "nama": "MUHAMMAD SUFI B MOHD BAKRI",
+      "gred": "DG9",
+      "telefon": "0179959655",
+      "jawatan": "Matematik"
+    },
+    "guru_017": {
+      "nama": "MUHAMMAD YASIN BIN ABDUL AZIZ",
+      "gred": "DG9",
+      "telefon": "01128442545",
+      "jawatan": "Muzik"
+    },
+    "guru_018": {
+      "nama": "NG SHI HUI",
+      "gred": "DG9",
+      "telefon": "0124110193",
+      "jawatan": "P. B. Cina"
+    },
+    "guru_019": {
+      "nama": "NOOR HIDAYAH BINTI SALLEH",
+      "gred": "DG9",
+      "telefon": "0195727912",
+      "jawatan": "P. Islam"
+    },
+    "guru_020": {
+      "nama": "NORLIZAM B. IDROSE",
+      "gred": "DG12",
+      "telefon": "0194651557",
+      "jawatan": "B.Melayu"
+    },
+    "guru_021": {
+      "nama": "NURFATIN AFIQAH BINTI HAMZAH",
+      "gred": "DG9",
+      "telefon": "0135236480",
+      "jawatan": "P. Islam"
+    },
+    "guru_022": {
+      "nama": "NUR ELYIA BT. MOHD ZIN",
+      "gred": "DG9",
+      "telefon": "0105279161",
+      "jawatan": "B. Melayu"
+    },
+    "guru_023": {
+      "nama": "NUR HAZIERAH BT. AZMI",
+      "gred": "DG10",
+      "telefon": "0194799895",
+      "jawatan": "Matematik"
+    },
+    "guru_024": {
+      "nama": "NUR HIDAYAH BT. ABDUL JALIL",
+      "gred": "DG9",
+      "telefon": "0199781560",
+      "jawatan": "P. Islam"
+    },
+    "guru_025": {
+      "nama": "NUR IZZANY BIN MOHD",
+      "gred": "DG9",
+      "telefon": "0174365381",
+      "jawatan": "B. Melayu"
+    },
+    "guru_026": {
+      "nama": "NUR IZZATI BINTI MOHD KHALIL",
+      "gred": "DG9",
+      "telefon": "01111459708",
+      "jawatan": "Kaunseling"
+    },
+    "guru_027": {
+      "nama": "NUR IZZATI BINTI SAMSUDIN",
+      "gred": "DG9",
+      "telefon": "0134416085",
+      "jawatan": "P. Islam"
+    },
+    "guru_028": {
+      "nama": "NUR SYAFIQAH BINTI NIZAMDIN",
+      "gred": "DG9",
+      "telefon": "0195518418",
+      "jawatan": "B. Inggeris"
+    },
+    "guru_029": {
+      "nama": "NUR ZUHAIRA BINTI MOHAMED SALIB",
+      "gred": "DG9",
+      "telefon": "0174326525",
+      "jawatan": "B. Inggeris"
+    },
+    "guru_030": {
+      "nama": "NUR ZURAINIE BINTI MOHD FAUZI",
+      "gred": "DG10",
+      "telefon": "0133524257",
+      "jawatan": "B.Melayu"
+    },
+    "guru_031": {
+      "nama": "PAMELA KHOO",
+      "gred": "DG6",
+      "telefon": "0164988898",
+      "jawatan": "B.Inggeris"
+    },
+    "guru_032": {
+      "nama": "PUNITHA A/P MUNUSAMY",
+      "gred": "DG12",
+      "telefon": "0194111993",
+      "jawatan": "Sains"
+    },
+    "guru_033": {
+      "nama": "RADHIAH BINTI ZAINON",
+      "gred": "DG12",
+      "telefon": "0194884386",
+      "jawatan": "P.Islam"
+    },
+    "guru_034": {
+      "nama": "RENUKHA A/P NALLASAMY",
+      "gred": "DG10",
+      "telefon": "0124741882",
+      "jawatan": "B. Inggeris"
+    },
+    "guru_035": {
+      "nama": "SARIDAH BT TK ROF YUSOFF",
+      "gred": "DG12",
+      "telefon": "0164819665",
+      "jawatan": "Sejarah"
+    },
+    "guru_036": {
+      "nama": "SHARWINTHIRAN A/L THAVARAJAH",
+      "gred": "DG9",
+      "telefon": "0175253207",
+      "jawatan": "Prasekolah"
+    },
+    "guru_037": {
+      "nama": "THANALECHIMI A/P R.RAMA",
+      "gred": "DG10",
+      "telefon": "0194226329",
+      "jawatan": "B.Inggeris"
+    },
+    "guru_038": {
+      "nama": "VINEETA A/P SINGARAVELOO",
+      "gred": "DG12",
+      "telefon": "0125382531",
+      "jawatan": "Matematik"
+    },
+    "guru_039": {
+      "nama": "WAN AHMAD BIN WAN IBRAHIM",
+      "gred": "DG9",
+      "telefon": "0148221892",
+      "jawatan": "B. Inggeris"
+    },
+    "staf_001": {
+      "nama": "MUHAMAD IKHWAN FARHAN B. MOHD SHUKRI",
+      "gred": "N1",
+      "telefon": "0174356428",
+      "jawatan": "PT"
+    },
+    "staf_002": {
+      "nama": "FARAH AZREEN BT. SAAD",
+      "gred": "N1",
+      "telefon": "01139283852",
+      "jawatan": "PPM"
+    },
+    "staf_003": {
+      "nama": "HIDAYAH BINTI AZRA'IN",
+      "gred": "H1",
+      "telefon": "01136335497",
+      "jawatan": "PO"
+    },
+    "staf_004": {
+      "nama": "NUR AZLINA BINTE CHEK MAMSOR",
+      "gred": "N1",
+      "telefon": "0174853090",
+      "jawatan": "PPM"
+    }
+  }
+}
