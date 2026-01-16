@@ -281,6 +281,7 @@
         <div class="input-card">
           <div class="field">
             <label class="required">Nama Guru</label>
+            <!-- Dropdown Nama Guru dengan Nombor -->
             <select id="namaGuru">
               <option value="">Sila Pilih Nama Guru</option>
             </select>
@@ -608,7 +609,6 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 <script src="database.js"></script>
-<script src="teachers-db.js"></script>
 
 <script>
 // =====================================================
@@ -616,6 +616,35 @@
 // =====================================================
 let isAdminLoggedIn = false;
 const ADMIN_PASSWORD = "admin123";
+
+// Firebase Config for Teachers Database (Explicitly embedded)
+const teachersConfig = {
+  apiKey: "AIzaSyCpRe6EpshreXgNW3CQe6ACZkxxBlH0rnI",
+  authDomain: "pinjaman-4b662.firebaseapp.com",
+  databaseURL: "https://pinjaman-4b662-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "pinjaman-4b662",
+  storageBucket: "pinjaman-4b662.firebasestorage.app",
+  messagingSenderId: "840792083486",
+  appId: "1:840792083486:web:6086e62521fd771063320f",
+  measurementId: "G-R6WVPCJ4KT"
+};
+
+// Initialize Secondary App for Teachers
+let teachersDb;
+try {
+  // Check if secondary app already initialized
+  const teachersApp = firebase.initializeApp(teachersConfig, "teachersApp_Embedded");
+  teachersDb = teachersApp.database();
+  console.log("Teachers DB initialized (Embedded Config)");
+} catch (e) {
+  // If app already exists, just get the database
+  if (e.code === 'app/duplicate-app') {
+     teachersDb = firebase.app("teachersApp_Embedded").database();
+     console.log("Teachers DB retrieved (Embedded Config)");
+  } else {
+     console.error("Error initializing Teachers DB:", e);
+  }
+}
 
 const periods = [
   {code:"W1",start:"7.40",end:"8.10"},
@@ -1857,10 +1886,8 @@ const MAX_GURU_RETRIES = 3;
 function loadGuruFromFirebase() {
   const namaGuruSelect = document.getElementById("namaGuru");
 
-  // Check both local teachersDb and window.teachersDb
-  const dbRef = (typeof teachersDb !== 'undefined' && teachersDb) ? teachersDb : window.teachersDb;
-
-  if (!dbRef || typeof dbRef.ref !== 'function') {
+  // Check embedded teachersDb (defined at top of script)
+  if (!teachersDb || typeof teachersDb.ref !== 'function') {
     console.warn("Teachers database not ready, retry " + (guruLoadRetries + 1) + "/" + MAX_GURU_RETRIES);
 
     // Retry after a delay if teachersDb is not ready yet
@@ -1880,7 +1907,7 @@ function loadGuruFromFirebase() {
   namaGuruSelect.innerHTML = '<option value="">⏳ Loading...</option>';
 
   // Load from "guru" node - structure: guru/{key}/{nama, telefon}
-  dbRef.ref("guru").once("value").then(snapshot => {
+  teachersDb.ref("guru").once("value").then(snapshot => {
     const data = snapshot.val();
 
     if (!data) {
@@ -1942,16 +1969,15 @@ function loadGuruFromFirebase() {
 // Load and display teacher list in admin panel
 function loadGuruListForAdmin() {
   const guruListDiv = document.getElementById("guruList");
-  const dbRef = (typeof teachersDb !== 'undefined' && teachersDb) ? teachersDb : window.teachersDb;
-
-  if (!dbRef || typeof dbRef.ref !== 'function') {
+  
+  if (!teachersDb || typeof teachersDb.ref !== 'function') {
     guruListDiv.innerHTML = '<div class="empty-state">❌ Teachers database not initialized</div>';
     return;
   }
 
   guruListDiv.innerHTML = '<div class="empty-state">Loading...</div>';
 
-  dbRef.ref("guru").once("value").then(snapshot => {
+  teachersDb.ref("guru").once("value").then(snapshot => {
     const data = snapshot.val();
 
     if (!data) {
@@ -2033,14 +2059,13 @@ function addGuru() {
     return;
   }
 
-  const dbRef = (typeof teachersDb !== 'undefined' && teachersDb) ? teachersDb : window.teachersDb;
-  if (!dbRef || typeof dbRef.ref !== 'function') {
+  if (!teachersDb || typeof teachersDb.ref !== 'function') {
     alert("Teachers database not initialized");
     return;
   }
 
   // Add to Firebase under "guru" node with structure {nama, telefon}
-  const newRef = dbRef.ref("guru").push();
+  const newRef = teachersDb.ref("guru").push();
   newRef.set({
     nama: guruName,
     telefon: guruTelefon
@@ -2062,13 +2087,12 @@ function deleteGuru(key, name) {
     return;
   }
 
-  const dbRef = (typeof teachersDb !== 'undefined' && teachersDb) ? teachersDb : window.teachersDb;
-  if (!dbRef || typeof dbRef.ref !== 'function') {
+  if (!teachersDb || typeof teachersDb.ref !== 'function') {
     alert("Teachers database not initialized");
     return;
   }
 
-  dbRef.ref("guru/" + key).remove().then(() => {
+  teachersDb.ref("guru/" + key).remove().then(() => {
     alert("✅ Guru berjaya dipadam: " + name);
     loadGuruListForAdmin();
     loadGuruFromFirebase(); // Refresh the dropdown in the main form
