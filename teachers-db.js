@@ -14,8 +14,16 @@ const teachersFirebaseConfig = {
 let teachersDb;
 if (typeof firebase !== 'undefined') {
   try {
-    // Initialize as a secondary Firebase app
-    const teachersApp = firebase.initializeApp(teachersFirebaseConfig, "teachersApp");
+    // Check if teachersApp already exists
+    let teachersApp;
+    try {
+      teachersApp = firebase.app("teachersApp");
+      console.log("Teachers Firebase app already exists, reusing...");
+    } catch (e) {
+      // App doesn't exist, create it
+      teachersApp = firebase.initializeApp(teachersFirebaseConfig, "teachersApp");
+      console.log("Teachers Firebase app created successfully");
+    }
     teachersDb = teachersApp.database();
     window.teachersDb = teachersDb;
     console.log("Teachers Firebase database initialized successfully");
@@ -27,7 +35,9 @@ if (typeof firebase !== 'undefined') {
         console.warn("Teachers DB operation on mock object:", path);
         return {
           once: () => Promise.resolve({ exists: () => false, val: () => null }),
-          on: () => {}
+          on: () => {},
+          push: () => ({ key: 'mock_key_' + Date.now(), set: () => Promise.reject("Mock DB") }),
+          remove: () => Promise.reject("Mock DB")
         };
       }
     };
@@ -40,7 +50,9 @@ if (typeof firebase !== 'undefined') {
       console.warn("Teachers DB operation on mock object:", path);
       return {
         once: () => Promise.resolve({ exists: () => false, val: () => null }),
-        on: () => {}
+        on: () => {},
+        push: () => ({ key: 'mock_key_' + Date.now(), set: () => Promise.reject("Mock DB") }),
+        remove: () => Promise.reject("Mock DB")
       };
     }
   };

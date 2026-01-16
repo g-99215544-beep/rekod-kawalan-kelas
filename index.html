@@ -253,7 +253,6 @@
     .checkbox-item label{cursor:pointer;margin:0}
     .cell-event{background-color:#dbeafe !important;color:#1e40af;font-weight:600;cursor:pointer}
   </style>
-<link rel="stylesheet" href="/index.css">
 </head>
 <body>
 <div class="app-shell">
@@ -1852,11 +1851,27 @@ function loadKelasFromFirebase() {
 }
 
 // Load Guru Names from Teachers Firebase Database
+let guruLoadRetries = 0;
+const MAX_GURU_RETRIES = 3;
+
 function loadGuruFromFirebase() {
   const namaGuruSelect = document.getElementById("namaGuru");
 
-  if (typeof teachersDb === 'undefined' || !teachersDb) {
-    console.error("Teachers database not initialized");
+  // Check both local teachersDb and window.teachersDb
+  const dbRef = (typeof teachersDb !== 'undefined' && teachersDb) ? teachersDb : window.teachersDb;
+
+  if (!dbRef || typeof dbRef.ref !== 'function') {
+    console.warn("Teachers database not ready, retry " + (guruLoadRetries + 1) + "/" + MAX_GURU_RETRIES);
+
+    // Retry after a delay if teachersDb is not ready yet
+    if (guruLoadRetries < MAX_GURU_RETRIES) {
+      guruLoadRetries++;
+      namaGuruSelect.innerHTML = '<option value="">⏳ Loading...</option>';
+      setTimeout(loadGuruFromFirebase, 1000);
+      return;
+    }
+
+    console.error("Teachers database not initialized after " + MAX_GURU_RETRIES + " retries");
     namaGuruSelect.innerHTML = '<option value="">❌ Database tidak bersambung</option>';
     return;
   }
@@ -1865,27 +1880,28 @@ function loadGuruFromFirebase() {
   namaGuruSelect.innerHTML = '<option value="">⏳ Loading...</option>';
 
   // Load from "guru" node - structure: guru/{key}/{nama, telefon}
-  teachersDb.ref("guru").once("value").then(snapshot => {
+  dbRef.ref("guru").once("value").then(snapshot => {
     const data = snapshot.val();
 
     if (!data) {
       console.warn("No data found in teachers database");
       namaGuruSelect.innerHTML = '<option value="">⚠️ Tiada guru. Sila gunakan Panel Admin untuk tambah guru.</option>';
-      // Show alert to guide user
-      if (!sessionStorage.getItem('guruAlertShown')) {
-        setTimeout(() => {
-          alert("⚠️ SENARAI GURU KOSONG\n\nSila klik logo SKSA (3 kali) untuk masuk Panel Admin, kemudian pilih 'Urus Senarai Guru' untuk menambah nama guru.");
-          sessionStorage.setItem('guruAlertShown', 'true');
-        }, 500);
-      }
       return;
     }
 
     let teachersList = [];
 
-    // Data structure: {1: {nama: "...", telefon: "..."}, 2: {...}, ...}
+    // Data structure: {1: {nama: "...", telefon: "..."}, 2: {...}, ...} or auto-generated keys
     if (typeof data === 'object') {
-      Object.keys(data).forEach(key => {
+      // Sort keys numerically if they are numbers, otherwise alphabetically
+      const sortedKeys = Object.keys(data).sort((a, b) => {
+        const numA = parseInt(a);
+        const numB = parseInt(b);
+        if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
+        return a.localeCompare(b);
+      });
+
+      sortedKeys.forEach(key => {
         const teacher = data[key];
         if (teacher && typeof teacher === 'object' && teacher.nama) {
           teachersList.push(teacher.nama);
@@ -1912,8 +1928,7 @@ function loadGuruFromFirebase() {
     });
 
     console.log("✅ Successfully loaded " + teachersList.length + " teachers");
-    // Clear the alert flag if teachers are found
-    sessionStorage.removeItem('guruAlertShown');
+    guruLoadRetries = 0; // Reset retry counter on success
   }).catch(err => {
     console.error("Gagal load senarai guru:", err);
     namaGuruSelect.innerHTML = '<option value="">❌ Error: ' + err.message + '</option>';
@@ -1927,15 +1942,16 @@ function loadGuruFromFirebase() {
 // Load and display teacher list in admin panel
 function loadGuruListForAdmin() {
   const guruListDiv = document.getElementById("guruList");
+  const dbRef = (typeof teachersDb !== 'undefined' && teachersDb) ? teachersDb : window.teachersDb;
 
-  if (typeof teachersDb === 'undefined' || !teachersDb) {
+  if (!dbRef || typeof dbRef.ref !== 'function') {
     guruListDiv.innerHTML = '<div class="empty-state">❌ Teachers database not initialized</div>';
     return;
   }
 
   guruListDiv.innerHTML = '<div class="empty-state">Loading...</div>';
 
-  teachersDb.ref("guru").once("value").then(snapshot => {
+  dbRef.ref("guru").once("value").then(snapshot => {
     const data = snapshot.val();
 
     if (!data) {
@@ -1945,7 +1961,15 @@ function loadGuruListForAdmin() {
 
     let teachersList = [];
     if (typeof data === 'object') {
-      Object.keys(data).forEach(key => {
+      // Sort keys numerically if they are numbers
+      const sortedKeys = Object.keys(data).sort((a, b) => {
+        const numA = parseInt(a);
+        const numB = parseInt(b);
+        if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
+        return a.localeCompare(b);
+      });
+
+      sortedKeys.forEach(key => {
         const teacher = data[key];
         if (teacher && typeof teacher === 'object' && teacher.nama) {
           // New structure: {nama: "...", telefon: "..."}
@@ -2009,13 +2033,14 @@ function addGuru() {
     return;
   }
 
-  if (typeof teachersDb === 'undefined' || !teachersDb) {
+  const dbRef = (typeof teachersDb !== 'undefined' && teachersDb) ? teachersDb : window.teachersDb;
+  if (!dbRef || typeof dbRef.ref !== 'function') {
     alert("Teachers database not initialized");
     return;
   }
 
   // Add to Firebase under "guru" node with structure {nama, telefon}
-  const newRef = teachersDb.ref("guru").push();
+  const newRef = dbRef.ref("guru").push();
   newRef.set({
     nama: guruName,
     telefon: guruTelefon
@@ -2037,12 +2062,13 @@ function deleteGuru(key, name) {
     return;
   }
 
-  if (typeof teachersDb === 'undefined' || !teachersDb) {
+  const dbRef = (typeof teachersDb !== 'undefined' && teachersDb) ? teachersDb : window.teachersDb;
+  if (!dbRef || typeof dbRef.ref !== 'function') {
     alert("Teachers database not initialized");
     return;
   }
 
-  teachersDb.ref("guru/" + key).remove().then(() => {
+  dbRef.ref("guru/" + key).remove().then(() => {
     alert("✅ Guru berjaya dipadam: " + name);
     loadGuruListForAdmin();
     loadGuruFromFirebase(); // Refresh the dropdown in the main form
@@ -2140,17 +2166,25 @@ function listenNotifications() {
   db.ref("notifications").on("value", snap => {
     const data = snap.val();
     let pendingCount = 0;
-    
-    if (data) {
+
+    if (data && typeof data === 'object') {
       Object.values(data).forEach(item => {
-         if(item.status === 'pending') pendingCount++;
+        // Ensure item is an object with a status property
+        if (item && typeof item === 'object' && item.status) {
+          // Case-insensitive check for 'pending' status
+          if (item.status.toString().toLowerCase() === 'pending') {
+            pendingCount++;
+          }
+        }
       });
     }
 
+    // Update badge - hide if no pending notifications
     if (pendingCount > 0) {
       notifBadge.textContent = pendingCount;
       notifBadge.style.display = "block";
     } else {
+      notifBadge.textContent = "";
       notifBadge.style.display = "none";
     }
   });
@@ -2229,7 +2263,5 @@ document.addEventListener("DOMContentLoaded", () => {
   listenNotifications();
 });
 </script>
-
-<script type="module" src="/index.tsx"></script>
 </body>
 </html>
