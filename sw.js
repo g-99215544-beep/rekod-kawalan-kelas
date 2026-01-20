@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sksa-pemantauan-v31';
+const CACHE_NAME = 'sksa-pemantauan-v32';
 const urlsToCache = [
   './',
   './index.html',
@@ -8,15 +8,24 @@ const urlsToCache = [
   'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap'
 ];
 
+// Listen for SKIP_WAITING message
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    console.log('Received SKIP_WAITING message, activating new version...');
+    self.skipWaiting();
+  }
+});
+
 // Install event
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
-        console.log('Cache dibuka');
+        console.log('Cache dibuka v32');
         return cache.addAll(urlsToCache);
       })
   );
+  // Skip waiting immediately for faster updates
   self.skipWaiting();
 });
 

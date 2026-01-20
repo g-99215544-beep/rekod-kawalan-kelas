@@ -761,6 +761,8 @@ function updateWaktuPreview() {
 // =====================================================
 // SERVICE WORKER & PWA
 // =====================================================
+const APP_VERSION = 'v32'; // Update this when you make changes
+
 if ('serviceWorker' in navigator) {
   let refreshing = false;
 
@@ -775,7 +777,10 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('./sw.js')
       .then(reg => {
-        console.log('SW registered');
+        console.log('SW registered. App version:', APP_VERSION);
+
+        // Check for updates immediately on load
+        reg.update();
 
         // Check for updates every 30 seconds
         setInterval(() => {
@@ -788,9 +793,15 @@ if ('serviceWorker' in navigator) {
           console.log('New version found, installing...');
 
           newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              // New service worker available
-              console.log('New version installed, will activate and reload soon...');
+            if (newWorker.state === 'installed') {
+              if (navigator.serviceWorker.controller) {
+                // New service worker available, tell it to skip waiting
+                console.log('New version installed, activating immediately...');
+                newWorker.postMessage({ type: 'SKIP_WAITING' });
+              } else {
+                // First install
+                console.log('App installed for first time');
+              }
             }
           });
         });
