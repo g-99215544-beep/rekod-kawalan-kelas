@@ -80,6 +80,7 @@
     .pill-bc{background:#dbeafe;color:#1e40af}
     .pill-ba{background:#fce7f3;color:#9d174d}
     .pill-pemulihan{background:#d1fae5;color:#065f46}
+    .pill-moral{background:#ede9fe;color:#6b21a8}
     .empty-state{font-size:.8rem;color:#6b7280;margin-top:4px}
     .multi-select{position:relative}
     .multi-select input[readonly]{cursor:pointer;background-color:#eef2ff}
@@ -224,6 +225,7 @@
     .detail-popup .record-section.bc{border-left-color:#2563eb;background:#eff6ff}
     .detail-popup .record-section.ba{border-left-color:#db2777;background:#fdf2f8}
     .detail-popup .record-section.pemulihan{border-left-color:#059669;background:#ecfdf5}
+    .detail-popup .record-section.moral{border-left-color:#7c3aed;background:#f5f3ff}
     .detail-popup .sahsiah-section{margin-top:12px;padding:10px;background:#fef3c7;border-radius:10px}
     .detail-popup .sahsiah-section.baik{background:#dcfce7}
     .detail-popup .sahsiah-section.jahat{background:#fee2e2}
@@ -310,6 +312,7 @@
                 <option value="BC">Bahasa Cina (BC)</option>
                 <option value="BA">Bahasa Arab (BA)</option>
                 <option value="PEMULIHAN">Pemulihan</option>
+                <option value="MORAL">Moral</option>
               </select>
             </div>
           </div>
@@ -324,6 +327,8 @@
               <option value="">Sila Pilih</option>
               <option value="KELAS">KELAS</option>
               <option value="MAKMAL KOMPUTER">MAKMAL KOMPUTER</option>
+              <option value="MAKMAL SAINS">MAKMAL SAINS</option>
+              <option value="PADANG">PADANG</option>
               <option value="KANTIN">KANTIN</option>
               <option value="SURAU">SURAU</option>
               <option value="DEWAN">DEWAN</option>
@@ -853,6 +858,22 @@ function updateJenisKelas() {
     mpField.classList.remove("show");
     document.getElementById("mataPelajaran").value = "";
   }
+
+  // Update catatan field requirement based on class type
+  const catatanField = document.getElementById("catatanField");
+  const catatanLabel = catatanField.querySelector("label");
+  const jumlah = parseInt(document.getElementById("jumlahMurid").value) || 0;
+
+  // If catatan field is visible, update its requirement status
+  if (catatanField.classList.contains("show")) {
+    if (jenisKelasC.checked) {
+      // Split class - catatan is optional
+      catatanLabel.classList.remove("required");
+    } else {
+      // Regular class - catatan is required
+      catatanLabel.classList.add("required");
+    }
+  }
 }
 
 jenisKelasP.addEventListener("change", updateJenisKelas);
@@ -1061,6 +1082,24 @@ function checkKawalanFallback(kelasVal) {
 
 document.getElementById("jumlahMurid").addEventListener("input", function() {
   const jumlah = parseInt(this.value) || 0;
+  const catatanField = document.getElementById("catatanField");
+  const catatanLabel = catatanField.querySelector("label");
+
+  // Get current class type
+  const isPecahan = document.querySelector('input[name="jenisKelas"]:checked')?.value === "pecahan";
+
+  // Show catatan field if jumlah is less than presentMuridKelas
+  if (presentMuridKelas > 0 && jumlah < presentMuridKelas) {
+    catatanField.classList.add("show");
+    // For split classes, catatan is optional; for regular classes, it's required
+    if (isPecahan) {
+      catatanLabel.classList.remove("required");
+    } else {
+      catatanLabel.classList.add("required");
+    }
+  } else {
+    catatanField.classList.remove("show");
+  }
 });
 
 // =====================================================
@@ -1338,7 +1377,7 @@ btnSemakLoad.addEventListener("click", () => {
           div.style.marginBottom = "4px";
           let mpBadge = "";
           if (r.mataPelajaran) {
-            const mpClass = r.mataPelajaran === "BC" ? "pill-bc" : r.mataPelajaran === "BA" ? "pill-ba" : "pill-pemulihan";
+            const mpClass = r.mataPelajaran === "BC" ? "pill-bc" : r.mataPelajaran === "BA" ? "pill-ba" : r.mataPelajaran === "MORAL" ? "pill-moral" : "pill-pemulihan";
             mpBadge = '<span class="pill-mp ' + mpClass + '">' + r.mataPelajaran + '</span>';
           }
           div.innerHTML = "<strong>" + r.namaGuru + "</strong>" +
@@ -1381,12 +1420,12 @@ function showDetailPopup(records, kelas, waktu) {
     html = '<div class="info-row">Tiada rekod</div>';
   } else {
     records.forEach((record, idx) => {
-      const mpClass = record.mataPelajaran === "BC" ? "bc" : record.mataPelajaran === "BA" ? "ba" : record.mataPelajaran === "PEMULIHAN" ? "pemulihan" : "";
+      const mpClass = record.mataPelajaran === "BC" ? "bc" : record.mataPelajaran === "BA" ? "ba" : record.mataPelajaran === "MORAL" ? "moral" : record.mataPelajaran === "PEMULIHAN" ? "pemulihan" : "";
       const sectionClass = mpClass ? "record-section " + mpClass : "record-section";
-      
+
       let mpLabel = "";
       if (record.mataPelajaran) {
-        mpLabel = " - " + (record.mataPelajaran === "BC" ? "Bahasa Cina" : record.mataPelajaran === "BA" ? "Bahasa Arab" : "Pemulihan");
+        mpLabel = " - " + (record.mataPelajaran === "BC" ? "Bahasa Cina" : record.mataPelajaran === "BA" ? "Bahasa Arab" : record.mataPelajaran === "MORAL" ? "Moral" : "Pemulihan");
       }
       
       html += '<div class="' + sectionClass + '">';
