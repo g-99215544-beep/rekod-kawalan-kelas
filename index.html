@@ -759,55 +759,26 @@ function updateWaktuPreview() {
 }
 
 // =====================================================
-// SERVICE WORKER & PWA
+// UNREGISTER SERVICE WORKER (Remove old cached versions)
 // =====================================================
-const APP_VERSION = 'v32'; // Update this when you make changes
-
 if ('serviceWorker' in navigator) {
-  let refreshing = false;
-
-  // Detect controller change and refresh (most reliable method)
-  navigator.serviceWorker.addEventListener('controllerchange', () => {
-    if (refreshing) return;
-    refreshing = true;
-    console.log('New version detected! Reloading...');
-    window.location.reload();
+  navigator.serviceWorker.getRegistrations().then(registrations => {
+    for (let registration of registrations) {
+      registration.unregister().then(() => {
+        console.log('Service Worker unregistered successfully');
+      });
+    }
   });
 
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js')
-      .then(reg => {
-        console.log('SW registered. App version:', APP_VERSION);
-
-        // Check for updates immediately on load
-        reg.update();
-
-        // Check for updates every 30 seconds
-        setInterval(() => {
-          reg.update();
-        }, 30000);
-
-        // Handle update found
-        reg.addEventListener('updatefound', () => {
-          const newWorker = reg.installing;
-          console.log('New version found, installing...');
-
-          newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'installed') {
-              if (navigator.serviceWorker.controller) {
-                // New service worker available, tell it to skip waiting
-                console.log('New version installed, activating immediately...');
-                newWorker.postMessage({ type: 'SKIP_WAITING' });
-              } else {
-                // First install
-                console.log('App installed for first time');
-              }
-            }
-          });
-        });
-      })
-      .catch(err => console.log('SW failed:', err));
-  });
+  // Clear all caches
+  if ('caches' in window) {
+    caches.keys().then(names => {
+      for (let name of names) {
+        caches.delete(name);
+        console.log('Cache deleted:', name);
+      }
+    });
+  }
 }
 
 let deferredPrompt;
