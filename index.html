@@ -1679,9 +1679,9 @@ function loadAllSahsiahRecords() {
     // Sort descending by time
     records.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
-    // Filter based on mode
+    // Filter based on mode (case-insensitive)
     const filteredRecords = sahsiahFilterMode === 'pending'
-      ? records.filter(r => r.status === 'pending')
+      ? records.filter(r => r.status && r.status.toString().toLowerCase() === 'pending')
       : records;
 
     if (filteredRecords.length === 0) {
@@ -1691,8 +1691,8 @@ function loadAllSahsiahRecords() {
 
     filteredRecords.forEach(r => {
       const card = document.createElement("div");
-      // Add class for confirmed records to grey them out visually
-      const isConfirmed = r.status === "confirmed";
+      // Add class for confirmed records to grey them out visually (case-insensitive)
+      const isConfirmed = r.status && r.status.toString().toLowerCase() === "confirmed";
       card.className = "sahsiah-card" + (isConfirmed ? " is-confirmed" : "");
       
       const jenisBadge = r.jenis === "baik" ? 
@@ -2220,10 +2220,11 @@ function listenNotifications() {
 
     if (data && typeof data === 'object') {
       Object.values(data).forEach(item => {
-        // Ensure item is an object with a status property
-        if (item && typeof item === 'object' && item.status) {
-          // Case-insensitive check for 'pending' status
-          if (item.status.toString().toLowerCase() === 'pending') {
+        if (item && typeof item === 'object') {
+          // Count as pending if: no status, or status is 'pending' (case-insensitive)
+          // Don't count if status is 'confirmed' (case-insensitive)
+          const status = item.status ? item.status.toString().toLowerCase() : '';
+          if (status !== 'confirmed') {
             pendingCount++;
           }
         }
