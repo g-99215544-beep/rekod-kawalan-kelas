@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sksa-pemantauan-v32';
+const CACHE_NAME = 'sksa-pemantauan-v33';
 const urlsToCache = [
   './',
   './index.html',
@@ -21,7 +21,7 @@ self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
-        console.log('Cache dibuka v32');
+        console.log('Cache dibuka v33');
         return cache.addAll(urlsToCache);
       })
   );
