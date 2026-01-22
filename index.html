@@ -1665,8 +1665,8 @@ function loadAllSahsiahRecords() {
 
   container.innerHTML = '<div class="empty-state">Loading...</div>';
 
-  // Read from 'notifications' (Synced with JSON, where sahsiah items are stored)
-  db.ref("notifications").orderByChild("createdAt").once("value").then(snap => {
+  // Read from 'notifications' - get all records and sort client-side
+  db.ref("notifications").once("value").then(snap => {
     container.innerHTML = "";
 
     if (!snap.exists()) {
