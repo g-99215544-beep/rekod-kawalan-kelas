@@ -37,10 +37,32 @@
     .status-row{display:flex;justify-content:center;gap:10px;font-size:.85rem;color:#4b5563;margin:6px 0 14px;flex-wrap:wrap}
     .status-pill{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;background:#f3f4f6}
     
-    /* Sub Tabs (Isi Rekod vs Rekod Hari Ini) */
+    /* Sub Tabs (Isi Rekod vs Rekod Hari Ini vs SSDM) */
     .tab-row{display:inline-flex;border-radius:999px;padding:3px;background:#e5f3ec;margin-bottom:14px; width: 100%; justify-content: center;}
-    .tab-btn{border:none;background:transparent;padding:6px 20px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:500;color:#166534; flex: 1; text-align: center;}
+    .tab-btn{border:none;background:transparent;padding:6px 12px;border-radius:999px;font-size:.75rem;cursor:pointer;font-weight:500;color:#166534; flex: 1; text-align: center;}
     .tab-btn.active{background:#059669;color:#fff;box-shadow:0 2px 6px rgba(5,150,105,.45)}
+
+    /* SSDM Tab Styles */
+    .ssdm-header{background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;padding:12px 16px;border-radius:12px;margin-bottom:14px;text-align:center}
+    .ssdm-header h3{margin:0;font-size:1rem;font-weight:600}
+    .ssdm-header p{margin:4px 0 0;font-size:0.75rem;opacity:0.9}
+    .class-select-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;max-height:180px;overflow-y:auto;padding:8px;background:#f9fafb;border-radius:10px;border:1px solid #e5e7eb}
+    .class-checkbox{display:flex;align-items:center;gap:6px;font-size:0.8rem;padding:4px 6px;border-radius:6px;cursor:pointer}
+    .class-checkbox:hover{background:#e5e7eb}
+    .class-checkbox input{width:16px;height:16px;cursor:pointer}
+    .selected-students-list{background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:10px;margin-top:10px;max-height:200px;overflow-y:auto}
+    .selected-student-item{display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:#fff;border-radius:6px;margin-bottom:6px;font-size:0.8rem;border:1px solid #e5e7eb}
+    .selected-student-item:last-child{margin-bottom:0}
+    .selected-student-item .class-badge{background:#dbeafe;color:#1e40af;padding:2px 6px;border-radius:4px;font-size:0.7rem;font-weight:500}
+    .selected-student-item .remove-btn{background:#fee2e2;color:#b91c1c;border:none;padding:2px 8px;border-radius:4px;font-size:0.7rem;cursor:pointer}
+
+    /* Aktiviti Luar Styles */
+    .aktiviti-luar-btn{display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border:none;padding:10px 16px;border-radius:10px;font-size:0.85rem;font-weight:600;cursor:pointer;margin-bottom:12px;box-shadow:0 2px 8px rgba(245,158,11,0.3)}
+    .aktiviti-luar-btn svg{width:20px;height:20px}
+    .aktiviti-luar-modal .waktu-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
+    .aktiviti-luar-modal .waktu-checkbox{display:flex;align-items:center;gap:4px;font-size:0.75rem;padding:4px 6px;background:#fef3c7;border-radius:6px}
+    .aktiviti-luar-modal .waktu-checkbox input{width:14px;height:14px}
+    .aktiviti-badge{display:inline-flex;align-items:center;gap:4px;background:#fef3c7;color:#92400e;padding:2px 6px;border-radius:4px;font-size:0.6rem;font-weight:500;margin-top:2px}
     
     /* Admin Header */
     .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; background: #fee2e2; padding: 10px 15px; border-radius: 12px; border: 1px solid #fecaca; }
@@ -280,6 +302,7 @@
       <div class="tab-row">
         <button id="subTabForm" class="tab-btn active">ISI REKOD</button>
         <button id="subTabToday" class="tab-btn">REKOD HARI INI</button>
+        <button id="subTabSSDM" class="tab-btn">SSDM</button>
       </div>
 
       <!-- Form (Default View) -->
@@ -369,86 +392,26 @@
               <textarea id="catatanKeberadaan" placeholder="Contoh: Ali - perjumpaan pengawas, Siti - ke bilik kesihatan"></textarea>
             </div>
           </div>
-          <button class="btn-submit" id="btnSave">HANTAR</button>
-        </div>
-
-        <div class="section-title">Maklumat Sahsiah Murid (tidak wajib)</div>
-        <div class="input-card">
           <div class="field">
-            <label>Nama Murid</label>
-            <div class="multi-select" id="namaMuridWrapper">
-              <input type="text" id="namaMuridDisplay" placeholder="Pilih murid yang terlibat" readonly />
-              <div id="namaMuridDropdown" class="multi-dropdown" style="display:none;">
-                <div id="namaMuridOptions"></div>
-                <div class="multi-footer">* Senarai murid berdasarkan kelas yang dipilih.</div>
-              </div>
-            </div>
+            <label>Catatan Guru (tidak wajib)</label>
+            <textarea id="catatanGuru" placeholder="Contoh: Kebakaran kecil berlaku, murid dipindahkan ke padang seketika."></textarea>
           </div>
-
-          <div class="toggle-row">
-            <button type="button" class="toggle-btn active" id="btnGood">Amalan Baik</button>
-            <button type="button" class="toggle-btn" id="btnBad">Kesalahan Disiplin</button>
-          </div>
-
-          <div id="panelGood">
-            <div class="field">
-              <label>Kategori Amalan Baik</label>
-              <select id="amalanBaik">
-                <option value="">Sila Pilih</option>
-                <option value="Adab dan Berbudi Bahasa">ADAB DAN BERBUDI BAHASA</option>
-                <option value="Akhlak Mulia">AKHLAK MULIA</option>
-                <option value="Kebersihan Diri & Persekitaran">KEBERSIHAN DIRI & PERSEKITARAN</option>
-                <option value="Keselamatan Diri">KESELAMATAN DIRI</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>Perincian Amalan</label>
-              <select id="perincianAmalan">
-                <option value="">Sila Pilih</option>
-                <option value="Menghargai Diri">MENGHARGAI DIRI</option>
-                <option value="Menghormati Guru & Rakan">MENGHORMATI GURU & RAKAN</option>
-                <option value="Berkelakuan Sopan">BERKELAKUAN SOPAN</option>
-                <option value="Menjaga Kebersihan Kelas">MENJAGA KEBERSIHAN KELAS</option>
-                <option value="Menjalankan Tugas yang Diamanahkan">MENJALANKAN TUGAS YANG DIAMANAHKAN</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>Keterangan Amalan</label>
-              <textarea id="keteranganAmalan" placeholder="Contoh: Menolong rakan yang kesusahan tanpa diminta."></textarea>
-            </div>
-          </div>
-
-          <div id="panelBad" style="display:none;">
-            <div class="field">
-              <label>Kategori Kes</label>
-              <select id="kategoriKes">
-                <option value="">Sila Pilih</option>
-                <option value="Barang Larangan">BARANG LARANGAN</option>
-                <option value="Kekemasan Diri">KEKEMASAN DIRI</option>
-                <option value="Kenakalan">KENAKALAN</option>
-                <option value="Ponteng / Lewat Hadir">PONTENG / LEWAT HADIR</option>
-                <option value="Kes Khas">KES KHAS</option>
-                <option value="Kesalahan Asrama">KESALAHAN ASRAMA</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>Punca / Ringkasan Salah Laku</label>
-              <input type="text" id="puncaKes" placeholder="Contoh: Membawa telefon bimbit tanpa kebenaran." />
-            </div>
-            <div class="field">
-              <label>Keterangan Kes</label>
-              <textarea id="keteranganKes" placeholder="Contoh: Didapati menggunakan telefon bimbit di dalam kelas."></textarea>
-            </div>
-          </div>
-
-          <div class="btn-row">
-            <button type="button" class="btn-secondary" id="btnClearForm">Reset Semua</button>
+          <div class="btn-row" style="margin-top:12px;">
+            <button type="button" class="btn-secondary" id="btnClearForm">Reset</button>
+            <button class="btn-submit" id="btnSave" style="flex:1;">HANTAR</button>
           </div>
         </div>
       </div>
 
       <!-- Rekod Hari Ini -->
       <div id="rekodTodayView" style="display:none;">
+        <!-- Aktiviti Luar Button -->
+        <button type="button" class="aktiviti-luar-btn" id="btnAktivitiLuar">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+          Aktiviti Luar Bilik Darjah
+        </button>
         <div class="section-title">Jadual Guru Mengikut Waktu (Semua Kelas - Hari Ini)</div>
         <div style="font-size: 0.75rem; color: #666; margin-bottom: 5px;">
            <small>Gunakan dua jari untuk zoom in/out.</small>
@@ -474,8 +437,105 @@
           <span class="pill-mp pill-pemulihan">PEM</span> Pemulihan
         </div>
       </div>
+
+      <!-- SSDM View -->
+      <div id="ssdmView" style="display:none;">
+        <div class="ssdm-header">
+          <h3>Sistem Sahsiah Disiplin Murid (SSDM)</h3>
+          <p>Rekod amalan baik dan kesalahan disiplin murid</p>
+        </div>
+
+        <div class="input-card">
+          <div class="field">
+            <label class="required">Nama Guru Pelapor</label>
+            <select id="ssdmNamaGuru">
+              <option value="">Sila Pilih Nama Guru</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label class="required">Pilih Kelas (boleh pilih banyak)</label>
+            <div class="class-select-grid" id="ssdmClassGrid">
+              <!-- Class checkboxes will be loaded here -->
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="required">Pilih Murid Terlibat</label>
+            <div class="class-select-grid" id="ssdmStudentGrid" style="max-height:220px;">
+              <div class="empty-state">Sila pilih kelas terlebih dahulu.</div>
+            </div>
+          </div>
+
+          <div id="ssdmSelectedList" class="selected-students-list" style="display:none;">
+            <div style="font-size:0.75rem;font-weight:600;margin-bottom:8px;color:#1e40af;">Murid Dipilih:</div>
+            <div id="ssdmSelectedStudents"></div>
+          </div>
+
+          <div class="toggle-row" style="margin-top:12px;">
+            <button type="button" class="toggle-btn active" id="ssdmBtnGood">Amalan Baik</button>
+            <button type="button" class="toggle-btn" id="ssdmBtnBad">Kesalahan Disiplin</button>
+          </div>
+
+          <div id="ssdmPanelGood">
+            <div class="field">
+              <label class="required">Kategori Amalan Baik</label>
+              <select id="ssdmAmalanBaik">
+                <option value="">Sila Pilih</option>
+                <option value="Adab dan Berbudi Bahasa">ADAB DAN BERBUDI BAHASA</option>
+                <option value="Akhlak Mulia">AKHLAK MULIA</option>
+                <option value="Kebersihan Diri & Persekitaran">KEBERSIHAN DIRI & PERSEKITARAN</option>
+                <option value="Keselamatan Diri">KESELAMATAN DIRI</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Perincian Amalan</label>
+              <select id="ssdmPerincianAmalan">
+                <option value="">Sila Pilih</option>
+                <option value="Menghargai Diri">MENGHARGAI DIRI</option>
+                <option value="Menghormati Guru & Rakan">MENGHORMATI GURU & RAKAN</option>
+                <option value="Berkelakuan Sopan">BERKELAKUAN SOPAN</option>
+                <option value="Menjaga Kebersihan Kelas">MENJAGA KEBERSIHAN KELAS</option>
+                <option value="Menjalankan Tugas yang Diamanahkan">MENJALANKAN TUGAS YANG DIAMANAHKAN</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Keterangan Amalan</label>
+              <textarea id="ssdmKeteranganAmalan" placeholder="Contoh: Menolong rakan yang kesusahan tanpa diminta."></textarea>
+            </div>
+          </div>
+
+          <div id="ssdmPanelBad" style="display:none;">
+            <div class="field">
+              <label class="required">Kategori Kes</label>
+              <select id="ssdmKategoriKes">
+                <option value="">Sila Pilih</option>
+                <option value="Barang Larangan">BARANG LARANGAN</option>
+                <option value="Kekemasan Diri">KEKEMASAN DIRI</option>
+                <option value="Kenakalan">KENAKALAN</option>
+                <option value="Ponteng / Lewat Hadir">PONTENG / LEWAT HADIR</option>
+                <option value="Kes Khas">KES KHAS</option>
+                <option value="Kesalahan Asrama">KESALAHAN ASRAMA</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Punca / Ringkasan Salah Laku</label>
+              <input type="text" id="ssdmPuncaKes" placeholder="Contoh: Membawa telefon bimbit tanpa kebenaran." />
+            </div>
+            <div class="field">
+              <label>Keterangan Kes</label>
+              <textarea id="ssdmKeteranganKes" placeholder="Contoh: Didapati menggunakan telefon bimbit di dalam kelas."></textarea>
+            </div>
+          </div>
+
+          <div class="btn-row" style="margin-top:14px;">
+            <button type="button" class="btn-secondary" id="ssdmBtnClear">Reset</button>
+            <button class="btn-submit" id="ssdmBtnSave" style="flex:1;">HANTAR LAPORAN</button>
+          </div>
+        </div>
+      </div>
     </div>
-    
+
     <!-- ADMIN VIEW CONTAINER -->
     <div id="adminView" style="display:none;">
       <div class="admin-header">
@@ -605,6 +665,71 @@
     <button type="button" class="btn-close-modal" id="closeDetailPopup">&times;</button>
     <h2 id="detailPopupTitle">Maklumat Rekod</h2>
     <div id="detailPopupContent"></div>
+  </div>
+</div>
+
+<!-- Aktiviti Luar Modal -->
+<div id="aktivitiLuarModal" class="modal-backdrop">
+  <div class="modal-card aktiviti-luar-modal" style="max-width:500px;">
+    <button type="button" class="btn-close-modal" id="closeAktivitiLuar">&times;</button>
+    <h2 style="color:#d97706;margin-bottom:4px;">Aktiviti Luar Bilik Darjah</h2>
+    <p style="font-size:0.8rem;color:#6b7280;margin-bottom:14px;">Rekod murid yang terlibat aktiviti di luar kelas.</p>
+
+    <div class="input-card" style="background:#fffbeb;border-color:#fcd34d;">
+      <div class="field">
+        <label class="required">Nama Guru</label>
+        <select id="aktivitiGuruSelect">
+          <option value="">Sila Pilih</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="required">Nama Aktiviti / Perkara</label>
+        <input type="text" id="aktivitiNama" placeholder="Contoh: Latihan Robotik, Perjumpaan Pengawas" />
+      </div>
+      <div class="field">
+        <label class="required">Tempat</label>
+        <select id="aktivitiTempat">
+          <option value="">Sila Pilih</option>
+          <option value="BILIK MEDIA">BILIK MEDIA</option>
+          <option value="MAKMAL KOMPUTER">MAKMAL KOMPUTER</option>
+          <option value="MAKMAL SAINS">MAKMAL SAINS</option>
+          <option value="DEWAN">DEWAN</option>
+          <option value="PADANG">PADANG</option>
+          <option value="KANTIN">KANTIN</option>
+          <option value="SURAU">SURAU</option>
+          <option value="PEJABAT">PEJABAT</option>
+          <option value="BILIK KAUNSELING">BILIK KAUNSELING</option>
+          <option value="LAIN-LAIN">LAIN-LAIN</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="required">Waktu Terlibat</label>
+        <div class="waktu-grid" id="aktivitiWaktuGrid">
+          <!-- Waktu checkboxes will be generated -->
+        </div>
+      </div>
+      <div class="field">
+        <label class="required">Pilih Kelas</label>
+        <div class="class-select-grid" id="aktivitiClassGrid" style="max-height:120px;">
+          <!-- Class checkboxes -->
+        </div>
+      </div>
+      <div class="field">
+        <label class="required">Pilih Murid Terlibat</label>
+        <div class="class-select-grid" id="aktivitiStudentGrid" style="max-height:180px;">
+          <div class="empty-state">Sila pilih kelas terlebih dahulu.</div>
+        </div>
+      </div>
+      <div id="aktivitiSelectedList" class="selected-students-list" style="display:none;background:#fef3c7;border-color:#fcd34d;">
+        <div style="font-size:0.75rem;font-weight:600;margin-bottom:8px;color:#92400e;">Murid Dipilih:</div>
+        <div id="aktivitiSelectedStudents"></div>
+      </div>
+    </div>
+
+    <div class="modal-buttons" style="margin-top:14px;">
+      <button type="button" class="btn-modal-cancel" id="aktivitiBtnCancel">Batal</button>
+      <button type="button" class="btn-modal-primary" id="aktivitiBtnSave" style="background:linear-gradient(135deg,#f59e0b,#d97706);">Simpan</button>
+    </div>
   </div>
 </div>
 
@@ -815,29 +940,40 @@ btnDismiss.addEventListener('click', () => installBanner.classList.remove('show'
 const publicView = document.getElementById("publicView");
 const adminView = document.getElementById("adminView");
 
-// Sub-tabs (Form vs Today)
+// Sub-tabs (Form vs Today vs SSDM)
 const subTabForm = document.getElementById("subTabForm");
 const subTabToday = document.getElementById("subTabToday");
+const subTabSSDM = document.getElementById("subTabSSDM");
 const rekodFormView = document.getElementById("rekodFormView");
 const rekodTodayView = document.getElementById("rekodTodayView");
+const ssdmView = document.getElementById("ssdmView");
 
 function setSubTab(tab) {
+  // Reset all tabs
+  subTabForm.classList.remove("active");
+  subTabToday.classList.remove("active");
+  subTabSSDM.classList.remove("active");
+  rekodFormView.style.display = "none";
+  rekodTodayView.style.display = "none";
+  ssdmView.style.display = "none";
+
   if (tab === "form") {
     subTabForm.classList.add("active");
-    subTabToday.classList.remove("active");
     rekodFormView.style.display = "block";
-    rekodTodayView.style.display = "none";
-  } else {
-    subTabForm.classList.remove("active");
+  } else if (tab === "today") {
     subTabToday.classList.add("active");
-    rekodFormView.style.display = "none";
     rekodTodayView.style.display = "block";
     loadAllClassesToday();
+  } else if (tab === "ssdm") {
+    subTabSSDM.classList.add("active");
+    ssdmView.style.display = "block";
+    loadSSDMClasses();
   }
 }
 
 subTabForm.addEventListener("click", () => setSubTab("form"));
 subTabToday.addEventListener("click", () => setSubTab("today"));
+subTabSSDM.addEventListener("click", () => setSubTab("ssdm"));
 
 // =====================================================
 // JENIS KELAS (PENUH / PECAHAN)
@@ -875,128 +1011,12 @@ jenisKelasP.addEventListener("change", updateJenisKelas);
 jenisKelasC.addEventListener("change", updateJenisKelas);
 
 // =====================================================
-// SAHSIAH TOGGLE
-// =====================================================
-const btnGood = document.getElementById("btnGood");
-const btnBad = document.getElementById("btnBad");
-const panelGood = document.getElementById("panelGood");
-const panelBad = document.getElementById("panelBad");
-
-function setMode(mode) {
-  if (mode === "good") {
-    btnGood.classList.add("active");
-    btnBad.classList.remove("active");
-    panelGood.style.display = "block";
-    panelBad.style.display = "none";
-  } else {
-    btnGood.classList.remove("active");
-    btnBad.classList.add("active");
-    panelGood.style.display = "none";
-    panelBad.style.display = "block";
-  }
-}
-
-btnGood.addEventListener("click", () => setMode("good"));
-btnBad.addEventListener("click", () => setMode("bad"));
-
-// =====================================================
-// MULTI-SELECT MURID
+// KELAS SELECT
 // =====================================================
 const kelasSelect = document.getElementById("kelas");
-const namaMuridDisplay = document.getElementById("namaMuridDisplay");
-const namaMuridDropdown = document.getElementById("namaMuridDropdown");
-const namaMuridOptions = document.getElementById("namaMuridOptions");
-const namaMuridWrapper = document.getElementById("namaMuridWrapper");
-let selectedMurids = [];
-
-function updateNamaMuridDisplay() {
-  if (selectedMurids.length === 0) {
-    namaMuridDisplay.value = "";
-  } else if (selectedMurids.length <= 2) {
-    namaMuridDisplay.value = selectedMurids.join(", ");
-  } else {
-    namaMuridDisplay.value = selectedMurids.length + " murid dipilih";
-  }
-}
-
-function rebuildNamaMuridOptions() {
-  selectedMurids = [];
-  updateNamaMuridDisplay();
-  namaMuridOptions.innerHTML = "";
-  const kelasVal = kelasSelect.value.trim();
-  if (!kelasVal) {
-    namaMuridOptions.innerHTML = '<div class="multi-empty">Sila pilih kelas terlebih dahulu.</div>';
-    return;
-  }
-  
-  // Check if kelas pecahan and load specific MP students
-  const isPecahan = jenisKelasC.checked;
-  const mp = document.getElementById("mataPelajaran").value;
-  
-  let path = "config/classes/classData/" + kelasVal;
-  if (isPecahan && mp) {
-    // Load from MP specific list if available - logic preserved from original
-    // but simplified to fallback to main class list if MP specific list missing
-    path = "config/mp/" + mp + "/" + kelasVal;
-  }
-  
-  db.ref(path).once("value").then(snap => {
-    let data = snap.val();
-    if (!data) {
-      // Fallback to class list
-      return db.ref("config/classes/classData/" + kelasVal).once("value");
-    }
-    return Promise.resolve(snap);
-  }).then(snap => {
-    const data = snap.val();
-    if (!data) {
-      namaMuridOptions.innerHTML = '<div class="multi-empty">Tiada data murid.</div>';
-      return;
-    }
-    const senarai = Object.values(data);
-    if (!senarai.length) {
-      namaMuridOptions.innerHTML = '<div class="multi-empty">Tiada data murid.</div>';
-      return;
-    }
-    senarai.forEach(name => {
-      const row = document.createElement("label");
-      row.className = "multi-option-row";
-      const cb = document.createElement("input");
-      cb.type = "checkbox";
-      cb.value = name;
-      cb.addEventListener("change", () => {
-        if (cb.checked) {
-          if (!selectedMurids.includes(name)) selectedMurids.push(name);
-        } else {
-          selectedMurids = selectedMurids.filter(n => n !== name);
-        }
-        updateNamaMuridDisplay();
-      });
-      const span = document.createElement("span");
-      span.textContent = name;
-      row.appendChild(cb);
-      row.appendChild(span);
-      namaMuridOptions.appendChild(row);
-    });
-  }).catch(() => {
-    namaMuridOptions.innerHTML = '<div class="multi-empty">Ralat semasa ambil data murid.</div>';
-  });
-}
 
 kelasSelect.addEventListener("change", () => {
-  rebuildNamaMuridOptions();
   loadKehadiranForKelas();
-});
-
-document.getElementById("mataPelajaran").addEventListener("change", rebuildNamaMuridOptions);
-
-namaMuridDisplay.addEventListener("click", () => {
-  const h = namaMuridDropdown.style.display === "none" || namaMuridDropdown.style.display === "";
-  namaMuridDropdown.style.display = h ? "block" : "none";
-});
-
-document.addEventListener("click", e => {
-  if (!namaMuridWrapper.contains(e.target)) namaMuridDropdown.style.display = "none";
 });
 
 // =====================================================
@@ -1083,17 +1103,6 @@ document.getElementById("jumlahMurid").addEventListener("input", function() {
 // =====================================================
 // FORM HELPERS
 // =====================================================
-function hasSahsiahData() {
-  const hasNama = selectedMurids.length > 0;
-  const amalan = document.getElementById("amalanBaik").value;
-  const perincian = document.getElementById("perincianAmalan").value;
-  const ketAmalan = document.getElementById("keteranganAmalan").value.trim();
-  const kategoriKes = document.getElementById("kategoriKes").value;
-  const punca = document.getElementById("puncaKes").value.trim();
-  const ketKes = document.getElementById("keteranganKes").value.trim();
-  return !!(hasNama || amalan || perincian || ketAmalan || kategoriKes || punca || ketKes);
-}
-
 function clearForm() {
   document.getElementById("namaGuru").value = "";
   document.getElementById("guruGanti").checked = false;
@@ -1105,16 +1114,8 @@ function clearForm() {
   document.getElementById("waktuMengajar").value = "1";
   document.getElementById("jumlahMurid").value = "";
   document.getElementById("catatanKeberadaan").value = "";
+  document.getElementById("catatanGuru").value = "";
   document.getElementById("catatanField").classList.remove("show");
-  selectedMurids = [];
-  updateNamaMuridDisplay();
-  namaMuridOptions.innerHTML = "";
-  document.getElementById("amalanBaik").value = "";
-  document.getElementById("perincianAmalan").value = "";
-  document.getElementById("keteranganAmalan").value = "";
-  document.getElementById("kategoriKes").value = "";
-  document.getElementById("puncaKes").value = "";
-  document.getElementById("keteranganKes").value = "";
   document.getElementById("kehadiranRatio").textContent = "/ -";
   document.getElementById("kehadiranSubtext").textContent = "Kehadiran hari ini: -";
   document.getElementById("kehadiranWarning").style.display = "none";
@@ -1128,27 +1129,8 @@ document.getElementById("btnClearForm").addEventListener("click", clearForm);
 document.getElementById("waktuMengajar").addEventListener("change", updateWaktuPreview);
 
 function saveRecordToFirebase(rec) {
-  // Save to path: kawalan (Synched with JSON)
   const key = db.ref("kawalan").push().key;
   return db.ref("kawalan/" + key).set(rec);
-}
-
-function saveSahsiahRecord(record) {
-  // Save to path: notifications (Pending sahsiah items go here based on JSON)
-  const sahsiahData = {
-    tarikh: record.tarikh,
-    masa: record.masaRekod,
-    kelas: record.kelas,
-    tempat: record.tempat,
-    namaGuru: record.namaGuru,
-    namaMurid: record.namaMurid,
-    jenis: record.jenis,
-    kategori: record.kategori,
-    keterangan: record.keterangan,
-    status: "pending", 
-    createdAt: Date.now()
-  };
-  db.ref("notifications").push(sahsiahData);
 }
 
 // =====================================================
@@ -1164,7 +1146,8 @@ document.getElementById("btnSave").addEventListener("click", () => {
   const jumlahMurid = document.getElementById("jumlahMurid").value;
   const waktuMengajar = parseInt(document.getElementById("waktuMengajar").value) || 1;
   const catatanKeberadaan = document.getElementById("catatanKeberadaan").value.trim();
-  
+  const catatanGuru = document.getElementById("catatanGuru").value.trim();
+
   if (!namaGuru || !kelas || !tempat || jumlahMurid === "") {
     alert("Sila lengkapkan Nama Guru, Kelas, Tempat dan Jumlah Murid.");
     return;
@@ -1180,78 +1163,41 @@ document.getElementById("btnSave").addEventListener("click", () => {
     alert("Sila pilih Mata Pelajaran untuk kelas pecahan.");
     return;
   }
-  
+
   const jumlah = parseInt(jumlahMurid) || 0;
-  
+
   // For kelas penuh, check against presentMuridKelas
   if (!isPecahan && presentMuridKelas > 0 && jumlah < presentMuridKelas && !catatanKeberadaan) {
     alert("Sila nyatakan keberadaan " + (presentMuridKelas - jumlah) + " murid yang tidak berada dalam kelas.");
     return;
   }
-  
+
   const now = new Date();
   const tarikh = formatDate(now);
   const masaRekod = formatTime(now);
   const p = getCurrentPeriod(now);
   const currentWaktuCode = p ? p.code : null;
-  
+
   let startWaktuIndex = -1;
   if (currentWaktuCode) {
     startWaktuIndex = parseInt(currentWaktuCode.replace('W', '')) - 1;
   }
-  
+
   if (startWaktuIndex < 0) {
     alert("Anda berada di luar waktu PdP. Sila rekod semasa waktu mengajar.");
     return;
   }
-  
+
   if (startWaktuIndex + waktuMengajar > TOTAL_WAKTU) {
     alert("Waktu mengajar melebihi waktu yang tersedia.");
     return;
   }
-  
-  let jenis = null, kategori = "", keterangan = "", namaMuridText = "", namaMuridList = [];
-  const adaSahsiah = hasSahsiahData();
-  
-  if (adaSahsiah) {
-    if (selectedMurids.length === 0) {
-      alert("Sila pilih sekurang-kurangnya seorang murid untuk rekod sahsiah.");
-      return;
-    }
-    namaMuridList = selectedMurids.slice();
-    namaMuridText = namaMuridList.join(", ");
-    const isGood = btnGood.classList.contains("active");
-    
-    if (isGood) {
-      const amalan = document.getElementById("amalanBaik").value;
-      if (!amalan) {
-        alert("Sila pilih kategori Amalan Baik.");
-        return;
-      }
-      const perincian = document.getElementById("perincianAmalan").value;
-      const ket = document.getElementById("keteranganAmalan").value.trim();
-      jenis = "baik";
-      kategori = perincian ? amalan + " - " + perincian : amalan;
-      keterangan = ket;
-    } else {
-      const kategoriKes = document.getElementById("kategoriKes").value;
-      if (!kategoriKes) {
-        alert("Sila pilih Kategori Kes.");
-        return;
-      }
-      const punca = document.getElementById("puncaKes").value.trim();
-      const ketKes = document.getElementById("keteranganKes").value.trim();
-      jenis = "jahat";
-      kategori = kategoriKes;
-      keterangan = [punca, ketKes].filter(Boolean).join(" | ");
-    }
-  }
-  
+
   const waktuList = [];
   for (let i = 0; i < waktuMengajar; i++) {
     waktuList.push("W" + (startWaktuIndex + 1 + i));
   }
-  
+
   const savePromises = waktuList.map(waktuCode => {
     const newRecord = {
       tarikh,
@@ -1270,21 +1216,12 @@ document.getElementById("btnSave").addEventListener("click", () => {
       waktuMula: waktuList[0],
       waktuAkhir: waktuList[waktuList.length - 1],
       catatanKeberadaan: catatanKeberadaan || null,
-      namaMurid: namaMuridText || null,
-      namaMuridList: namaMuridList.length ? namaMuridList : null,
-      jenis, kategori, keterangan
+      catatanGuru: catatanGuru || null
     };
     return saveRecordToFirebase(newRecord);
   });
-  
+
   Promise.all(savePromises).then(() => {
-    if (adaSahsiah) {
-      const sahsiahRec = {
-        tarikh, waktu: waktuList.join(', '), masaRekod, namaGuru, kelas, tempat,
-        namaMurid: namaMuridText, jenis, kategori, keterangan
-      };
-      saveSahsiahRecord(sahsiahRec);
-    }
     const mpLabel = isPecahan ? " (" + mataPelajaran + ")" : "";
     alert("Rekod berjaya disimpan untuk " + waktuList.join(", ") + mpLabel);
     clearForm();
@@ -1663,57 +1600,60 @@ function loadAllSahsiahRecords() {
 
   container.innerHTML = '<div class="empty-state">Loading...</div>';
 
-  // Read from 'notifications' - get all records and sort client-side
-  db.ref("notifications").once("value").then(snap => {
+  // Read from 'SSDM' path
+  db.ref("SSDM").once("value").then(snap => {
     container.innerHTML = "";
 
     if (!snap.exists()) {
-      container.innerHTML = '<div class="empty-state">Tiada rekod sahsiah.</div>';
+      container.innerHTML = '<div class="empty-state">Tiada rekod SSDM.</div>';
       return;
     }
 
     const records = [];
     snap.forEach(child => records.push({ key: child.key, ...child.val() }));
-    // Sort descending by time
     records.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
-    // Filter based on mode (case-insensitive)
     const filteredRecords = sahsiahFilterMode === 'pending'
-      ? records.filter(r => r.status && r.status.toString().toLowerCase() === 'pending')
+      ? records.filter(r => !r.status || r.status.toString().toLowerCase() === 'pending')
       : records;
 
     if (filteredRecords.length === 0) {
-      container.innerHTML = '<div class="empty-state">Tiada rekod ' + (sahsiahFilterMode === 'pending' ? 'menunggu' : 'sahsiah') + '.</div>';
+      container.innerHTML = '<div class="empty-state">Tiada rekod ' + (sahsiahFilterMode === 'pending' ? 'menunggu' : 'SSDM') + '.</div>';
       return;
     }
 
     filteredRecords.forEach(r => {
       const card = document.createElement("div");
-      // Add class for confirmed records to grey them out visually (case-insensitive)
       const isConfirmed = r.status && r.status.toString().toLowerCase() === "confirmed";
       card.className = "sahsiah-card" + (isConfirmed ? " is-confirmed" : "");
-      
-      const jenisBadge = r.jenis === "baik" ? 
-        '<span class="badge badge-baik">✓ Amalan Baik</span>' : 
+
+      const jenisBadge = r.jenis === "baik" ?
+        '<span class="badge badge-baik">✓ Amalan Baik</span>' :
         '<span class="badge badge-jahat">✗ Kesalahan</span>';
-      
+
       const statusBadge = isConfirmed ?
         '<span class="badge badge-confirmed">Disahkan</span>' :
         '<span class="badge badge-pending">Menunggu</span>';
-      
-      card.innerHTML = 
+
+      // Format murid list with class info
+      let muridDisplay = "-";
+      if (r.muridList && Array.isArray(r.muridList)) {
+        muridDisplay = r.muridList.map(m => m.nama + " (" + m.kelas + ")").join(", ");
+      } else if (r.namaMurid) {
+        muridDisplay = r.namaMurid;
+      }
+
+      card.innerHTML =
         '<div class="header"><div>' + jenisBadge + ' ' + statusBadge + '</div></div>' +
         '<div class="info-row"><strong>📅 Tarikh:</strong> ' + (r.tarikh || "-") + '</div>' +
         '<div class="info-row"><strong>🕐 Masa:</strong> ' + (r.masa || "-") + '</div>' +
-        '<div class="info-row"><strong>📍 Tempat:</strong> ' + (r.tempat || "-") + '</div>' +
-        '<div class="info-row"><strong>🏫 Kelas:</strong> ' + (r.kelas || "-") + '</div>' +
         '<div class="info-row"><strong>👨‍🏫 Guru:</strong> ' + (r.namaGuru || "-") + '</div>' +
         '<div class="info-row"><strong>📝 Kategori:</strong> ' + (r.kategori || "-") + '</div>' +
         (r.keterangan ? '<div class="info-row"><strong>💬 Keterangan:</strong> ' + r.keterangan + '</div>' : '') +
-        '<div class="murid-list"><strong>👤 Murid:</strong> ' + (r.namaMurid || "-") + '</div>' +
-        (!isConfirmed ? 
+        '<div class="murid-list"><strong>👤 Murid:</strong> ' + muridDisplay + '</div>' +
+        (!isConfirmed ?
           '<button onclick="sahkanLaporan(\'' + r.key + '\')" style="margin-top:8px;background:#047857;color:#fff;border:none;padding:6px 14px;border-radius:999px;font-size:0.75rem;cursor:pointer;">✓ Sahkan</button>' : '');
-      
+
       container.appendChild(card);
     });
   }).catch(err => {
@@ -1723,9 +1663,8 @@ function loadAllSahsiahRecords() {
 
 function sahkanLaporan(key) {
   if (!key) return;
-  // Confirming updates status in notifications path
-  db.ref("notifications/" + key + "/status").set("confirmed").then(() => {
-     loadAllSahsiahRecords(); // Refresh list to update badge UI
+  db.ref("SSDM/" + key + "/status").set("confirmed").then(() => {
+     loadAllSahsiahRecords();
   });
 }
 window.sahkanLaporan = sahkanLaporan;
@@ -2211,16 +2150,14 @@ btnExitAdmin.addEventListener("click", () => {
 });
 
 function listenNotifications() {
-  // Listen to notifications (sahsiah) status
-  db.ref("notifications").on("value", snap => {
+  // Listen to SSDM data for pending notifications
+  db.ref("SSDM").on("value", snap => {
     const data = snap.val();
     let pendingCount = 0;
 
     if (data && typeof data === 'object') {
       Object.values(data).forEach(item => {
         if (item && typeof item === 'object') {
-          // Count as pending if: no status, or status is 'pending' (case-insensitive)
-          // Don't count if status is 'confirmed' (case-insensitive)
           const status = item.status ? item.status.toString().toLowerCase() : '';
           if (status !== 'confirmed') {
             pendingCount++;
@@ -2301,6 +2238,464 @@ if (zoomContainer && zoomContent) {
     }
   }, { passive: false });
 }
+
+// =====================================================
+// SSDM (Sistem Sahsiah Disiplin Murid)
+// =====================================================
+let ssdmSelectedClasses = [];
+let ssdmSelectedStudents = []; // {kelas, nama}
+let ssdmAllStudentsByClass = {};
+
+function loadSSDMClasses() {
+  // Load guru dropdown for SSDM
+  const guruSelect = document.getElementById("ssdmNamaGuru");
+  if (guruSelect && guruSelect.options.length <= 1) {
+    teachersDb.ref("guru").once("value").then(snap => {
+      const data = snap.val();
+      if (!data) return;
+      const guruList = Object.values(data).sort((a,b) => (a.nama||"").localeCompare(b.nama||""));
+      guruList.forEach((g, i) => {
+        const opt = document.createElement("option");
+        opt.value = g.nama;
+        opt.textContent = (i+1) + ") " + g.nama;
+        guruSelect.appendChild(opt);
+      });
+    });
+  }
+
+  // Load class checkboxes
+  const classGrid = document.getElementById("ssdmClassGrid");
+  if (!classGrid) return;
+
+  db.ref("config/classes/classData").once("value").then(snap => {
+    const data = snap.val();
+    if (!data) return;
+
+    classGrid.innerHTML = "";
+    const classList = Object.keys(data).sort();
+
+    classList.forEach(kelas => {
+      const label = document.createElement("label");
+      label.className = "class-checkbox";
+      label.innerHTML = '<input type="checkbox" value="' + kelas + '" onchange="toggleSSDMClass(this)"> ' + kelas;
+      classGrid.appendChild(label);
+    });
+  });
+}
+
+function toggleSSDMClass(checkbox) {
+  const kelas = checkbox.value;
+  if (checkbox.checked) {
+    if (!ssdmSelectedClasses.includes(kelas)) {
+      ssdmSelectedClasses.push(kelas);
+    }
+  } else {
+    ssdmSelectedClasses = ssdmSelectedClasses.filter(k => k !== kelas);
+    // Remove students from this class
+    ssdmSelectedStudents = ssdmSelectedStudents.filter(s => s.kelas !== kelas);
+  }
+  loadSSDMStudents();
+  updateSSDMSelectedList();
+}
+window.toggleSSDMClass = toggleSSDMClass;
+
+function loadSSDMStudents() {
+  const studentGrid = document.getElementById("ssdmStudentGrid");
+  if (!studentGrid) return;
+
+  if (ssdmSelectedClasses.length === 0) {
+    studentGrid.innerHTML = '<div class="empty-state">Sila pilih kelas terlebih dahulu.</div>';
+    return;
+  }
+
+  studentGrid.innerHTML = '<div class="empty-state">Loading...</div>';
+
+  const promises = ssdmSelectedClasses.map(kelas =>
+    db.ref("config/classes/classData/" + kelas).once("value").then(snap => ({kelas, data: snap.val()}))
+  );
+
+  Promise.all(promises).then(results => {
+    studentGrid.innerHTML = "";
+    ssdmAllStudentsByClass = {};
+
+    results.forEach(({kelas, data}) => {
+      if (data) {
+        ssdmAllStudentsByClass[kelas] = Object.values(data);
+      }
+    });
+
+    // Display students grouped by class
+    Object.keys(ssdmAllStudentsByClass).sort().forEach(kelas => {
+      const students = ssdmAllStudentsByClass[kelas];
+      const header = document.createElement("div");
+      header.style.cssText = "grid-column:1/-1;font-weight:600;font-size:0.75rem;color:#1e40af;background:#dbeafe;padding:4px 8px;border-radius:4px;margin-top:4px;";
+      header.textContent = kelas;
+      studentGrid.appendChild(header);
+
+      students.forEach(nama => {
+        const isSelected = ssdmSelectedStudents.some(s => s.kelas === kelas && s.nama === nama);
+        const label = document.createElement("label");
+        label.className = "class-checkbox";
+        label.innerHTML = '<input type="checkbox" ' + (isSelected ? 'checked' : '') + ' onchange="toggleSSDMStudent(this, \'' + kelas + '\', \'' + nama.replace(/'/g, "\\'") + '\')"> ' + nama;
+        studentGrid.appendChild(label);
+      });
+    });
+  });
+}
+
+function toggleSSDMStudent(checkbox, kelas, nama) {
+  if (checkbox.checked) {
+    if (!ssdmSelectedStudents.some(s => s.kelas === kelas && s.nama === nama)) {
+      ssdmSelectedStudents.push({kelas, nama});
+    }
+  } else {
+    ssdmSelectedStudents = ssdmSelectedStudents.filter(s => !(s.kelas === kelas && s.nama === nama));
+  }
+  updateSSDMSelectedList();
+}
+window.toggleSSDMStudent = toggleSSDMStudent;
+
+function updateSSDMSelectedList() {
+  const listContainer = document.getElementById("ssdmSelectedList");
+  const studentsDiv = document.getElementById("ssdmSelectedStudents");
+  if (!listContainer || !studentsDiv) return;
+
+  if (ssdmSelectedStudents.length === 0) {
+    listContainer.style.display = "none";
+    return;
+  }
+
+  listContainer.style.display = "block";
+  studentsDiv.innerHTML = "";
+
+  ssdmSelectedStudents.forEach(({kelas, nama}) => {
+    const item = document.createElement("div");
+    item.className = "selected-student-item";
+    item.innerHTML = '<span>' + nama + ' <span class="class-badge">' + kelas + '</span></span>' +
+      '<button class="remove-btn" onclick="removeSSDMStudent(\'' + kelas + '\', \'' + nama.replace(/'/g, "\\'") + '\')">✕</button>';
+    studentsDiv.appendChild(item);
+  });
+}
+
+function removeSSDMStudent(kelas, nama) {
+  ssdmSelectedStudents = ssdmSelectedStudents.filter(s => !(s.kelas === kelas && s.nama === nama));
+  updateSSDMSelectedList();
+  loadSSDMStudents(); // Refresh checkboxes
+}
+window.removeSSDMStudent = removeSSDMStudent;
+
+// SSDM Toggle buttons
+document.getElementById("ssdmBtnGood")?.addEventListener("click", function() {
+  this.classList.add("active");
+  document.getElementById("ssdmBtnBad").classList.remove("active");
+  document.getElementById("ssdmPanelGood").style.display = "block";
+  document.getElementById("ssdmPanelBad").style.display = "none";
+});
+
+document.getElementById("ssdmBtnBad")?.addEventListener("click", function() {
+  this.classList.add("active");
+  document.getElementById("ssdmBtnGood").classList.remove("active");
+  document.getElementById("ssdmPanelGood").style.display = "none";
+  document.getElementById("ssdmPanelBad").style.display = "block";
+});
+
+// SSDM Clear
+document.getElementById("ssdmBtnClear")?.addEventListener("click", function() {
+  document.getElementById("ssdmNamaGuru").value = "";
+  ssdmSelectedClasses = [];
+  ssdmSelectedStudents = [];
+  document.querySelectorAll("#ssdmClassGrid input").forEach(cb => cb.checked = false);
+  document.getElementById("ssdmStudentGrid").innerHTML = '<div class="empty-state">Sila pilih kelas terlebih dahulu.</div>';
+  document.getElementById("ssdmSelectedList").style.display = "none";
+  document.getElementById("ssdmAmalanBaik").value = "";
+  document.getElementById("ssdmPerincianAmalan").value = "";
+  document.getElementById("ssdmKeteranganAmalan").value = "";
+  document.getElementById("ssdmKategoriKes").value = "";
+  document.getElementById("ssdmPuncaKes").value = "";
+  document.getElementById("ssdmKeteranganKes").value = "";
+});
+
+// SSDM Save
+document.getElementById("ssdmBtnSave")?.addEventListener("click", function() {
+  const namaGuru = document.getElementById("ssdmNamaGuru").value;
+  if (!namaGuru) {
+    alert("Sila pilih nama guru pelapor.");
+    return;
+  }
+  if (ssdmSelectedStudents.length === 0) {
+    alert("Sila pilih sekurang-kurangnya seorang murid.");
+    return;
+  }
+
+  const isGood = document.getElementById("ssdmBtnGood").classList.contains("active");
+  let jenis, kategori, keterangan;
+
+  if (isGood) {
+    const amalan = document.getElementById("ssdmAmalanBaik").value;
+    if (!amalan) {
+      alert("Sila pilih kategori amalan baik.");
+      return;
+    }
+    const perincian = document.getElementById("ssdmPerincianAmalan").value;
+    jenis = "baik";
+    kategori = perincian ? amalan + " - " + perincian : amalan;
+    keterangan = document.getElementById("ssdmKeteranganAmalan").value.trim();
+  } else {
+    const kes = document.getElementById("ssdmKategoriKes").value;
+    if (!kes) {
+      alert("Sila pilih kategori kes.");
+      return;
+    }
+    jenis = "jahat";
+    kategori = kes;
+    const punca = document.getElementById("ssdmPuncaKes").value.trim();
+    const ketKes = document.getElementById("ssdmKeteranganKes").value.trim();
+    keterangan = [punca, ketKes].filter(Boolean).join(" | ");
+  }
+
+  const now = new Date();
+  const ssdmRecord = {
+    tarikh: formatDate(now),
+    masa: formatTime(now),
+    namaGuru,
+    jenis,
+    kategori,
+    keterangan,
+    muridList: ssdmSelectedStudents.slice(),
+    namaMurid: ssdmSelectedStudents.map(s => s.nama + " (" + s.kelas + ")").join(", "),
+    status: "pending",
+    createdAt: Date.now()
+  };
+
+  db.ref("SSDM").push(ssdmRecord).then(() => {
+    alert("Laporan SSDM berjaya dihantar!");
+    document.getElementById("ssdmBtnClear").click();
+  }).catch(() => {
+    alert("Gagal menghantar laporan. Sila cuba lagi.");
+  });
+});
+
+// =====================================================
+// AKTIVITI LUAR BILIK DARJAH
+// =====================================================
+let aktivitiSelectedClasses = [];
+let aktivitiSelectedStudents = [];
+let aktivitiAllStudentsByClass = {};
+
+document.getElementById("btnAktivitiLuar")?.addEventListener("click", function() {
+  document.getElementById("aktivitiLuarModal").style.display = "flex";
+  loadAktivitiLuarData();
+});
+
+document.getElementById("closeAktivitiLuar")?.addEventListener("click", function() {
+  document.getElementById("aktivitiLuarModal").style.display = "none";
+});
+
+document.getElementById("aktivitiBtnCancel")?.addEventListener("click", function() {
+  document.getElementById("aktivitiLuarModal").style.display = "none";
+});
+
+function loadAktivitiLuarData() {
+  // Load guru dropdown
+  const guruSelect = document.getElementById("aktivitiGuruSelect");
+  if (guruSelect && guruSelect.options.length <= 1) {
+    teachersDb.ref("guru").once("value").then(snap => {
+      const data = snap.val();
+      if (!data) return;
+      const guruList = Object.values(data).sort((a,b) => (a.nama||"").localeCompare(b.nama||""));
+      guruList.forEach((g, i) => {
+        const opt = document.createElement("option");
+        opt.value = g.nama;
+        opt.textContent = (i+1) + ") " + g.nama;
+        guruSelect.appendChild(opt);
+      });
+    });
+  }
+
+  // Generate waktu checkboxes
+  const waktuGrid = document.getElementById("aktivitiWaktuGrid");
+  if (waktuGrid && waktuGrid.children.length === 0) {
+    periods.forEach(p => {
+      const label = document.createElement("label");
+      label.className = "waktu-checkbox";
+      label.innerHTML = '<input type="checkbox" value="' + p.code + '"> ' + p.code;
+      waktuGrid.appendChild(label);
+    });
+  }
+
+  // Load class checkboxes
+  const classGrid = document.getElementById("aktivitiClassGrid");
+  if (classGrid && classGrid.children.length === 0) {
+    db.ref("config/classes/classData").once("value").then(snap => {
+      const data = snap.val();
+      if (!data) return;
+
+      classGrid.innerHTML = "";
+      const classList = Object.keys(data).sort();
+
+      classList.forEach(kelas => {
+        const label = document.createElement("label");
+        label.className = "class-checkbox";
+        label.innerHTML = '<input type="checkbox" value="' + kelas + '" onchange="toggleAktivitiClass(this)"> ' + kelas;
+        classGrid.appendChild(label);
+      });
+    });
+  }
+}
+
+function toggleAktivitiClass(checkbox) {
+  const kelas = checkbox.value;
+  if (checkbox.checked) {
+    if (!aktivitiSelectedClasses.includes(kelas)) {
+      aktivitiSelectedClasses.push(kelas);
+    }
+  } else {
+    aktivitiSelectedClasses = aktivitiSelectedClasses.filter(k => k !== kelas);
+    aktivitiSelectedStudents = aktivitiSelectedStudents.filter(s => s.kelas !== kelas);
+  }
+  loadAktivitiStudents();
+  updateAktivitiSelectedList();
+}
+window.toggleAktivitiClass = toggleAktivitiClass;
+
+function loadAktivitiStudents() {
+  const studentGrid = document.getElementById("aktivitiStudentGrid");
+  if (!studentGrid) return;
+
+  if (aktivitiSelectedClasses.length === 0) {
+    studentGrid.innerHTML = '<div class="empty-state">Sila pilih kelas terlebih dahulu.</div>';
+    return;
+  }
+
+  studentGrid.innerHTML = '<div class="empty-state">Loading...</div>';
+
+  const promises = aktivitiSelectedClasses.map(kelas =>
+    db.ref("config/classes/classData/" + kelas).once("value").then(snap => ({kelas, data: snap.val()}))
+  );
+
+  Promise.all(promises).then(results => {
+    studentGrid.innerHTML = "";
+    aktivitiAllStudentsByClass = {};
+
+    results.forEach(({kelas, data}) => {
+      if (data) {
+        aktivitiAllStudentsByClass[kelas] = Object.values(data);
+      }
+    });
+
+    Object.keys(aktivitiAllStudentsByClass).sort().forEach(kelas => {
+      const students = aktivitiAllStudentsByClass[kelas];
+      const header = document.createElement("div");
+      header.style.cssText = "grid-column:1/-1;font-weight:600;font-size:0.75rem;color:#92400e;background:#fef3c7;padding:4px 8px;border-radius:4px;margin-top:4px;";
+      header.textContent = kelas;
+      studentGrid.appendChild(header);
+
+      students.forEach(nama => {
+        const isSelected = aktivitiSelectedStudents.some(s => s.kelas === kelas && s.nama === nama);
+        const label = document.createElement("label");
+        label.className = "class-checkbox";
+        label.innerHTML = '<input type="checkbox" ' + (isSelected ? 'checked' : '') + ' onchange="toggleAktivitiStudent(this, \'' + kelas + '\', \'' + nama.replace(/'/g, "\\'") + '\')"> ' + nama;
+        studentGrid.appendChild(label);
+      });
+    });
+  });
+}
+
+function toggleAktivitiStudent(checkbox, kelas, nama) {
+  if (checkbox.checked) {
+    if (!aktivitiSelectedStudents.some(s => s.kelas === kelas && s.nama === nama)) {
+      aktivitiSelectedStudents.push({kelas, nama});
+    }
+  } else {
+    aktivitiSelectedStudents = aktivitiSelectedStudents.filter(s => !(s.kelas === kelas && s.nama === nama));
+  }
+  updateAktivitiSelectedList();
+}
+window.toggleAktivitiStudent = toggleAktivitiStudent;
+
+function updateAktivitiSelectedList() {
+  const listContainer = document.getElementById("aktivitiSelectedList");
+  const studentsDiv = document.getElementById("aktivitiSelectedStudents");
+  if (!listContainer || !studentsDiv) return;
+
+  if (aktivitiSelectedStudents.length === 0) {
+    listContainer.style.display = "none";
+    return;
+  }
+
+  listContainer.style.display = "block";
+  studentsDiv.innerHTML = "";
+
+  aktivitiSelectedStudents.forEach(({kelas, nama}) => {
+    const item = document.createElement("div");
+    item.className = "selected-student-item";
+    item.innerHTML = '<span>' + nama + ' <span class="class-badge" style="background:#fef3c7;color:#92400e;">' + kelas + '</span></span>' +
+      '<button class="remove-btn" onclick="removeAktivitiStudent(\'' + kelas + '\', \'' + nama.replace(/'/g, "\\'") + '\')">✕</button>';
+    studentsDiv.appendChild(item);
+  });
+}
+
+function removeAktivitiStudent(kelas, nama) {
+  aktivitiSelectedStudents = aktivitiSelectedStudents.filter(s => !(s.kelas === kelas && s.nama === nama));
+  updateAktivitiSelectedList();
+  loadAktivitiStudents();
+}
+window.removeAktivitiStudent = removeAktivitiStudent;
+
+// Save Aktiviti Luar
+document.getElementById("aktivitiBtnSave")?.addEventListener("click", function() {
+  const guru = document.getElementById("aktivitiGuruSelect").value;
+  const nama = document.getElementById("aktivitiNama").value.trim();
+  const tempat = document.getElementById("aktivitiTempat").value;
+
+  if (!guru || !nama || !tempat) {
+    alert("Sila lengkapkan semua maklumat aktiviti.");
+    return;
+  }
+
+  const selectedWaktu = [];
+  document.querySelectorAll("#aktivitiWaktuGrid input:checked").forEach(cb => {
+    selectedWaktu.push(cb.value);
+  });
+
+  if (selectedWaktu.length === 0) {
+    alert("Sila pilih waktu terlibat.");
+    return;
+  }
+
+  if (aktivitiSelectedStudents.length === 0) {
+    alert("Sila pilih murid yang terlibat.");
+    return;
+  }
+
+  const now = new Date();
+  const aktivitiRecord = {
+    tarikh: formatDate(now),
+    masa: formatTime(now),
+    namaGuru: guru,
+    namaAktiviti: nama,
+    tempat,
+    waktuList: selectedWaktu,
+    muridList: aktivitiSelectedStudents.slice(),
+    createdAt: Date.now()
+  };
+
+  db.ref("aktivitiLuar").push(aktivitiRecord).then(() => {
+    alert("Aktiviti luar berjaya disimpan!");
+    // Reset form
+    document.getElementById("aktivitiNama").value = "";
+    document.getElementById("aktivitiTempat").value = "";
+    document.querySelectorAll("#aktivitiWaktuGrid input").forEach(cb => cb.checked = false);
+    document.querySelectorAll("#aktivitiClassGrid input").forEach(cb => cb.checked = false);
+    aktivitiSelectedClasses = [];
+    aktivitiSelectedStudents = [];
+    document.getElementById("aktivitiStudentGrid").innerHTML = '<div class="empty-state">Sila pilih kelas terlebih dahulu.</div>';
+    document.getElementById("aktivitiSelectedList").style.display = "none";
+    document.getElementById("aktivitiLuarModal").style.display = "none";
+  }).catch(() => {
+    alert("Gagal menyimpan. Sila cuba lagi.");
+  });
+});
 
 // =====================================================
 // INIT
