@@ -63,7 +63,18 @@
     .aktiviti-luar-modal .waktu-checkbox{display:flex;align-items:center;gap:4px;font-size:0.75rem;padding:4px 6px;background:#fef3c7;border-radius:6px}
     .aktiviti-luar-modal .waktu-checkbox input{width:14px;height:14px}
     .aktiviti-badge{display:inline-flex;align-items:center;gap:4px;background:#fef3c7;color:#92400e;padding:2px 6px;border-radius:4px;font-size:0.6rem;font-weight:500;margin-top:2px}
-    
+
+    /* Student List Container (SSDM) */
+    .student-list-container{max-height:280px;overflow-y:auto;background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:8px}
+    .student-list-header{font-weight:600;font-size:0.8rem;color:#1e40af;background:#dbeafe;padding:6px 10px;border-radius:6px;margin-bottom:6px;position:sticky;top:0;z-index:1}
+    .student-list-item{display:flex;align-items:center;gap:8px;padding:6px 10px;border-bottom:1px solid #e5e7eb;font-size:0.82rem;cursor:pointer}
+    .student-list-item:last-child{border-bottom:none}
+    .student-list-item:hover{background:#eff6ff}
+    .student-list-item input{width:16px;height:16px;cursor:pointer;flex-shrink:0}
+    .student-list-item .student-number{color:#6b7280;font-size:0.75rem;min-width:24px}
+    .student-list-item .student-name{flex:1}
+    .student-list-item .student-class{font-size:0.7rem;color:#1e40af;background:#dbeafe;padding:2px 6px;border-radius:4px}
+
     /* Admin Header */
     .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; background: #fee2e2; padding: 10px 15px; border-radius: 12px; border: 1px solid #fecaca; }
     .admin-title { font-weight: 600; color: #b91c1c; display: flex; align-items: center; gap: 6px; }
@@ -462,7 +473,8 @@
 
           <div class="field">
             <label class="required">Pilih Murid Terlibat</label>
-            <div class="class-select-grid" id="ssdmStudentGrid" style="max-height:220px;">
+            <input type="text" id="ssdmSearchStudent" placeholder="Cari nama murid..." style="margin-bottom:8px;" oninput="filterSSDMStudents()">
+            <div class="student-list-container" id="ssdmStudentGrid">
               <div class="empty-state">Sila pilih kelas terlebih dahulu.</div>
             </div>
           </div>
@@ -2301,7 +2313,11 @@ window.toggleSSDMClass = toggleSSDMClass;
 
 function loadSSDMStudents() {
   const studentGrid = document.getElementById("ssdmStudentGrid");
+  const searchInput = document.getElementById("ssdmSearchStudent");
   if (!studentGrid) return;
+
+  // Clear search when loading new students
+  if (searchInput) searchInput.value = "";
 
   if (ssdmSelectedClasses.length === 0) {
     studentGrid.innerHTML = '<div class="empty-state">Sila pilih kelas terlebih dahulu.</div>';
@@ -2315,33 +2331,69 @@ function loadSSDMStudents() {
   );
 
   Promise.all(promises).then(results => {
-    studentGrid.innerHTML = "";
     ssdmAllStudentsByClass = {};
 
     results.forEach(({kelas, data}) => {
       if (data) {
-        ssdmAllStudentsByClass[kelas] = Object.values(data);
+        // Sort students by name
+        ssdmAllStudentsByClass[kelas] = Object.values(data).sort((a, b) => a.localeCompare(b));
       }
     });
 
-    // Display students grouped by class
-    Object.keys(ssdmAllStudentsByClass).sort().forEach(kelas => {
-      const students = ssdmAllStudentsByClass[kelas];
-      const header = document.createElement("div");
-      header.style.cssText = "grid-column:1/-1;font-weight:600;font-size:0.75rem;color:#1e40af;background:#dbeafe;padding:4px 8px;border-radius:4px;margin-top:4px;";
-      header.textContent = kelas;
-      studentGrid.appendChild(header);
-
-      students.forEach(nama => {
-        const isSelected = ssdmSelectedStudents.some(s => s.kelas === kelas && s.nama === nama);
-        const label = document.createElement("label");
-        label.className = "class-checkbox";
-        label.innerHTML = '<input type="checkbox" ' + (isSelected ? 'checked' : '') + ' onchange="toggleSSDMStudent(this, \'' + kelas + '\', \'' + nama.replace(/'/g, "\\'") + '\')"> ' + nama;
-        studentGrid.appendChild(label);
-      });
-    });
+    renderSSDMStudentList();
   });
 }
+
+function renderSSDMStudentList(searchTerm = "") {
+  const studentGrid = document.getElementById("ssdmStudentGrid");
+  if (!studentGrid) return;
+
+  studentGrid.innerHTML = "";
+  const searchLower = searchTerm.toLowerCase().trim();
+
+  // Display students grouped by class, sorted by name, with numbering
+  Object.keys(ssdmAllStudentsByClass).sort().forEach(kelas => {
+    const students = ssdmAllStudentsByClass[kelas];
+
+    // Filter by search term if provided
+    const filteredStudents = searchLower
+      ? students.filter(nama => nama.toLowerCase().includes(searchLower))
+      : students;
+
+    if (filteredStudents.length === 0) return;
+
+    // Class header
+    const header = document.createElement("div");
+    header.className = "student-list-header";
+    header.textContent = kelas + " (" + filteredStudents.length + " murid)";
+    studentGrid.appendChild(header);
+
+    // Student list
+    filteredStudents.forEach((nama, index) => {
+      const isSelected = ssdmSelectedStudents.some(s => s.kelas === kelas && s.nama === nama);
+      const item = document.createElement("label");
+      item.className = "student-list-item";
+      item.innerHTML =
+        '<input type="checkbox" ' + (isSelected ? 'checked' : '') + ' onchange="toggleSSDMStudent(this, \'' + kelas + '\', \'' + nama.replace(/'/g, "\\'") + '\')">' +
+        '<span class="student-number">' + (index + 1) + ')</span>' +
+        '<span class="student-name">' + nama + '</span>' +
+        '<span class="student-class">' + kelas + '</span>';
+      studentGrid.appendChild(item);
+    });
+  });
+
+  // Show message if no results
+  if (studentGrid.innerHTML === "") {
+    studentGrid.innerHTML = '<div class="empty-state">Tiada murid dijumpai untuk "' + searchTerm + '"</div>';
+  }
+}
+
+function filterSSDMStudents() {
+  const searchInput = document.getElementById("ssdmSearchStudent");
+  const searchTerm = searchInput ? searchInput.value : "";
+  renderSSDMStudentList(searchTerm);
+}
+window.filterSSDMStudents = filterSSDMStudents;
 
 function toggleSSDMStudent(checkbox, kelas, nama) {
   if (checkbox.checked) {
@@ -2402,8 +2454,10 @@ document.getElementById("ssdmBtnBad")?.addEventListener("click", function() {
 // SSDM Clear
 document.getElementById("ssdmBtnClear")?.addEventListener("click", function() {
   document.getElementById("ssdmNamaGuru").value = "";
+  document.getElementById("ssdmSearchStudent").value = "";
   ssdmSelectedClasses = [];
   ssdmSelectedStudents = [];
+  ssdmAllStudentsByClass = {};
   document.querySelectorAll("#ssdmClassGrid input").forEach(cb => cb.checked = false);
   document.getElementById("ssdmStudentGrid").innerHTML = '<div class="empty-state">Sila pilih kelas terlebih dahulu.</div>';
   document.getElementById("ssdmSelectedList").style.display = "none";
