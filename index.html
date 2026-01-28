@@ -125,6 +125,10 @@
     .catatan-field{margin-top:8px;display:none}
     .catatan-field.show{display:block}
     .catatan-field label{color:#dc2626}
+
+    /* Kehadiran warning */
+    .kehadiran-warning{margin-top:8px;padding:10px 12px;background:#fef3c7;border:1px solid #f59e0b;border-radius:8px;font-size:0.78rem;color:#92400e;line-height:1.4}
+    .kehadiran-warning strong{display:block;margin-bottom:4px;color:#b45309}
     
     /* ========================================= */
     /* NEW STYLES FOR ZOOM & FIXED TABLE SIZE    */
@@ -357,6 +361,9 @@
               <span id="kehadiranRatio" class="kehadiran-ratio">/ -</span>
             </div>
             <div id="kehadiranSubtext" class="kehadiran-subtext">Kehadiran hari ini: -</div>
+            <div id="kehadiranWarning" class="kehadiran-warning" style="display:none;">
+              <strong>Amaran:</strong> Kehadiran murid untuk kelas ini belum diisi hari ini. Sila isi kehadiran di aplikasi Kehadiran Murid terlebih dahulu sebelum mengisi rekod pemantauan.
+            </div>
             <div class="catatan-field" id="catatanField">
               <label class="required">Catatan Keberadaan Murid Tidak Hadir</label>
               <textarea id="catatanKeberadaan" placeholder="Contoh: Ali - perjumpaan pengawas, Siti - ke bilik kesihatan"></textarea>
@@ -997,74 +1004,57 @@ document.addEventListener("click", e => {
 // =====================================================
 let presentMuridKelas = 0;
 let totalMuridKelas = 0;
+let hasKehadiranToday = false;
 
 function loadKehadiranForKelas() {
   const kelasVal = kelasSelect.value.trim();
   const ratioEl = document.getElementById("kehadiranRatio");
   const subtextEl = document.getElementById("kehadiranSubtext");
+  const warningEl = document.getElementById("kehadiranWarning");
   const catatanField = document.getElementById("catatanField");
-  
+
   if (!kelasVal) {
     ratioEl.textContent = "/ -";
     subtextEl.textContent = "Kehadiran hari ini: -";
+    warningEl.style.display = "none";
     catatanField.classList.remove("show");
     presentMuridKelas = 0;
     totalMuridKelas = 0;
+    hasKehadiranToday = false;
     return;
   }
-  
+
   const todayKey = formatDateKey(new Date()); // YYYY-MM-DD
-  
+
   // Read specific daily stats for this class from 'kehadiran'
   db.ref("kehadiran/" + todayKey + "/" + kelasVal).once("value").then(snap => {
     const data = snap.val();
     if (data && data.present !== undefined) {
+      // Today's attendance exists
       presentMuridKelas = data.present;
       totalMuridKelas = data.total;
+      hasKehadiranToday = true;
       ratioEl.textContent = "/ " + presentMuridKelas;
       subtextEl.textContent = "Hadir: " + presentMuridKelas + " / " + totalMuridKelas;
+      warningEl.style.display = "none";
     } else {
-      // Fallback: Check 'kawalan' if 'kehadiran' summary isn't built yet
-      checkKawalanFallback(kelasVal);
+      // No attendance for today - show warning and block
+      presentMuridKelas = 0;
+      totalMuridKelas = 0;
+      hasKehadiranToday = false;
+      ratioEl.textContent = "/ -";
+      subtextEl.textContent = "Kehadiran hari ini: Belum diisi";
+      warningEl.style.display = "block";
     }
   }).catch(err => {
     console.error(err);
-    checkKawalanFallback(kelasVal);
-  });
-}
-
-function checkKawalanFallback(kelasVal) {
-  const ratioEl = document.getElementById("kehadiranRatio");
-  const subtextEl = document.getElementById("kehadiranSubtext");
-  const todayDate = formatDate(new Date()); // DD/MM/YYYY
-  
-  db.ref("kawalan").orderByChild("tarikh").equalTo(todayDate).once("value").then(snap => {
-     let found = null;
-     const data = snap.val();
-     if (data) {
-        const keys = Object.keys(data);
-        for(let key of keys) {
-           if(data[key].kelas === kelasVal && data[key].jumlahMurid !== undefined) {
-              found = data[key];
-              break; // Take first found
-           }
-        }
-     }
-     
-     if(found) {
-        presentMuridKelas = found.jumlahMurid;
-        ratioEl.textContent = "/ " + presentMuridKelas;
-        subtextEl.textContent = "Rekod terakhir: " + presentMuridKelas + " murid";
-     } else {
-        ratioEl.textContent = "/ -";
-        subtextEl.textContent = "Kehadiran hari ini: Tiada rekod";
-        presentMuridKelas = 0;
-        totalMuridKelas = 0;
-     }
-  }).catch(() => {
-     ratioEl.textContent = "/ -";
-     subtextEl.textContent = "Tiada data";
-     presentMuridKelas = 0;
+    // On error, assume no attendance
+    presentMuridKelas = 0;
+    totalMuridKelas = 0;
+    hasKehadiranToday = false;
+    ratioEl.textContent = "/ -";
+    subtextEl.textContent = "Ralat semasa semak kehadiran";
+    warningEl.style.display = "block";
   });
 }
 
@@ -1127,8 +1117,10 @@ function clearForm() {
   document.getElementById("keteranganKes").value = "";
   document.getElementById("kehadiranRatio").textContent = "/ -";
   document.getElementById("kehadiranSubtext").textContent = "Kehadiran hari ini: -";
+  document.getElementById("kehadiranWarning").style.display = "none";
   presentMuridKelas = 0;
   totalMuridKelas = 0;
+  hasKehadiranToday = false;
   updateWaktuPreview();
 }
 
@@ -1177,7 +1169,13 @@ document.getElementById("btnSave").addEventListener("click", () => {
     alert("Sila lengkapkan Nama Guru, Kelas, Tempat dan Jumlah Murid.");
     return;
   }
-  
+
+  // Block submission if attendance not recorded for today (only for kelas penuh)
+  if (!isPecahan && !hasKehadiranToday) {
+    alert("Kehadiran murid untuk kelas ini belum diisi hari ini.\n\nSila isi kehadiran di aplikasi Kehadiran Murid terlebih dahulu sebelum mengisi rekod pemantauan.");
+    return;
+  }
+
   if (isPecahan && !mataPelajaran) {
     alert("Sila pilih Mata Pelajaran untuk kelas pecahan.");
     return;
