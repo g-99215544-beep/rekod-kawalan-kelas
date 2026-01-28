@@ -287,6 +287,7 @@ Add `<option>` to `#mataPelajaran` select and handle in validation/display logic
 
 | Date | Change |
 |------|--------|
+| Recent | Added attendance validation - blocks monitoring record submission if attendance not filled for today |
 | Recent | Removed Service Worker to fix persistent caching issues |
 | Recent | Fixed notification badge showing wrong count |
 | Recent | Fixed sahsiah records not loading all data from Firebase |
