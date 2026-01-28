@@ -728,7 +728,8 @@
       </div>
       <div class="field">
         <label class="required">Pilih Murid Terlibat</label>
-        <div class="class-select-grid" id="aktivitiStudentGrid" style="max-height:180px;">
+        <input type="text" id="aktivitiSearchStudent" placeholder="Cari nama murid..." style="margin-bottom:8px;" oninput="filterAktivitiStudents()">
+        <div class="student-list-container" id="aktivitiStudentGrid" style="max-height:200px;">
           <div class="empty-state">Sila pilih kelas terlebih dahulu.</div>
         </div>
       </div>
@@ -2614,7 +2615,11 @@ window.toggleAktivitiClass = toggleAktivitiClass;
 
 function loadAktivitiStudents() {
   const studentGrid = document.getElementById("aktivitiStudentGrid");
+  const searchInput = document.getElementById("aktivitiSearchStudent");
   if (!studentGrid) return;
+
+  // Clear search when loading new students
+  if (searchInput) searchInput.value = "";
 
   if (aktivitiSelectedClasses.length === 0) {
     studentGrid.innerHTML = '<div class="empty-state">Sila pilih kelas terlebih dahulu.</div>';
@@ -2628,32 +2633,70 @@ function loadAktivitiStudents() {
   );
 
   Promise.all(promises).then(results => {
-    studentGrid.innerHTML = "";
     aktivitiAllStudentsByClass = {};
 
     results.forEach(({kelas, data}) => {
       if (data) {
-        aktivitiAllStudentsByClass[kelas] = Object.values(data);
+        // Sort students by name
+        aktivitiAllStudentsByClass[kelas] = Object.values(data).sort((a, b) => a.localeCompare(b));
       }
     });
 
-    Object.keys(aktivitiAllStudentsByClass).sort().forEach(kelas => {
-      const students = aktivitiAllStudentsByClass[kelas];
-      const header = document.createElement("div");
-      header.style.cssText = "grid-column:1/-1;font-weight:600;font-size:0.75rem;color:#92400e;background:#fef3c7;padding:4px 8px;border-radius:4px;margin-top:4px;";
-      header.textContent = kelas;
-      studentGrid.appendChild(header);
-
-      students.forEach(nama => {
-        const isSelected = aktivitiSelectedStudents.some(s => s.kelas === kelas && s.nama === nama);
-        const label = document.createElement("label");
-        label.className = "class-checkbox";
-        label.innerHTML = '<input type="checkbox" ' + (isSelected ? 'checked' : '') + ' onchange="toggleAktivitiStudent(this, \'' + kelas + '\', \'' + nama.replace(/'/g, "\\'") + '\')"> ' + nama;
-        studentGrid.appendChild(label);
-      });
-    });
+    renderAktivitiStudentList();
   });
 }
+
+function renderAktivitiStudentList(searchTerm = "") {
+  const studentGrid = document.getElementById("aktivitiStudentGrid");
+  if (!studentGrid) return;
+
+  studentGrid.innerHTML = "";
+  const searchLower = searchTerm.toLowerCase().trim();
+
+  // Display students grouped by class, sorted by name, with numbering
+  Object.keys(aktivitiAllStudentsByClass).sort().forEach(kelas => {
+    const students = aktivitiAllStudentsByClass[kelas];
+
+    // Filter by search term if provided
+    const filteredStudents = searchLower
+      ? students.filter(nama => nama.toLowerCase().includes(searchLower))
+      : students;
+
+    if (filteredStudents.length === 0) return;
+
+    // Class header (orange theme for aktiviti)
+    const header = document.createElement("div");
+    header.className = "student-list-header";
+    header.style.cssText = "background:#fef3c7;color:#92400e;";
+    header.textContent = kelas + " (" + filteredStudents.length + " murid)";
+    studentGrid.appendChild(header);
+
+    // Student list
+    filteredStudents.forEach((nama, index) => {
+      const isSelected = aktivitiSelectedStudents.some(s => s.kelas === kelas && s.nama === nama);
+      const item = document.createElement("label");
+      item.className = "student-list-item";
+      item.innerHTML =
+        '<input type="checkbox" ' + (isSelected ? 'checked' : '') + ' onchange="toggleAktivitiStudent(this, \'' + kelas + '\', \'' + nama.replace(/'/g, "\\'") + '\')">' +
+        '<span class="student-number">' + (index + 1) + ')</span>' +
+        '<span class="student-name">' + nama + '</span>' +
+        '<span class="student-class" style="background:#fef3c7;color:#92400e;">' + kelas + '</span>';
+      studentGrid.appendChild(item);
+    });
+  });
+
+  // Show message if no results
+  if (studentGrid.innerHTML === "") {
+    studentGrid.innerHTML = '<div class="empty-state">Tiada murid dijumpai untuk "' + searchTerm + '"</div>';
+  }
+}
+
+function filterAktivitiStudents() {
+  const searchInput = document.getElementById("aktivitiSearchStudent");
+  const searchTerm = searchInput ? searchInput.value : "";
+  renderAktivitiStudentList(searchTerm);
+}
+window.filterAktivitiStudents = filterAktivitiStudents;
 
 function toggleAktivitiStudent(checkbox, kelas, nama) {
   if (checkbox.checked) {
@@ -2739,10 +2782,12 @@ document.getElementById("aktivitiBtnSave")?.addEventListener("click", function()
     // Reset form
     document.getElementById("aktivitiNama").value = "";
     document.getElementById("aktivitiTempat").value = "";
+    document.getElementById("aktivitiSearchStudent").value = "";
     document.querySelectorAll("#aktivitiWaktuGrid input").forEach(cb => cb.checked = false);
     document.querySelectorAll("#aktivitiClassGrid input").forEach(cb => cb.checked = false);
     aktivitiSelectedClasses = [];
     aktivitiSelectedStudents = [];
+    aktivitiAllStudentsByClass = {};
     document.getElementById("aktivitiStudentGrid").innerHTML = '<div class="empty-state">Sila pilih kelas terlebih dahulu.</div>';
     document.getElementById("aktivitiSelectedList").style.display = "none";
     document.getElementById("aktivitiLuarModal").style.display = "none";
