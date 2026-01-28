@@ -287,11 +287,13 @@ Add `<option>` to `#mataPelajaran` select and handle in validation/display logic
 
 | Date | Change |
 |------|--------|
+| Recent | Added SSDM tab - dedicated tab for student behavior records with multi-class selection |
+| Recent | Added Aktiviti Luar Bilik Darjah feature - track students in outside activities |
+| Recent | Moved Sahsiah from Isi Rekod to dedicated SSDM tab |
+| Recent | Added Catatan Guru field to Isi Rekod for emergency notes |
+| Recent | Changed notification badge to use SSDM data instead of notifications path |
 | Recent | Added attendance validation - blocks monitoring record submission if attendance not filled for today |
 | Recent | Removed Service Worker to fix persistent caching issues |
-| Recent | Fixed notification badge showing wrong count |
-| Recent | Fixed sahsiah records not loading all data from Firebase |
-| Recent | Fixed dropdown fields issues |
 
 ---
 
@@ -300,7 +302,8 @@ Add `<option>` to `#mataPelajaran` select and handle in validation/display logic
 ### Firebase Paths
 ```
 kawalan/                     # Monitoring records
-notifications/               # Sahsiah reports
+SSDM/                        # Student behavior records (replaced notifications/)
+aktivitiLuar/                # Outside activities records
 kehadiran/{date}/{class}     # Attendance
 config/classes/classData/    # Student lists
 events/                      # School events
