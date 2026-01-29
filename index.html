@@ -1663,7 +1663,15 @@ function loadAllSahsiahRecords() {
     }
 
     const records = [];
-    snap.forEach(child => records.push({ key: child.key, ...child.val() }));
+    const data = snap.val();
+    if (data && typeof data === 'object') {
+      Object.keys(data).forEach(key => {
+        const rec = data[key];
+        if (rec && typeof rec === 'object') {
+          records.push({ key: key, ...rec });
+        }
+      });
+    }
     records.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
     const filteredRecords = sahsiahFilterMode === 'pending'
