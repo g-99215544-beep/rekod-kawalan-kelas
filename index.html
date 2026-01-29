@@ -1482,24 +1482,49 @@ function loadAllClassesToday() {
         snapshot.forEach(child => {
           const rec = child.val();
           if (!rec || !rec.kelas) return;
-          
+
           const kelas = rec.kelas;
           const waktu = rec.waktu || "W1";
-          
+
           if (!kelasMap[kelas]) {
             kelasMap[kelas] = {};
             for (let i = 1; i <= TOTAL_WAKTU; i++) {
               kelasMap[kelas]["W" + i] = [];
             }
           }
-          
+
           kelasMap[kelas][waktu].push(rec);
-          
+
           const key = kelas + "_" + waktu;
           if (!allRecordsToday[key]) allRecordsToday[key] = [];
           allRecordsToday[key].push(rec);
         });
       }
+
+      // Deduplicate records: keep only the latest record per teacher per class/waktu/mataPelajaran
+      function deduplicateRecords(records) {
+        const map = {};
+        records.forEach(rec => {
+          // Key: namaGuru + mataPelajaran (for split classes with same teacher different subjects)
+          const dedupKey = rec.namaGuru + "_" + (rec.mataPelajaran || "");
+          if (!map[dedupKey] || rec.masaRekod > map[dedupKey].masaRekod) {
+            map[dedupKey] = rec;
+          }
+        });
+        return Object.values(map);
+      }
+
+      // Apply deduplication to kelasMap
+      Object.keys(kelasMap).forEach(kelas => {
+        Object.keys(kelasMap[kelas]).forEach(waktu => {
+          kelasMap[kelas][waktu] = deduplicateRecords(kelasMap[kelas][waktu]);
+        });
+      });
+
+      // Apply deduplication to allRecordsToday
+      Object.keys(allRecordsToday).forEach(key => {
+        allRecordsToday[key] = deduplicateRecords(allRecordsToday[key]);
+      });
       
       const kelasList = Object.keys(kelasMap).sort();
       
