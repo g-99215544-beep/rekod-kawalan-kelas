@@ -311,6 +311,52 @@
     .checkbox-item input[type="checkbox"]{width:16px;height:16px;cursor:pointer}
     .checkbox-item label{cursor:pointer;margin:0}
     .cell-event{background-color:#dbeafe !important;color:#1e40af;font-weight:600;cursor:pointer}
+
+    /* Learning Walk Styles */
+    .cell-monitored{
+      border: 4px solid transparent !important;
+      border-image: linear-gradient(135deg, #ff00ff, #00ffff, #ffff00) 1 !important;
+      box-shadow: 0 0 10px rgba(255, 0, 255, 0.5), inset 0 0 10px rgba(0, 255, 255, 0.3) !important;
+      animation: pulse-border 2s infinite;
+    }
+
+    @keyframes pulse-border {
+      0%, 100% {
+        box-shadow: 0 0 10px rgba(255, 0, 255, 0.5), inset 0 0 10px rgba(0, 255, 255, 0.3);
+      }
+      50% {
+        box-shadow: 0 0 20px rgba(255, 0, 255, 0.8), inset 0 0 15px rgba(0, 255, 255, 0.5);
+      }
+    }
+
+    .learning-walk-form{background:#fff;padding:16px;border-radius:12px;max-height:80vh;overflow-y:auto}
+    .learning-walk-header{background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff;padding:12px 16px;border-radius:10px;margin-bottom:14px;text-align:center}
+    .learning-walk-header h3{margin:0;font-size:1.05rem;font-weight:600}
+    .learning-walk-header p{margin:4px 0 0;font-size:0.75rem;opacity:0.9}
+    .observation-info{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:0.8rem}
+    .observation-info .info-item{display:flex;justify-content:space-between;margin-bottom:4px;padding:4px 0;border-bottom:1px dashed #d1fae5}
+    .observation-info .info-item:last-child{border-bottom:none;margin-bottom:0}
+    .observation-info .info-label{font-weight:600;color:#166534}
+    .observation-info .info-value{color:#15803d}
+
+    /* Learning Walk Schedule Table */
+    #learningWalkScheduleTable{table-layout:fixed;width:800px;border-collapse:collapse;background:#fff}
+    #learningWalkScheduleTable th{border:2px solid #000;text-align:center;padding:3px;font-size:0.65rem;line-height:1.1;width:55px;overflow:hidden;white-space:normal;background:#7c3aed;color:#fff;position:sticky;top:0;z-index:10}
+    #learningWalkScheduleTable th:first-child{width:35px;left:0;z-index:20}
+    #learningWalkScheduleTable td{border:2px solid #000;text-align:center;padding:2px;width:55px;height:42px;max-height:42px;overflow:hidden;font-size:0.55rem;vertical-align:top;cursor:pointer;word-wrap:break-word}
+    #learningWalkScheduleTable td:first-child{width:35px;vertical-align:middle;font-weight:600;background:#f0fdf4;position:sticky;left:0;z-index:5}
+    #learningWalkScheduleTable .waktu-code{display:block;font-weight:600;font-size:0.6rem}
+    #learningWalkScheduleTable .waktu-time{display:block;font-weight:400;font-size:0.5rem;opacity:0.9}
+    #learningWalkScheduleTable .cell-empty{background-color:#fef9c3;color:#854d0e}
+    #learningWalkScheduleTable .cell-filled{background-color:#fff}
+    #learningWalkScheduleTable .cell-multi{background-color:#f0fdf4}
+    #learningWalkScheduleTable .cell-rehat{background-color:#059669;color:#fff;font-weight:600;cursor:default;vertical-align:middle}
+    #learningWalkScheduleTable .cell-event{background-color:#dbeafe;color:#1e40af;font-weight:500;font-size:0.5rem}
+    #learningWalkScheduleTable .guru-name{font-weight:600;color:#111827;display:block;font-size:0.55rem;white-space:normal;line-height:1}
+    #learningWalkScheduleTable .guru-tempat{font-size:0.45rem;color:#6b7280;display:block;margin-top:1px}
+    #learningWalkScheduleTable .guru-ganti-badge{font-size:0.4rem;background:#fbbf24;color:#78350f;padding:1px 2px;border-radius:2px;display:inline-block}
+    #learningWalkScheduleTable .multi-record{border-bottom:1px dashed #d1d5db;padding:2px 0;margin-bottom:2px}
+    #learningWalkScheduleTable .multi-record:last-child{border-bottom:none;margin-bottom:0}
   </style>
 </head>
 <body>
@@ -570,6 +616,7 @@
          <label for="adminFunctionSelect">Pilih Fungsi Admin:</label>
          <select id="adminFunctionSelect" class="admin-select">
             <option value="sahsiah">Semak Laporan Sahsiah</option>
+            <option value="learningWalk">Learning Walk</option>
             <option value="lihatJadual">Lihat Jadual Tarikh</option>
             <option value="tetapanEvent">Tetapan Event</option>
             <option value="urusGuru">Urus Senarai Guru</option>
@@ -588,6 +635,28 @@
         </div>
         <div id="adminSahsiahList">
           <div class="empty-state">Loading...</div>
+        </div>
+      </div>
+
+      <!-- Content: Learning Walk -->
+      <div id="adminLearningWalkContainer" style="display:none;">
+        <div class="section-title">Learning Walk - Pencerapan PdP</div>
+        <p style="font-size:0.8rem;color:#6b7280;margin-bottom:12px;">Klik pada mana-mana kelas untuk membuat pencerapan.</p>
+        <div class="zoom-container" style="max-height:65vh;">
+          <div class="zoom-content">
+            <table id="learningWalkScheduleTable">
+              <thead id="learningWalkScheduleHead"></thead>
+              <tbody id="learningWalkScheduleBody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div style="margin-top:10px;font-size:0.7rem;color:#6b7280;">
+          <span class="pill-mp pill-bc">BC</span> Bahasa Cina &nbsp;
+          <span class="pill-mp pill-ba">BA</span> Bahasa Arab &nbsp;
+          <span class="pill-mp pill-pemulihan">PEM</span> Pemulihan<br>
+          <div style="margin-top:6px;padding:6px 10px;background:linear-gradient(135deg,#ff00ff,#00ffff);border-radius:6px;display:inline-block;color:#fff;font-weight:600;font-size:0.75rem;">
+            Kelas dengan border khas telah dipantau
+          </div>
         </div>
       </div>
 
@@ -751,6 +820,91 @@
     <div class="modal-buttons" style="margin-top:14px;">
       <button type="button" class="btn-modal-cancel" id="aktivitiBtnCancel">Batal</button>
       <button type="button" class="btn-modal-primary" id="aktivitiBtnSave" style="background:linear-gradient(135deg,#f59e0b,#d97706);">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Learning Walk Observation Modal -->
+<div id="learningWalkObservationModal" class="modal-backdrop">
+  <div class="modal-card" style="max-width:500px;">
+    <button type="button" class="btn-close-modal" id="closeLearningWalkObservation">&times;</button>
+    <div class="learning-walk-header">
+      <h3>📝 Borang Pencerapan PdP</h3>
+      <p>Learning Walk - SK Sri Aman</p>
+    </div>
+
+    <div class="observation-info">
+      <div class="info-item">
+        <span class="info-label">Guru Dicerap:</span>
+        <span class="info-value" id="lwGuruName">-</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Kelas:</span>
+        <span class="info-value" id="lwKelas">-</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Waktu:</span>
+        <span class="info-value" id="lwWaktu">-</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Tarikh:</span>
+        <span class="info-value" id="lwTarikh">-</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Masa:</span>
+        <span class="info-value" id="lwMasa">-</span>
+      </div>
+    </div>
+
+    <div class="input-card">
+      <div class="field">
+        <label class="required">Nama Pegawai</label>
+        <input type="text" id="lwNamaPegawai" placeholder="Nama pegawai yang membuat pencerapan" />
+      </div>
+
+      <div class="field">
+        <label class="required">Jabatan</label>
+        <input type="text" id="lwJabatan" placeholder="Contoh: Panitia Bahasa Melayu, JPN" />
+      </div>
+
+      <div class="field">
+        <label class="required">Subjek</label>
+        <select id="lwSubjek">
+          <option value="">Sila Pilih</option>
+          <option value="SJ">Sains (SJ)</option>
+          <option value="MT">Matematik (MT)</option>
+          <option value="BM">Bahasa Melayu (BM)</option>
+          <option value="BI">Bahasa Inggeris (BI)</option>
+          <option value="RBT">Reka Bentuk Teknologi (RBT)</option>
+          <option value="TMK">Teknologi Maklumat & Komunikasi (TMK)</option>
+          <option value="PI">Pendidikan Islam (PI)</option>
+          <option value="PJPK">Pendidikan Jasmani (PJPK)</option>
+          <option value="PSV">Pendidikan Seni Visual (PSV)</option>
+          <option value="MZ">Muzik (MZ)</option>
+          <option value="Tasmik">Tasmik</option>
+          <option value="Moral">Moral</option>
+          <option value="BC">Bahasa Cina (BC)</option>
+          <option value="Pemulihan">Pemulihan</option>
+          <option value="BA">Bahasa Arab (BA)</option>
+          <option value="Kelas Gantian">Kelas Gantian</option>
+          <option value="Lain-lain">Lain-lain</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label class="required">Ulasan</label>
+        <textarea id="lwUlasan" placeholder="Catatan dan ulasan tentang pengajaran dan pembelajaran" rows="4"></textarea>
+      </div>
+
+      <div class="field">
+        <label class="required">Penambahbaikan</label>
+        <textarea id="lwPenambahbaikan" placeholder="Cadangan penambahbaikan dan tindakan susulan" rows="4"></textarea>
+      </div>
+
+      <div class="modal-buttons" style="justify-content:space-between;margin-top:16px;">
+        <button type="button" class="btn-modal-cancel" id="lwBtnCancel">Batal</button>
+        <button type="button" class="btn-modal-primary" id="lwBtnSubmit">Hantar Pencerapan</button>
+      </div>
     </div>
   </div>
 </div>
@@ -1286,9 +1440,9 @@ detailPopupModal.addEventListener("click", (e) => {
 
 function showDetailPopup(records, kelas, waktu) {
   detailPopupTitle.textContent = "Maklumat Rekod - " + kelas + " (" + waktu + ")";
-  
+
   let html = '';
-  
+
   if (records.length === 0) {
     html = '<div class="info-row">Tiada rekod</div>';
   } else {
@@ -1300,7 +1454,7 @@ function showDetailPopup(records, kelas, waktu) {
       if (record.mataPelajaran) {
         mpLabel = " - " + (record.mataPelajaran === "BC" ? "Bahasa Cina" : record.mataPelajaran === "BA" ? "Bahasa Arab" : record.mataPelajaran === "MORAL" ? "Moral" : "Pemulihan");
       }
-      
+
       html += '<div class="' + sectionClass + '">';
       if (records.length > 1) {
         html += '<div style="font-weight:600;margin-bottom:6px;color:#047857;">📚 Rekod ' + (idx + 1) + mpLabel + '</div>';
@@ -1309,11 +1463,11 @@ function showDetailPopup(records, kelas, waktu) {
       html += '<div class="info-row"><strong>📍 Tempat:</strong> ' + record.tempat + '</div>';
       html += '<div class="info-row"><strong>🕐 Masa:</strong> ' + record.masaRekod + '</div>';
       html += '<div class="info-row"><strong>👥 Murid:</strong> ' + record.jumlahMurid + ' orang</div>';
-      
+
       if (record.catatanKeberadaan) {
         html += '<div class="info-row"><strong>📝 Catatan:</strong> ' + record.catatanKeberadaan + '</div>';
       }
-      
+
       if (record.jenis) {
         const sahsiahClass = record.jenis === 'baik' ? 'baik' : 'jahat';
         const sahsiahLabel = record.jenis === 'baik' ? '✅ Amalan Baik' : '⚠️ Kesalahan';
@@ -1327,7 +1481,30 @@ function showDetailPopup(records, kelas, waktu) {
       html += '</div>';
     });
   }
-  
+
+  // Check for Learning Walk observation
+  const monitoredKey = kelas + "_" + waktu;
+  if (window.todayLearningWalkData && window.todayLearningWalkData[monitoredKey]) {
+    const observation = window.todayLearningWalkData[monitoredKey];
+    html += '<div style="background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff;padding:12px;border-radius:10px;margin-top:16px;">';
+    html += '<div style="font-weight:600;margin-bottom:8px;font-size:0.95rem;">📝 Learning Walk - Pencerapan PdP</div>';
+    html += '<div style="font-size:0.8rem;background:rgba(255,255,255,0.2);padding:8px;border-radius:6px;margin-bottom:6px;">';
+    html += '<div style="margin-bottom:4px;"><strong>Pegawai:</strong> ' + observation.namaPegawai + '</div>';
+    html += '<div style="margin-bottom:4px;"><strong>Jabatan:</strong> ' + observation.jabatan + '</div>';
+    html += '<div style="margin-bottom:4px;"><strong>Subjek:</strong> ' + observation.subjek + '</div>';
+    html += '<div style="margin-bottom:4px;"><strong>Masa:</strong> ' + observation.masa + '</div>';
+    html += '</div>';
+    html += '<div style="background:rgba(255,255,255,0.15);padding:8px;border-radius:6px;margin-bottom:6px;">';
+    html += '<div style="font-weight:600;margin-bottom:4px;">Ulasan:</div>';
+    html += '<div style="font-size:0.8rem;">' + observation.ulasan + '</div>';
+    html += '</div>';
+    html += '<div style="background:rgba(255,255,255,0.15);padding:8px;border-radius:6px;">';
+    html += '<div style="font-weight:600;margin-bottom:4px;">Penambahbaikan:</div>';
+    html += '<div style="font-size:0.8rem;">' + observation.penambahbaikan + '</div>';
+    html += '</div>';
+    html += '</div>';
+  }
+
   detailPopupContent.innerHTML = html;
   detailPopupModal.style.display = "flex";
 }
@@ -1359,24 +1536,30 @@ function loadAllClassesToday() {
 
   body.innerHTML = '<tr><td colspan="' + (TOTAL_WAKTU + 1) + '" style="text-align:center;border:2px solid #000;">Loading...</td></tr>';
 
-  // Load events first
-  db.ref("events").once("value").then(eventsSnap => {
-    allEventsToday = {};
-    if (eventsSnap.exists()) {
-      eventsSnap.forEach(child => {
-        const event = child.val();
-        if (event.date === today) {
-          // Store events by kelas and waktu
-          event.kelas.forEach(kelas => {
-            event.waktu.forEach(waktu => {
-              const key = kelas + "_" + waktu;
-              if (!allEventsToday[key]) allEventsToday[key] = [];
-              allEventsToday[key].push(event);
+  // Load learning walk data first
+  const dateKey = formatDateKey(new Date());
+  db.ref("learningWalk/" + dateKey).once("value").then(lwSnap => {
+    const lwData = lwSnap.val() || {};
+    window.todayLearningWalkData = lwData; // Store globally for use in detail popup
+
+    // Load events
+    db.ref("events").once("value").then(eventsSnap => {
+      allEventsToday = {};
+      if (eventsSnap.exists()) {
+        eventsSnap.forEach(child => {
+          const event = child.val();
+          if (event.date === today) {
+            // Store events by kelas and waktu
+            event.kelas.forEach(kelas => {
+              event.waktu.forEach(waktu => {
+                const key = kelas + "_" + waktu;
+                if (!allEventsToday[key]) allEventsToday[key] = [];
+                allEventsToday[key].push(event);
+              });
             });
-          });
-        }
-      });
-    }
+          }
+        });
+      }
 
     // Now load classes and kawalan
     db.ref("config/classes/classData").once("value").then(configSnap => {
@@ -1479,18 +1662,21 @@ function loadAllClassesToday() {
             const eventNames = events.map(e => e.name).join(", ");
             row += '<td class="cell-event" style="border:2px solid #000;">' + eventNames + '</td>';
           } else if (records && records.length > 0) {
+            const monitoredKey = kelas + "_" + waktuKey;
+            const isMonitored = window.todayLearningWalkData && window.todayLearningWalkData[monitoredKey];
+            const monitoredClass = isMonitored ? ' cell-monitored' : '';
             const cellClass = records.length > 1 ? "cell-multi" : "cell-filled";
             let cellContent = '';
-            
+
             // Wrap content for fixed height handling
             cellContent += '<div class="cell-content-wrapper">';
-            
+
             records.forEach((rec, idx) => {
-              const mpBadge = rec.mataPelajaran ? 
-                '<span class="pill-mp pill-' + rec.mataPelajaran.toLowerCase() + '">' + 
+              const mpBadge = rec.mataPelajaran ?
+                '<span class="pill-mp pill-' + rec.mataPelajaran.toLowerCase() + '">' +
                 (rec.mataPelajaran === "PEMULIHAN" ? "PEM" : rec.mataPelajaran) + '</span>' : '';
               const gantiHtml = rec.guruGanti ? '<span class="guru-ganti-badge">G</span>' : '';
-              
+
               if (records.length > 1) {
                 cellContent += '<div class="multi-record">';
               }
@@ -1501,10 +1687,13 @@ function loadAllClassesToday() {
               }
             });
             cellContent += '</div>';
-            
-            row += '<td class="' + cellClass + '" style="border:2px solid #000;" data-kelas="' + kelas + '" data-waktu="' + waktuKey + '">' + cellContent + '</td>';
+
+            row += '<td class="' + cellClass + monitoredClass + '" style="border:2px solid #000;" data-kelas="' + kelas + '" data-waktu="' + waktuKey + '">' + cellContent + '</td>';
           } else {
-            row += '<td class="cell-empty" style="border:2px solid #000;">-</td>';
+            const monitoredKey = kelas + "_" + waktuKey;
+            const isMonitored = window.todayLearningWalkData && window.todayLearningWalkData[monitoredKey];
+            const monitoredClass = isMonitored ? ' cell-monitored' : '';
+            row += '<td class="cell-empty' + monitoredClass + '" style="border:2px solid #000;">-</td>';
           }
         }
         
@@ -1527,8 +1716,12 @@ function loadAllClassesToday() {
       console.error("Load error:", err);
       body.innerHTML = '<tr><td colspan="' + (TOTAL_WAKTU + 1) + '" style="text-align:center;border:2px solid #000;">Ralat memuat data</td></tr>';
     });
+    }).catch(err => {
+      console.error("Load events error:", err);
+      body.innerHTML = '<tr><td colspan="' + (TOTAL_WAKTU + 1) + '" style="text-align:center;border:2px solid #000;">Ralat memuat data</td></tr>';
+    });
   }).catch(err => {
-    console.error("Load events error:", err);
+    console.error("Load learning walk error:", err);
     body.innerHTML = '<tr><td colspan="' + (TOTAL_WAKTU + 1) + '" style="text-align:center;border:2px solid #000;">Ralat memuat data</td></tr>';
   });
 }
@@ -1540,6 +1733,7 @@ function loadAllClassesToday() {
 // Dropdown Controller
 const adminFunctionSelect = document.getElementById("adminFunctionSelect");
 const adminSahsiahContainer = document.getElementById("adminSahsiahContainer");
+const adminLearningWalkContainer = document.getElementById("adminLearningWalkContainer");
 const adminJadualContainer = document.getElementById("adminJadualContainer");
 const adminEventContainer = document.getElementById("adminEventContainer");
 const adminGuruContainer = document.getElementById("adminGuruContainer");
@@ -1548,6 +1742,7 @@ const btnExitAdmin = document.getElementById("btnExitAdmin");
 adminFunctionSelect.addEventListener("change", (e) => {
    const val = e.target.value;
    adminSahsiahContainer.style.display = "none";
+   adminLearningWalkContainer.style.display = "none";
    adminJadualContainer.style.display = "none";
    adminEventContainer.style.display = "none";
    adminGuruContainer.style.display = "none";
@@ -1555,6 +1750,9 @@ adminFunctionSelect.addEventListener("change", (e) => {
    if(val === "sahsiah") {
       adminSahsiahContainer.style.display = "block";
       loadAllSahsiahRecords();
+   } else if (val === "learningWalk") {
+      adminLearningWalkContainer.style.display = "block";
+      loadLearningWalkSchedule();
    } else if (val === "lihatJadual") {
       adminJadualContainer.style.display = "block";
       // Set default date to today
@@ -2940,6 +3138,260 @@ document.getElementById("aktivitiBtnSave")?.addEventListener("click", function()
     document.getElementById("aktivitiLuarModal").style.display = "none";
   }).catch(() => {
     alert("Gagal menyimpan. Sila cuba lagi.");
+  });
+});
+
+// =====================================================
+// LEARNING WALK FUNCTIONS
+// =====================================================
+let learningWalkData = {}; // Store observation data
+let currentLearningWalkCell = null; // Store current cell being observed
+
+function loadLearningWalkSchedule() {
+  const head = document.getElementById("learningWalkScheduleHead");
+  const body = document.getElementById("learningWalkScheduleBody");
+
+  if (!head || !body || typeof firebase === "undefined") return;
+
+  const today = new Date();
+  const dateKey = formatDateKey(today);
+
+  // Load today's observations
+  db.ref("learningWalk/" + dateKey).once("value").then(lwSnap => {
+    const lwData = lwSnap.val() || {};
+    learningWalkData = lwData;
+
+    // Build table header
+    let headerHTML = '<tr style="background:#7c3aed; color:white;"><th>Kelas</th>';
+    periods.forEach(p => {
+      headerHTML += '<th><span class="waktu-code">' + p.code + '</span><span class="waktu-time">' + p.time + '</span></th>';
+    });
+    headerHTML += '</tr>';
+    head.innerHTML = headerHTML;
+
+    // Load schedule data
+    db.ref("config/classes/classData").once("value").then(classSnap => {
+      const classData = classSnap.val();
+      if (!classData) {
+        body.innerHTML = '<tr><td colspan="14" style="text-align:center;">Tiada data kelas.</td></tr>';
+        return;
+      }
+
+      const classList = Object.keys(classData).sort();
+
+      // Load events
+      db.ref("events").once("value").then(eventSnap => {
+        const allEvents = eventSnap.val() || {};
+        const todayEvents = Object.values(allEvents).filter(ev => ev.date === formatDate(today));
+
+        // Load kawalan records
+        db.ref("kawalan").orderByChild("tarikh").equalTo(formatDate(today)).once("value").then(snap => {
+          const records = [];
+          snap.forEach(child => {
+            records.push(child.val());
+          });
+
+          // Load aktiviti luar
+          db.ref("aktivitiLuar").orderByChild("tarikh").equalTo(formatDate(today)).once("value").then(aktSnap => {
+            const aktivitiRecords = [];
+            aktSnap.forEach(c => aktivitiRecords.push(c.val()));
+
+            // Build table body
+            let bodyHTML = "";
+            classList.forEach(kelas => {
+              bodyHTML += '<tr><td>' + kelas + '</td>';
+              const tahap = kelas.match(/^[1-3]/) ? 1 : 2;
+
+              periods.forEach(p => {
+                // Check if it's rehat
+                const isRehat = (tahap === 1 && p.code === 'W5') || (tahap === 2 && p.code === 'W7');
+                if (isRehat) {
+                  bodyHTML += '<td class="cell-rehat">REHAT</td>';
+                  return;
+                }
+
+                // Check for events
+                const hasEvent = todayEvents.find(ev =>
+                  ev.kelas && ev.kelas.includes(kelas) &&
+                  ev.waktu && ev.waktu.includes(p.code)
+                );
+                if (hasEvent) {
+                  bodyHTML += '<td class="cell-event">' + hasEvent.name + '</td>';
+                  return;
+                }
+
+                // Find records for this cell
+                const cellRecords = records.filter(r => r.kelas === kelas && r.waktu.includes(p.code));
+
+                // Check if monitored
+                const monitoredKey = kelas + "_" + p.code;
+                const isMonitored = lwData[monitoredKey];
+                const monitoredClass = isMonitored ? ' cell-monitored' : '';
+
+                if (cellRecords.length === 0) {
+                  bodyHTML += '<td class="cell-empty' + monitoredClass + '" data-kelas="' + kelas + '" data-waktu="' + p.code + '" onclick="openLearningWalkObservation(\'' + kelas + '\', \'' + p.code + '\')">KOSONG</td>';
+                } else if (cellRecords.length === 1) {
+                  const rec = cellRecords[0];
+                  let content = '<span class="guru-name">' + rec.namaGuru + '</span>';
+                  if (rec.tempat) content += '<span class="guru-tempat">' + rec.tempat + '</span>';
+                  if (rec.guruGanti) content += '<div class="guru-ganti-badge">GANTI</div>';
+                  if (rec.mataPelajaran) {
+                    const mpClass = rec.mataPelajaran === 'BC' ? 'pill-bc' :
+                                    rec.mataPelajaran === 'BA' ? 'pill-ba' :
+                                    rec.mataPelajaran === 'PEMULIHAN' ? 'pill-pemulihan' :
+                                    rec.mataPelajaran === 'MORAL' ? 'pill-moral' : '';
+                    content += '<div class="pill-mp ' + mpClass + '">' + rec.mataPelajaran + '</div>';
+                  }
+                  bodyHTML += '<td class="cell-filled' + monitoredClass + '" data-kelas="' + kelas + '" data-waktu="' + p.code + '" onclick="openLearningWalkObservation(\'' + kelas + '\', \'' + p.code + '\')">' + content + '</td>';
+                } else {
+                  let content = '';
+                  cellRecords.forEach((rec, idx) => {
+                    content += '<div class="multi-record">';
+                    content += '<span class="guru-name">' + rec.namaGuru + '</span>';
+                    if (rec.tempat) content += '<span class="guru-tempat">' + rec.tempat + '</span>';
+                    if (rec.guruGanti) content += '<div class="guru-ganti-badge">GANTI</div>';
+                    if (rec.mataPelajaran) {
+                      const mpClass = rec.mataPelajaran === 'BC' ? 'pill-bc' :
+                                      rec.mataPelajaran === 'BA' ? 'pill-ba' :
+                                      rec.mataPelajaran === 'PEMULIHAN' ? 'pill-pemulihan' :
+                                      rec.mataPelajaran === 'MORAL' ? 'pill-moral' : '';
+                      content += '<div class="pill-mp ' + mpClass + '">' + rec.mataPelajaran + '</div>';
+                    }
+                    content += '</div>';
+                  });
+                  bodyHTML += '<td class="cell-multi' + monitoredClass + '" data-kelas="' + kelas + '" data-waktu="' + p.code + '" onclick="openLearningWalkObservation(\'' + kelas + '\', \'' + p.code + '\')">' + content + '</td>';
+                }
+              });
+
+              bodyHTML += '</tr>';
+            });
+
+            body.innerHTML = bodyHTML;
+          });
+        });
+      });
+    });
+  });
+}
+
+function openLearningWalkObservation(kelas, waktuCode) {
+  if (!kelas || !waktuCode) return;
+
+  const today = new Date();
+  const dateKey = formatDateKey(today);
+
+  // Find the record for this cell
+  db.ref("kawalan").orderByChild("tarikh").equalTo(formatDate(today)).once("value").then(snap => {
+    const records = [];
+    snap.forEach(child => {
+      const rec = child.val();
+      if (rec.kelas === kelas && rec.waktu.includes(waktuCode)) {
+        records.push(rec);
+      }
+    });
+
+    // If no record found, show alert
+    if (records.length === 0) {
+      alert("Tiada rekod pengajaran untuk kelas ini pada waktu ini.");
+      return;
+    }
+
+    // Use the first record (or could show a selection dialog for multiple records)
+    const record = records[0];
+
+    // Store current cell info
+    currentLearningWalkCell = {
+      kelas: kelas,
+      waktuCode: waktuCode,
+      record: record
+    };
+
+    // Fill in the observation form
+    document.getElementById("lwGuruName").textContent = record.namaGuru;
+    document.getElementById("lwKelas").textContent = kelas;
+    document.getElementById("lwWaktu").textContent = waktuCode;
+    document.getElementById("lwTarikh").textContent = formatDate(today);
+    document.getElementById("lwMasa").textContent = formatTime(today);
+
+    // Check if already observed
+    const monitoredKey = kelas + "_" + waktuCode;
+    const existingObservation = learningWalkData[monitoredKey];
+
+    if (existingObservation) {
+      // Pre-fill with existing data
+      document.getElementById("lwNamaPegawai").value = existingObservation.namaPegawai || "";
+      document.getElementById("lwJabatan").value = existingObservation.jabatan || "";
+      document.getElementById("lwSubjek").value = existingObservation.subjek || "";
+      document.getElementById("lwUlasan").value = existingObservation.ulasan || "";
+      document.getElementById("lwPenambahbaikan").value = existingObservation.penambahbaikan || "";
+    } else {
+      // Clear form
+      document.getElementById("lwNamaPegawai").value = "";
+      document.getElementById("lwJabatan").value = "";
+      document.getElementById("lwSubjek").value = "";
+      document.getElementById("lwUlasan").value = "";
+      document.getElementById("lwPenambahbaikan").value = "";
+    }
+
+    // Show modal
+    document.getElementById("learningWalkObservationModal").style.display = "flex";
+  });
+}
+
+// Close modal handlers
+document.getElementById("closeLearningWalkObservation")?.addEventListener("click", function() {
+  document.getElementById("learningWalkObservationModal").style.display = "none";
+});
+
+document.getElementById("lwBtnCancel")?.addEventListener("click", function() {
+  document.getElementById("learningWalkObservationModal").style.display = "none";
+});
+
+// Submit observation
+document.getElementById("lwBtnSubmit")?.addEventListener("click", function() {
+  const namaPegawai = document.getElementById("lwNamaPegawai").value.trim();
+  const jabatan = document.getElementById("lwJabatan").value.trim();
+  const subjek = document.getElementById("lwSubjek").value;
+  const ulasan = document.getElementById("lwUlasan").value.trim();
+  const penambahbaikan = document.getElementById("lwPenambahbaikan").value.trim();
+
+  if (!namaPegawai || !jabatan || !subjek || !ulasan || !penambahbaikan) {
+    alert("Sila lengkapkan semua medan yang diperlukan.");
+    return;
+  }
+
+  if (!currentLearningWalkCell) {
+    alert("Ralat: Tiada data kelas dipilih.");
+    return;
+  }
+
+  const today = new Date();
+  const dateKey = formatDateKey(today);
+  const monitoredKey = currentLearningWalkCell.kelas + "_" + currentLearningWalkCell.waktuCode;
+
+  const observationData = {
+    kelas: currentLearningWalkCell.kelas,
+    waktu: currentLearningWalkCell.waktuCode,
+    namaGuru: currentLearningWalkCell.record.namaGuru,
+    tarikh: formatDate(today),
+    masa: formatTime(today),
+    namaPegawai: namaPegawai,
+    jabatan: jabatan,
+    subjek: subjek,
+    ulasan: ulasan,
+    penambahbaikan: penambahbaikan,
+    timestamp: firebase.database.ServerValue.TIMESTAMP
+  };
+
+  // Save to Firebase
+  db.ref("learningWalk/" + dateKey + "/" + monitoredKey).set(observationData).then(() => {
+    alert("✅ Pencerapan berjaya disimpan!");
+    document.getElementById("learningWalkObservationModal").style.display = "none";
+    // Reload the schedule to show the special border
+    loadLearningWalkSchedule();
+  }).catch(err => {
+    console.error("Error saving observation:", err);
+    alert("❌ Gagal menyimpan pencerapan: " + err.message);
   });
 });
 
