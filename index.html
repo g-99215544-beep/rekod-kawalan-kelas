@@ -57,8 +57,7 @@
     .selected-student-item .remove-btn{background:#fee2e2;color:#b91c1c;border:none;padding:2px 8px;border-radius:4px;font-size:0.7rem;cursor:pointer}
 
     /* Aktiviti Luar Styles */
-    .aktiviti-luar-btn{display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border:none;padding:4px 10px;border-radius:6px;font-size:0.65rem;font-weight:600;cursor:pointer;margin-bottom:6px;box-shadow:0 1px 4px rgba(245,158,11,0.3)}
-    .aktiviti-luar-btn svg{width:14px;height:14px}
+    .aktiviti-luar-btn-icon{position:absolute;top:4px;right:4px;z-index:10;width:28px;height:28px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border:none;border-radius:50%;font-size:1.2rem;font-weight:700;line-height:1;cursor:pointer;box-shadow:0 2px 6px rgba(245,158,11,0.4);display:flex;align-items:center;justify-content:center}
     .aktiviti-luar-modal .waktu-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
     .aktiviti-luar-modal .waktu-checkbox{display:flex;align-items:center;gap:4px;font-size:0.75rem;padding:4px 6px;background:#fef3c7;border-radius:6px}
     .aktiviti-luar-modal .waktu-checkbox input{width:14px;height:14px}
@@ -253,7 +252,26 @@
     #allClassSchedule .guru-ganti-badge{font-size:0.4rem;background:#fbbf24;color:#78350f;padding:1px 2px;border-radius:2px;display:inline-block}
     #allClassSchedule .multi-record{border-bottom:1px dashed #d1d5db;padding:2px 0;margin-bottom:2px}
     #allClassSchedule .multi-record:last-child{border-bottom:none;margin-bottom:0}
-    
+
+    /* Admin Schedule Table */
+    #adminScheduleTable{table-layout:fixed;width:800px;border-collapse:collapse;background:#fff}
+    #adminScheduleTable th{border:2px solid #000;text-align:center;padding:3px;font-size:0.65rem;line-height:1.1;width:55px;overflow:hidden;white-space:normal;background:#047857;color:#fff;position:sticky;top:0;z-index:10}
+    #adminScheduleTable th:first-child{width:35px}
+    #adminScheduleTable td{border:2px solid #000;text-align:center;padding:2px;font-size:0.55rem;vertical-align:top;height:auto;min-height:40px;width:55px;overflow:hidden;word-wrap:break-word}
+    #adminScheduleTable td:first-child{width:35px;position:sticky;left:0;z-index:5}
+    #adminScheduleTable .waktu-code{display:block;font-weight:600;font-size:0.6rem}
+    #adminScheduleTable .waktu-time{display:block;font-weight:400;font-size:0.5rem;opacity:0.9}
+    #adminScheduleTable .cell-empty{background-color:#fef9c3;color:#854d0e}
+    #adminScheduleTable .cell-filled{background-color:#fff}
+    #adminScheduleTable .cell-multi{background-color:#f0fdf4}
+    #adminScheduleTable .cell-rehat{background-color:#059669;color:#fff;font-weight:600;cursor:default;vertical-align:middle}
+    #adminScheduleTable .cell-event{background-color:#dbeafe;color:#1e40af;font-weight:500;font-size:0.5rem}
+    #adminScheduleTable .guru-name{font-weight:600;color:#111827;display:block;font-size:0.55rem;white-space:normal;line-height:1}
+    #adminScheduleTable .guru-tempat{font-size:0.45rem;color:#6b7280;display:block;margin-top:1px}
+    #adminScheduleTable .guru-ganti-badge{font-size:0.4rem;background:#fbbf24;color:#78350f;padding:1px 2px;border-radius:2px;display:inline-block}
+    #adminScheduleTable .multi-record{border-bottom:1px dashed #d1d5db;padding:2px 0;margin-bottom:2px}
+    #adminScheduleTable .multi-record:last-child{border-bottom:none;margin-bottom:0}
+
     /* Detail Popup Card */
     .detail-popup .info-row{font-size:0.82rem;color:#374151;margin-bottom:6px;padding:6px 0;border-bottom:1px dashed #e5e7eb}
     .detail-popup .info-row:last-child{border-bottom:none}
@@ -416,26 +434,23 @@
 
       <!-- Rekod Hari Ini -->
       <div id="rekodTodayView" style="display:none;">
-        <!-- Aktiviti Luar Button -->
-        <button type="button" class="aktiviti-luar-btn" id="btnAktivitiLuar">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-          </svg>
-          Aktiviti Luar Bilik Darjah
-        </button>
-        <!-- Zoom Container -->
-        <div id="zoomContainer" class="zoom-container">
-          <div id="zoomContent" class="zoom-content">
-            <table id="allClassSchedule">
-              <thead id="allClassHead">
-                <tr style="background:#047857; color:white;">
-                  <th>Kelas</th>
-                </tr>
-              </thead>
-              <tbody id="allClassBody">
-                <tr><td colspan="14" style="text-align:center;">Loading...</td></tr>
-              </tbody>
-            </table>
+        <!-- Table wrapper with floating + button -->
+        <div style="position:relative;">
+          <button type="button" class="aktiviti-luar-btn-icon" id="btnAktivitiLuar" title="Aktiviti Luar Bilik Darjah">+</button>
+          <!-- Zoom Container -->
+          <div id="zoomContainer" class="zoom-container">
+            <div id="zoomContent" class="zoom-content">
+              <table id="allClassSchedule">
+                <thead id="allClassHead">
+                  <tr style="background:#047857; color:white;">
+                    <th>Kelas</th>
+                  </tr>
+                </thead>
+                <tbody id="allClassBody">
+                  <tr><td colspan="14" style="text-align:center;">Loading...</td></tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
         <div style="margin-top:10px;font-size:0.7rem;color:#6b7280;">
@@ -556,6 +571,7 @@
          <select id="adminFunctionSelect" class="admin-select">
             <option value="sahsiah">Semak Laporan Sahsiah</option>
             <option value="semakRekod">Semak Rekod Kawalan</option>
+            <option value="lihatJadual">Lihat Jadual Tarikh</option>
             <option value="tetapanEvent">Tetapan Event</option>
             <option value="urusGuru">Urus Senarai Guru</option>
          </select>
@@ -598,6 +614,29 @@
             <thead><tr id="semakHeadRow"></tr></thead>
             <tbody><tr id="semakBodyRow"></tr></tbody>
           </table>
+        </div>
+      </div>
+
+      <!-- Content: Lihat Jadual Tarikh -->
+      <div id="adminJadualContainer" style="display:none;">
+        <div class="section-title">Lihat Jadual Mengikut Tarikh</div>
+        <div class="input-card" style="margin-bottom:10px;">
+          <div class="field">
+            <label class="required">Pilih Tarikh</label>
+            <input type="date" id="jadualTarikh" />
+          </div>
+          <button class="btn-submit" style="margin-top:4px;" id="btnLoadJadual">PAPAR JADUAL</button>
+        </div>
+        <div id="adminJadualDisplay" style="display:none;">
+          <div id="jadualDateLabel" style="font-size:0.85rem;font-weight:600;color:#047857;margin-bottom:8px;"></div>
+          <div class="zoom-container" style="max-height:60vh;">
+            <div class="zoom-content">
+              <table id="adminScheduleTable">
+                <thead id="adminScheduleHead"></thead>
+                <tbody id="adminScheduleBody"></tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1619,6 +1658,7 @@ function loadAllClassesToday() {
 const adminFunctionSelect = document.getElementById("adminFunctionSelect");
 const adminSahsiahContainer = document.getElementById("adminSahsiahContainer");
 const adminSemakContainer = document.getElementById("adminSemakContainer");
+const adminJadualContainer = document.getElementById("adminJadualContainer");
 const adminEventContainer = document.getElementById("adminEventContainer");
 const adminGuruContainer = document.getElementById("adminGuruContainer");
 const btnExitAdmin = document.getElementById("btnExitAdmin");
@@ -1627,6 +1667,7 @@ adminFunctionSelect.addEventListener("change", (e) => {
    const val = e.target.value;
    adminSahsiahContainer.style.display = "none";
    adminSemakContainer.style.display = "none";
+   adminJadualContainer.style.display = "none";
    adminEventContainer.style.display = "none";
    adminGuruContainer.style.display = "none";
 
@@ -1635,6 +1676,11 @@ adminFunctionSelect.addEventListener("change", (e) => {
       loadAllSahsiahRecords();
    } else if (val === "semakRekod") {
       adminSemakContainer.style.display = "block";
+   } else if (val === "lihatJadual") {
+      adminJadualContainer.style.display = "block";
+      // Set default date to today
+      const today = new Date();
+      document.getElementById("jadualTarikh").value = today.toISOString().split('T')[0];
    } else if (val === "tetapanEvent") {
       adminEventContainer.style.display = "block";
       loadEventCheckboxes();
@@ -1644,6 +1690,183 @@ adminFunctionSelect.addEventListener("change", (e) => {
       loadGuruListForAdmin();
    }
 });
+
+// Admin: Load Schedule by Date
+document.getElementById("btnLoadJadual")?.addEventListener("click", function() {
+  const dateInput = document.getElementById("jadualTarikh").value;
+  if (!dateInput) {
+    alert("Sila pilih tarikh.");
+    return;
+  }
+  loadAdminScheduleByDate(dateInput);
+});
+
+function loadAdminScheduleByDate(dateKey) {
+  const head = document.getElementById("adminScheduleHead");
+  const body = document.getElementById("adminScheduleBody");
+  const display = document.getElementById("adminJadualDisplay");
+  const dateLabel = document.getElementById("jadualDateLabel");
+
+  if (!head || !body || typeof firebase === "undefined") return;
+
+  // Convert YYYY-MM-DD to DD/MM/YYYY for display and query
+  const [year, month, day] = dateKey.split('-');
+  const displayDate = day + '/' + month + '/' + year;
+  const selectedDate = new Date(dateKey);
+  const dayOfWeek = selectedDate.getDay();
+  const isFriday = dayOfWeek === 5;
+  const dayNames = ['Ahad', 'Isnin', 'Selasa', 'Rabu', 'Khamis', 'Jumaat', 'Sabtu'];
+
+  dateLabel.textContent = dayNames[dayOfWeek] + ', ' + displayDate;
+  display.style.display = "block";
+
+  // Build header
+  let headerHTML = '<tr style="background:#047857; color:white;"><th style="border:2px solid #000;">Kelas</th>';
+  for (let i = 1; i <= TOTAL_WAKTU; i++) {
+    const p = periods[i-1];
+    headerHTML += '<th style="border:2px solid #000;"><span class="waktu-code">' + p.code + '</span><span class="waktu-time">' + p.start + '</span></th>';
+  }
+  headerHTML += '</tr>';
+  head.innerHTML = headerHTML;
+  body.innerHTML = '<tr><td colspan="' + (TOTAL_WAKTU + 1) + '" style="text-align:center;border:2px solid #000;">Loading...</td></tr>';
+
+  // Load events for this date
+  db.ref("events").once("value").then(eventsSnap => {
+    const eventsForDate = {};
+    if (eventsSnap.exists()) {
+      eventsSnap.forEach(child => {
+        const event = child.val();
+        if (event.date === displayDate) {
+          event.kelas.forEach(kelas => {
+            event.waktu.forEach(waktu => {
+              const key = kelas + "_" + waktu;
+              if (!eventsForDate[key]) eventsForDate[key] = [];
+              eventsForDate[key].push(event);
+            });
+          });
+        }
+      });
+    }
+
+    // Load classes and kawalan
+    db.ref("config/classes/classData").once("value").then(configSnap => {
+      const allClasses = configSnap.val() ? Object.keys(configSnap.val()).sort() : [];
+
+      return db.ref("kawalan").orderByChild("tarikh").equalTo(displayDate).once("value").then(snapshot => {
+        body.innerHTML = "";
+
+        const kelasMap = {};
+        allClasses.forEach(kelas => {
+          kelasMap[kelas] = {};
+          for (let i = 1; i <= TOTAL_WAKTU; i++) {
+            kelasMap[kelas]["W" + i] = [];
+          }
+        });
+
+        if (snapshot.exists()) {
+          snapshot.forEach(child => {
+            const rec = child.val();
+            if (!rec || !rec.kelas) return;
+
+            const kelas = rec.kelas;
+            const waktu = rec.waktu || "W1";
+
+            if (!kelasMap[kelas]) {
+              kelasMap[kelas] = {};
+              for (let i = 1; i <= TOTAL_WAKTU; i++) {
+                kelasMap[kelas]["W" + i] = [];
+              }
+            }
+
+            kelasMap[kelas][waktu].push(rec);
+          });
+        }
+
+        // Deduplicate records
+        function deduplicateRecords(records) {
+          const map = {};
+          records.forEach(rec => {
+            const dedupKey = rec.namaGuru + "_" + (rec.mataPelajaran || "");
+            if (!map[dedupKey] || rec.masaRekod > map[dedupKey].masaRekod) {
+              map[dedupKey] = rec;
+            }
+          });
+          return Object.values(map);
+        }
+
+        Object.keys(kelasMap).forEach(kelas => {
+          Object.keys(kelasMap[kelas]).forEach(waktu => {
+            kelasMap[kelas][waktu] = deduplicateRecords(kelasMap[kelas][waktu]);
+          });
+        });
+
+        const kelasList = Object.keys(kelasMap).sort();
+
+        if (kelasList.length === 0) {
+          body.innerHTML = '<tr><td colspan="' + (TOTAL_WAKTU + 1) + '" style="text-align:center;border:2px solid #000;">Tiada kelas didaftarkan</td></tr>';
+          return;
+        }
+
+        kelasList.forEach(kelas => {
+          const tr = document.createElement("tr");
+          const rehatWaktu = getRehatWaktu(kelas);
+
+          let row = '<td style="font-weight:600;background:#f0fdf4;text-align:center;border:2px solid #000;">' + kelas + '</td>';
+
+          for (let i = 1; i <= TOTAL_WAKTU; i++) {
+            const waktuKey = "W" + i;
+            const records = kelasMap[kelas][waktuKey];
+            const eventKey = kelas + "_" + waktuKey;
+            const events = eventsForDate[eventKey] || [];
+
+            const isFridayPulang = isFriday && ['W10', 'W11', 'W12', 'W13'].includes(waktuKey);
+
+            if (waktuKey === rehatWaktu) {
+              row += '<td class="cell-rehat" style="border:2px solid #000;">REHAT</td>';
+            } else if (isFridayPulang) {
+              row += '<td class="cell-rehat" style="border:2px solid #000;">PULANG</td>';
+            } else if (waktuKey === 'W13' && isTahap1(kelas)) {
+              row += '<td class="cell-rehat" style="border:2px solid #000;">PULANG</td>';
+            } else if (events.length > 0) {
+              const eventNames = events.map(e => e.name).join(", ");
+              row += '<td class="cell-event" style="border:2px solid #000;">' + eventNames + '</td>';
+            } else if (records && records.length > 0) {
+              const cellClass = records.length > 1 ? "cell-multi" : "cell-filled";
+              let cellContent = '<div class="cell-content-wrapper">';
+
+              records.forEach((rec) => {
+                const mpBadge = rec.mataPelajaran ?
+                  '<span class="pill-mp pill-' + rec.mataPelajaran.toLowerCase() + '">' +
+                  (rec.mataPelajaran === "PEMULIHAN" ? "PEM" : rec.mataPelajaran) + '</span>' : '';
+                const gantiHtml = rec.guruGanti ? '<span class="guru-ganti-badge">G</span>' : '';
+
+                if (records.length > 1) {
+                  cellContent += '<div class="multi-record">';
+                }
+                cellContent += '<span class="guru-name">' + rec.namaGuru + '</span>' + gantiHtml;
+                cellContent += '<span class="guru-tempat">' + rec.tempat + '</span>' + mpBadge;
+                if (records.length > 1) {
+                  cellContent += '</div>';
+                }
+              });
+              cellContent += '</div>';
+
+              row += '<td class="' + cellClass + '" style="border:2px solid #000;">' + cellContent + '</td>';
+            } else {
+              row += '<td class="cell-empty" style="border:2px solid #000;">-</td>';
+            }
+          }
+
+          tr.innerHTML = row;
+          body.appendChild(tr);
+        });
+      });
+    }).catch(err => {
+      console.error("Load error:", err);
+      body.innerHTML = '<tr><td colspan="' + (TOTAL_WAKTU + 1) + '" style="text-align:center;border:2px solid #000;">Ralat memuat data</td></tr>';
+    });
+  });
+}
 
 let sahsiahFilterMode = 'all'; // 'pending' or 'all'
 
