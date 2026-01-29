@@ -996,11 +996,22 @@ const jenisKelasC = document.getElementById("jenisKelasC");
 const mpField = document.getElementById("mpField");
 
 function updateJenisKelas() {
-  if (jenisKelasC.checked) {
+  const isPecahan = jenisKelasC.checked;
+  const warningEl = document.getElementById("kehadiranWarning");
+  const subtextEl = document.getElementById("kehadiranSubtext");
+  const ratioEl = document.getElementById("kehadiranRatio");
+
+  if (isPecahan) {
     mpField.classList.add("show");
+    // Hide kehadiran info for split classes
+    warningEl.style.display = "none";
+    subtextEl.textContent = "Kelas pecahan - isikan bilangan murid sebenar";
+    ratioEl.textContent = "";
   } else {
     mpField.classList.remove("show");
     document.getElementById("mataPelajaran").value = "";
+    // Show kehadiran info for regular classes
+    loadKehadiranForKelas();
   }
 
   // Update catatan field requirement based on class type
@@ -1010,7 +1021,7 @@ function updateJenisKelas() {
 
   // If catatan field is visible, update its requirement status
   if (catatanField.classList.contains("show")) {
-    if (jenisKelasC.checked) {
+    if (isPecahan) {
       // Split class - catatan is optional
       catatanLabel.classList.remove("required");
     } else {
@@ -1045,12 +1056,24 @@ function loadKehadiranForKelas() {
   const subtextEl = document.getElementById("kehadiranSubtext");
   const warningEl = document.getElementById("kehadiranWarning");
   const catatanField = document.getElementById("catatanField");
+  const isPecahan = jenisKelasC.checked;
 
   if (!kelasVal) {
     ratioEl.textContent = "/ -";
     subtextEl.textContent = "Kehadiran hari ini: -";
     warningEl.style.display = "none";
     catatanField.classList.remove("show");
+    presentMuridKelas = 0;
+    totalMuridKelas = 0;
+    hasKehadiranToday = false;
+    return;
+  }
+
+  // For split classes, don't load or show attendance info
+  if (isPecahan) {
+    ratioEl.textContent = "";
+    subtextEl.textContent = "Kelas pecahan - isikan bilangan murid sebenar";
+    warningEl.style.display = "none";
     presentMuridKelas = 0;
     totalMuridKelas = 0;
     hasKehadiranToday = false;
@@ -1071,7 +1094,7 @@ function loadKehadiranForKelas() {
       subtextEl.textContent = "Hadir: " + presentMuridKelas + " / " + totalMuridKelas;
       warningEl.style.display = "none";
     } else {
-      // No attendance for today - show warning and block
+      // No attendance for today - show warning and block (only for kelas penuh)
       presentMuridKelas = 0;
       totalMuridKelas = 0;
       hasKehadiranToday = false;
@@ -1081,7 +1104,7 @@ function loadKehadiranForKelas() {
     }
   }).catch(err => {
     console.error(err);
-    // On error, assume no attendance
+    // On error, assume no attendance (only for kelas penuh)
     presentMuridKelas = 0;
     totalMuridKelas = 0;
     hasKehadiranToday = false;
@@ -1099,15 +1122,11 @@ document.getElementById("jumlahMurid").addEventListener("input", function() {
   // Get current class type
   const isPecahan = document.querySelector('input[name="jenisKelas"]:checked')?.value === "pecahan";
 
-  // Show catatan field if jumlah is less than presentMuridKelas
-  if (presentMuridKelas > 0 && jumlah < presentMuridKelas) {
+  // Only show catatan field for kelas penuh if jumlah is less than presentMuridKelas
+  // Kelas pecahan don't need to match attendance, so skip this check
+  if (!isPecahan && presentMuridKelas > 0 && jumlah < presentMuridKelas) {
     catatanField.classList.add("show");
-    // For split classes, catatan is optional; for regular classes, it's required
-    if (isPecahan) {
-      catatanLabel.classList.remove("required");
-    } else {
-      catatanLabel.classList.add("required");
-    }
+    catatanLabel.classList.add("required");
   } else {
     catatanField.classList.remove("show");
   }
