@@ -56,8 +56,10 @@
     .selected-student-item .class-badge{background:#dbeafe;color:#1e40af;padding:2px 6px;border-radius:4px;font-size:0.7rem;font-weight:500}
     .selected-student-item .remove-btn{background:#fee2e2;color:#b91c1c;border:none;padding:2px 8px;border-radius:4px;font-size:0.7rem;cursor:pointer}
 
-    /* Aktiviti Luar Styles */
-    .aktiviti-luar-btn-icon{position:absolute;top:4px;right:4px;z-index:10;width:28px;height:28px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border:none;border-radius:50%;font-size:1.2rem;font-weight:700;line-height:1;cursor:pointer;box-shadow:0 2px 6px rgba(245,158,11,0.4);display:flex;align-items:center;justify-content:center}
+    /* Floating Action Button for Aktiviti Luar */
+    .fab-aktiviti-luar{position:fixed;bottom:20px;right:20px;z-index:1000;width:50px;height:50px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border:none;border-radius:50%;font-size:2rem;font-weight:700;line-height:1;cursor:pointer;box-shadow:0 4px 12px rgba(245,158,11,0.5);display:flex;align-items:center;justify-content:center;transition:transform 0.2s,box-shadow 0.2s}
+    .fab-aktiviti-luar:hover{transform:scale(1.1);box-shadow:0 6px 16px rgba(245,158,11,0.6)}
+    .fab-aktiviti-luar:active{transform:scale(0.95)}
     .aktiviti-luar-modal .waktu-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
     .aktiviti-luar-modal .waktu-checkbox{display:flex;align-items:center;gap:4px;font-size:0.75rem;padding:4px 6px;background:#fef3c7;border-radius:6px}
     .aktiviti-luar-modal .waktu-checkbox input{width:14px;height:14px}
@@ -434,23 +436,19 @@
 
       <!-- Rekod Hari Ini -->
       <div id="rekodTodayView" style="display:none;">
-        <!-- Table wrapper with floating + button -->
-        <div style="position:relative;">
-          <button type="button" class="aktiviti-luar-btn-icon" id="btnAktivitiLuar" title="Aktiviti Luar Bilik Darjah">+</button>
-          <!-- Zoom Container -->
-          <div id="zoomContainer" class="zoom-container">
-            <div id="zoomContent" class="zoom-content">
-              <table id="allClassSchedule">
-                <thead id="allClassHead">
-                  <tr style="background:#047857; color:white;">
-                    <th>Kelas</th>
+        <!-- Zoom Container -->
+        <div id="zoomContainer" class="zoom-container">
+          <div id="zoomContent" class="zoom-content">
+            <table id="allClassSchedule">
+              <thead id="allClassHead">
+                <tr style="background:#047857; color:white;">
+                  <th>Kelas</th>
                   </tr>
                 </thead>
                 <tbody id="allClassBody">
                   <tr><td colspan="14" style="text-align:center;">Loading...</td></tr>
                 </tbody>
-              </table>
-            </div>
+            </table>
           </div>
         </div>
         <div style="margin-top:10px;font-size:0.7rem;color:#6b7280;">
@@ -458,6 +456,8 @@
           <span class="pill-mp pill-ba">BA</span> Bahasa Arab &nbsp;
           <span class="pill-mp pill-pemulihan">PEM</span> Pemulihan
         </div>
+        <!-- Floating Action Button for Aktiviti Luar -->
+        <button type="button" class="fab-aktiviti-luar" id="btnAktivitiLuar" title="Aktiviti Luar Bilik Darjah">+</button>
       </div>
 
       <!-- SSDM View -->
@@ -570,7 +570,6 @@
          <label for="adminFunctionSelect">Pilih Fungsi Admin:</label>
          <select id="adminFunctionSelect" class="admin-select">
             <option value="sahsiah">Semak Laporan Sahsiah</option>
-            <option value="semakRekod">Semak Rekod Kawalan</option>
             <option value="lihatJadual">Lihat Jadual Tarikh</option>
             <option value="tetapanEvent">Tetapan Event</option>
             <option value="urusGuru">Urus Senarai Guru</option>
@@ -589,31 +588,6 @@
         </div>
         <div id="adminSahsiahList">
           <div class="empty-state">Loading...</div>
-        </div>
-      </div>
-
-      <!-- Content: Semak Rekod (Moved from Main Tab) -->
-      <div id="adminSemakContainer" style="display:none;">
-        <div class="section-title">Semak Rekod Mengikut Tarikh & Kelas</div>
-        <div class="input-card">
-          <div class="field">
-            <label class="required">Tarikh</label>
-            <input type="date" id="semakTarikh" />
-          </div>
-          <div class="field">
-            <label class="required">Kelas</label>
-            <select id="semakKelas"><option value="">Sila Pilih</option></select>
-          </div>
-          <button class="btn-submit" style="margin-top:4px;" id="btnSemakLoad">SEMAK REKOD</button>
-          <div id="semakSummary" class="empty-state">Sila pilih tarikh dan kelas untuk semak rekod.</div>
-        </div>
-
-        <div class="section-title">Jadual Guru Mengikut Waktu</div>
-        <div class="table-wrapper" id="semakTableWrapper" style="display:none;">
-          <table>
-            <thead><tr id="semakHeadRow"></tr></thead>
-            <tbody><tr id="semakBodyRow"></tr></tbody>
-          </table>
         </div>
       </div>
 
@@ -1298,97 +1272,6 @@ document.getElementById("btnSave").addEventListener("click", () => {
 });
 
 // =====================================================
-// SEMAK REKOD (from kawalan)
-// =====================================================
-const semakTarikhInput = document.getElementById("semakTarikh");
-const semakKelasSelect = document.getElementById("semakKelas");
-const btnSemakLoad = document.getElementById("btnSemakLoad");
-const semakSummary = document.getElementById("semakSummary");
-const semakTableWrapper = document.getElementById("semakTableWrapper");
-const semakHeadRow = document.getElementById("semakHeadRow");
-const semakBodyRow = document.getElementById("semakBodyRow");
-
-function dateInputToKey(val) {
-  const parts = val.split("-");
-  if (parts.length !== 3) return "";
-  const [y, m, d] = parts;
-  return d + "/" + m + "/" + y;
-}
-
-function buildHeadRow() {
-  semakHeadRow.innerHTML = "";
-  periods.forEach(p => {
-    const th = document.createElement("th");
-    th.innerHTML = p.code + "<br><small>" + p.start + "-" + p.end + "</small>";
-    semakHeadRow.appendChild(th);
-  });
-}
-buildHeadRow();
-
-btnSemakLoad.addEventListener("click", () => {
-  const t = semakTarikhInput.value;
-  const k = semakKelasSelect.value;
-  if (!t || !k) {
-    alert("Sila pilih tarikh dan kelas.");
-    return;
-  }
-  const tarikhKey = dateInputToKey(t);
-  
-  // Read from kawalan (Synced with JSON)
-  db.ref("kawalan").orderByChild("tarikh").equalTo(tarikhKey).once("value").then(snap => {
-    const data = snap.val();
-    if (!data) {
-      semakSummary.textContent = "Tiada rekod dijumpai.";
-      semakTableWrapper.style.display = "none";
-      return;
-    }
-    const rowsByW = {};
-    periods.forEach(p => rowsByW[p.code] = []);
-    Object.values(data).forEach(rec => {
-      if (rec.kelas === k && rowsByW[rec.waktu]) rowsByW[rec.waktu].push(rec);
-    });
-    
-    semakBodyRow.innerHTML = "";
-    periods.forEach(p => {
-      const td = document.createElement("td");
-      const list = rowsByW[p.code];
-      if (!list.length) {
-        // Tiada rekod - warna kuning
-        td.textContent = "-";
-        td.style.backgroundColor = "#fef9c3";
-        td.style.color = "#854d0e";
-        td.style.cursor = "default";
-      } else {
-        // Ada rekod - clickable untuk lihat detail
-        td.style.cursor = "pointer";
-        td.style.backgroundColor = "#fff";
-        list.forEach(r => {
-          const div = document.createElement("div");
-          div.style.marginBottom = "4px";
-          let mpBadge = "";
-          if (r.mataPelajaran) {
-            const mpClass = r.mataPelajaran === "BC" ? "pill-bc" : r.mataPelajaran === "BA" ? "pill-ba" : r.mataPelajaran === "MORAL" ? "pill-moral" : "pill-pemulihan";
-            mpBadge = '<span class="pill-mp ' + mpClass + '">' + r.mataPelajaran + '</span>';
-          }
-          div.innerHTML = "<strong>" + r.namaGuru + "</strong>" +
-            (r.guruGanti ? ' <span class="pill-ganti">GANTI</span>' : '') +
-            "<br>" + r.tempat + mpBadge;
-          td.appendChild(div);
-        });
-
-        // Add click event to show full details
-        td.addEventListener('click', function() {
-          showDetailPopup(list, k, p.code);
-        });
-      }
-      semakBodyRow.appendChild(td);
-    });
-    semakSummary.textContent = "Rekod untuk " + k + " pada " + tarikhKey;
-    semakTableWrapper.style.display = "block";
-  });
-});
-
-// =====================================================
 // DETAIL POPUP
 // =====================================================
 const detailPopupModal = document.getElementById("detailPopupModal");
@@ -1657,7 +1540,6 @@ function loadAllClassesToday() {
 // Dropdown Controller
 const adminFunctionSelect = document.getElementById("adminFunctionSelect");
 const adminSahsiahContainer = document.getElementById("adminSahsiahContainer");
-const adminSemakContainer = document.getElementById("adminSemakContainer");
 const adminJadualContainer = document.getElementById("adminJadualContainer");
 const adminEventContainer = document.getElementById("adminEventContainer");
 const adminGuruContainer = document.getElementById("adminGuruContainer");
@@ -1666,7 +1548,6 @@ const btnExitAdmin = document.getElementById("btnExitAdmin");
 adminFunctionSelect.addEventListener("change", (e) => {
    const val = e.target.value;
    adminSahsiahContainer.style.display = "none";
-   adminSemakContainer.style.display = "none";
    adminJadualContainer.style.display = "none";
    adminEventContainer.style.display = "none";
    adminGuruContainer.style.display = "none";
@@ -1674,8 +1555,6 @@ adminFunctionSelect.addEventListener("change", (e) => {
    if(val === "sahsiah") {
       adminSahsiahContainer.style.display = "block";
       loadAllSahsiahRecords();
-   } else if (val === "semakRekod") {
-      adminSemakContainer.style.display = "block";
    } else if (val === "lihatJadual") {
       adminJadualContainer.style.display = "block";
       // Set default date to today
@@ -2119,10 +1998,8 @@ function loadKelasFromFirebase() {
     if (!data) return;
     const classList = Object.keys(data).sort();
     kelasSelect.innerHTML = '<option value="">Sila Pilih</option>';
-    semakKelasSelect.innerHTML = '<option value="">Sila Pilih</option>';
     classList.forEach(kls => {
       kelasSelect.innerHTML += '<option value="' + kls + '">' + kls + '</option>';
-      semakKelasSelect.innerHTML += '<option value="' + kls + '">' + kls + '</option>';
     });
   }).catch(err => console.error("Gagal load kelas:", err));
 }
@@ -2395,7 +2272,6 @@ function toggleAdminView(showAdmin) {
       // Reset Admin View to default state
       adminFunctionSelect.value = "sahsiah";
       adminSahsiahContainer.style.display = "block";
-      adminSemakContainer.style.display = "none";
       loadAllSahsiahRecords();
    } else {
       publicView.style.display = "block";
