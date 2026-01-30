@@ -357,6 +357,25 @@
     #learningWalkScheduleTable .guru-ganti-badge{font-size:0.4rem;background:#fbbf24;color:#78350f;padding:1px 2px;border-radius:2px;display:inline-block}
     #learningWalkScheduleTable .multi-record{border-bottom:1px dashed #d1d5db;padding:2px 0;margin-bottom:2px}
     #learningWalkScheduleTable .multi-record:last-child{border-bottom:none;margin-bottom:0}
+
+    /* Pentadbir Learning Walk Table */
+    #pentadbirLearningWalkTable{table-layout:fixed;width:800px;border-collapse:collapse;background:#fff}
+    #pentadbirLearningWalkTable th{border:2px solid #000;text-align:center;padding:3px;font-size:0.65rem;line-height:1.1;width:55px;overflow:hidden;white-space:normal;background:#7c3aed;color:#fff;position:sticky;top:0;z-index:10}
+    #pentadbirLearningWalkTable th:first-child{width:35px;left:0;z-index:20}
+    #pentadbirLearningWalkTable td{border:2px solid #000;text-align:center;padding:2px;width:55px;height:42px;max-height:42px;overflow:hidden;font-size:0.55rem;vertical-align:top;cursor:pointer;word-wrap:break-word}
+    #pentadbirLearningWalkTable td:first-child{width:35px;vertical-align:middle;font-weight:600;background:#f0fdf4;position:sticky;left:0;z-index:5}
+    #pentadbirLearningWalkTable .waktu-code{display:block;font-weight:600;font-size:0.6rem}
+    #pentadbirLearningWalkTable .waktu-time{display:block;font-weight:400;font-size:0.5rem;opacity:0.9}
+    #pentadbirLearningWalkTable .cell-empty{background-color:#fef9c3;color:#854d0e}
+    #pentadbirLearningWalkTable .cell-filled{background-color:#fff}
+    #pentadbirLearningWalkTable .cell-multi{background-color:#f0fdf4}
+    #pentadbirLearningWalkTable .cell-rehat{background-color:#059669;color:#fff;font-weight:600;cursor:default;vertical-align:middle}
+    #pentadbirLearningWalkTable .cell-event{background-color:#dbeafe;color:#1e40af;font-weight:500;font-size:0.5rem}
+    #pentadbirLearningWalkTable .guru-name{font-weight:600;color:#111827;display:block;font-size:0.55rem;white-space:normal;line-height:1}
+    #pentadbirLearningWalkTable .guru-tempat{font-size:0.45rem;color:#6b7280;display:block;margin-top:1px}
+    #pentadbirLearningWalkTable .guru-ganti-badge{font-size:0.4rem;background:#fbbf24;color:#78350f;padding:1px 2px;border-radius:2px;display:inline-block}
+    #pentadbirLearningWalkTable .multi-record{border-bottom:1px dashed #d1d5db;padding:2px 0;margin-bottom:2px}
+    #pentadbirLearningWalkTable .multi-record:last-child{border-bottom:none;margin-bottom:0}
   </style>
 </head>
 <body>
@@ -605,6 +624,33 @@
       </div>
     </div>
 
+    <!-- PENTADBIR/PEMANTAU VIEW CONTAINER -->
+    <div id="pentadbirView" style="display:none;">
+      <div class="admin-header" style="background:#ede9fe;border-color:#ddd6fe;">
+         <div class="admin-title" style="color:#7c3aed;">👁️ Panel Pentadbir/Pemantau</div>
+         <button class="btn-exit-admin" id="btnExitPentadbir" style="border-color:#7c3aed;color:#7c3aed;">Keluar</button>
+      </div>
+
+      <div class="section-title">Learning Walk - Pencerapan PdP</div>
+      <p style="font-size:0.8rem;color:#6b7280;margin-bottom:12px;">Klik pada mana-mana kelas untuk membuat pencerapan.</p>
+      <div class="zoom-container" style="max-height:65vh;">
+        <div class="zoom-content">
+          <table id="pentadbirLearningWalkTable">
+            <thead id="pentadbirLearningWalkHead"></thead>
+            <tbody id="pentadbirLearningWalkBody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div style="margin-top:10px;font-size:0.7rem;color:#6b7280;">
+        <span class="pill-mp pill-bc">BC</span> Bahasa Cina &nbsp;
+        <span class="pill-mp pill-ba">BA</span> Bahasa Arab &nbsp;
+        <span class="pill-mp pill-pemulihan">PEM</span> Pemulihan<br>
+        <div style="margin-top:6px;padding:6px 10px;background:linear-gradient(135deg,#ff00ff,#00ffff);border-radius:6px;display:inline-block;color:#fff;font-weight:600;font-size:0.75rem;">
+          Kelas dengan border khas telah dipantau
+        </div>
+      </div>
+    </div>
+
     <!-- ADMIN VIEW CONTAINER -->
     <div id="adminView" style="display:none;">
       <div class="admin-header">
@@ -616,7 +662,6 @@
          <label for="adminFunctionSelect">Pilih Fungsi Admin:</label>
          <select id="adminFunctionSelect" class="admin-select">
             <option value="sahsiah">Semak Laporan Sahsiah</option>
-            <option value="learningWalk">Learning Walk</option>
             <option value="lihatJadual">Lihat Jadual Tarikh</option>
             <option value="tetapanEvent">Tetapan Event</option>
             <option value="urusGuru">Urus Senarai Guru</option>
@@ -928,7 +973,9 @@
 // GLOBAL VARIABLES & HELPERS
 // =====================================================
 let isAdminLoggedIn = false;
+let isPentadbirLoggedIn = false;
 const ADMIN_PASSWORD = "admin123";
+const PENTADBIR_PASSWORD = "sksa123";
 
 // Firebase Config for Teachers Database (Explicitly embedded)
 const teachersConfig = {
@@ -1115,6 +1162,7 @@ btnDismiss.addEventListener('click', () => installBanner.classList.remove('show'
 // =====================================================
 const publicView = document.getElementById("publicView");
 const adminView = document.getElementById("adminView");
+const pentadbirView = document.getElementById("pentadbirView");
 
 // Sub-tabs (Form vs Today vs SSDM)
 const subTabForm = document.getElementById("subTabForm");
@@ -1465,7 +1513,11 @@ function showDetailPopup(records, kelas, waktu) {
       html += '<div class="info-row"><strong>👥 Murid:</strong> ' + record.jumlahMurid + ' orang</div>';
 
       if (record.catatanKeberadaan) {
-        html += '<div class="info-row"><strong>📝 Catatan:</strong> ' + record.catatanKeberadaan + '</div>';
+        html += '<div class="info-row"><strong>📝 Catatan Keberadaan:</strong> ' + record.catatanKeberadaan + '</div>';
+      }
+
+      if (record.catatanGuru) {
+        html += '<div class="info-row"><strong>💬 Catatan Guru:</strong> ' + record.catatanGuru + '</div>';
       }
 
       if (record.jenis) {
@@ -1742,7 +1794,6 @@ const btnExitAdmin = document.getElementById("btnExitAdmin");
 adminFunctionSelect.addEventListener("change", (e) => {
    const val = e.target.value;
    adminSahsiahContainer.style.display = "none";
-   adminLearningWalkContainer.style.display = "none";
    adminJadualContainer.style.display = "none";
    adminEventContainer.style.display = "none";
    adminGuruContainer.style.display = "none";
@@ -1750,9 +1801,6 @@ adminFunctionSelect.addEventListener("change", (e) => {
    if(val === "sahsiah") {
       adminSahsiahContainer.style.display = "block";
       loadAllSahsiahRecords();
-   } else if (val === "learningWalk") {
-      adminLearningWalkContainer.style.display = "block";
-      loadLearningWalkSchedule();
    } else if (val === "lihatJadual") {
       adminJadualContainer.style.display = "block";
       // Set default date to today
@@ -1928,7 +1976,7 @@ function loadAdminScheduleByDate(dateKey) {
               });
               cellContent += '</div>';
 
-              row += '<td class="' + cellClass + '" style="border:2px solid #000;">' + cellContent + '</td>';
+              row += '<td class="' + cellClass + '" style="border:2px solid #000;" data-kelas="' + kelas + '" data-waktu="' + waktuKey + '" data-records=\'' + JSON.stringify(records) + '\'>' + cellContent + '</td>';
             } else {
               row += '<td class="cell-empty" style="border:2px solid #000;">-</td>';
             }
@@ -1936,6 +1984,22 @@ function loadAdminScheduleByDate(dateKey) {
 
           tr.innerHTML = row;
           body.appendChild(tr);
+        });
+
+        // Add click listeners to cells with data
+        document.querySelectorAll('#adminScheduleTable td[data-kelas]').forEach(td => {
+          td.style.cursor = 'pointer';
+          td.addEventListener('click', function() {
+            const kelas = this.getAttribute('data-kelas');
+            const waktu = this.getAttribute('data-waktu');
+            const recordsJson = this.getAttribute('data-records');
+            try {
+              const records = JSON.parse(recordsJson);
+              showDetailPopup(records, kelas, waktu);
+            } catch (err) {
+              console.error("Error parsing records:", err);
+            }
+          });
         });
       });
     }).catch(err => {
@@ -2467,6 +2531,7 @@ function toggleAdminView(showAdmin) {
    if (showAdmin) {
       publicView.style.display = "none";
       adminView.style.display = "block";
+      pentadbirView.style.display = "none";
       // Reset Admin View to default state
       adminFunctionSelect.value = "sahsiah";
       adminSahsiahContainer.style.display = "block";
@@ -2477,23 +2542,43 @@ function toggleAdminView(showAdmin) {
    }
 }
 
+function togglePentadbirView(showPentadbir) {
+   if (showPentadbir) {
+      publicView.style.display = "none";
+      adminView.style.display = "none";
+      pentadbirView.style.display = "block";
+      // Load Learning Walk schedule
+      loadPentadbirLearningWalkSchedule();
+   } else {
+      publicView.style.display = "block";
+      pentadbirView.style.display = "none";
+   }
+}
+
 sksaLogo.addEventListener("click", () => {
-  if (!isAdminLoggedIn) {
+  if (!isAdminLoggedIn && !isPentadbirLoggedIn) {
     adminLoginModal.style.display = "flex";
     adminPasswordInput.value = "";
     adminPasswordInput.focus();
-  } else {
+  } else if (isAdminLoggedIn) {
     toggleAdminView(true);
+  } else if (isPentadbirLoggedIn) {
+    togglePentadbirView(true);
   }
 });
 
 adminCancelBtn.addEventListener("click", () => adminLoginModal.style.display = "none");
 
 adminLoginBtn.addEventListener("click", () => {
-  if (adminPasswordInput.value === ADMIN_PASSWORD) {
+  const password = adminPasswordInput.value;
+  if (password === ADMIN_PASSWORD) {
     isAdminLoggedIn = true;
     adminLoginModal.style.display = "none";
     toggleAdminView(true);
+  } else if (password === PENTADBIR_PASSWORD) {
+    isPentadbirLoggedIn = true;
+    adminLoginModal.style.display = "none";
+    togglePentadbirView(true);
   } else {
     alert("Kata laluan salah!");
   }
@@ -2505,6 +2590,10 @@ adminPasswordInput.addEventListener("keypress", (e) => {
 
 btnExitAdmin.addEventListener("click", () => {
    toggleAdminView(false);
+});
+
+document.getElementById("btnExitPentadbir")?.addEventListener("click", () => {
+   togglePentadbirView(false);
 });
 
 function listenNotifications() {
@@ -3164,7 +3253,7 @@ function loadLearningWalkSchedule() {
     // Build table header
     let headerHTML = '<tr style="background:#7c3aed; color:white;"><th>Kelas</th>';
     periods.forEach(p => {
-      headerHTML += '<th><span class="waktu-code">' + p.code + '</span><span class="waktu-time">' + p.time + '</span></th>';
+      headerHTML += '<th><span class="waktu-code">' + p.code + '</span><span class="waktu-time">' + p.start + '</span></th>';
     });
     headerHTML += '</tr>';
     head.innerHTML = headerHTML;
@@ -3229,7 +3318,7 @@ function loadLearningWalkSchedule() {
                 const monitoredClass = isMonitored ? ' cell-monitored' : '';
 
                 if (cellRecords.length === 0) {
-                  bodyHTML += '<td class="cell-empty' + monitoredClass + '" data-kelas="' + kelas + '" data-waktu="' + p.code + '" onclick="openLearningWalkObservation(\'' + kelas + '\', \'' + p.code + '\')">KOSONG</td>';
+                  bodyHTML += '<td class="cell-empty' + monitoredClass + '" data-kelas="' + kelas + '" data-waktu="' + p.code + '" onclick="openLearningWalkObservation(\'' + kelas + '\', \'' + p.code + '\')">-</td>';
                 } else if (cellRecords.length === 1) {
                   const rec = cellRecords[0];
                   let content = '<span class="guru-name">' + rec.namaGuru + '</span>';
@@ -3388,12 +3477,140 @@ document.getElementById("lwBtnSubmit")?.addEventListener("click", function() {
     alert("✅ Pencerapan berjaya disimpan!");
     document.getElementById("learningWalkObservationModal").style.display = "none";
     // Reload the schedule to show the special border
-    loadLearningWalkSchedule();
+    if (pentadbirView.style.display === "block") {
+      loadPentadbirLearningWalkSchedule();
+    } else {
+      loadLearningWalkSchedule();
+    }
   }).catch(err => {
     console.error("Error saving observation:", err);
     alert("❌ Gagal menyimpan pencerapan: " + err.message);
   });
 });
+
+// =====================================================
+// PENTADBIR LEARNING WALK FUNCTIONS
+// =====================================================
+function loadPentadbirLearningWalkSchedule() {
+  const head = document.getElementById("pentadbirLearningWalkHead");
+  const body = document.getElementById("pentadbirLearningWalkBody");
+
+  if (!head || !body || typeof firebase === "undefined") return;
+
+  const today = new Date();
+  const dateKey = formatDateKey(today);
+
+  // Load today's observations
+  db.ref("learningWalk/" + dateKey).once("value").then(lwSnap => {
+    const lwData = lwSnap.val() || {};
+    learningWalkData = lwData;
+
+    // Build table header
+    let headerHTML = '<tr style="background:#7c3aed; color:white;"><th>Kelas</th>';
+    periods.forEach(p => {
+      headerHTML += '<th><span class="waktu-code">' + p.code + '</span><span class="waktu-time">' + p.start + '</span></th>';
+    });
+    headerHTML += '</tr>';
+    head.innerHTML = headerHTML;
+
+    // Load schedule data
+    db.ref("config/classes/classData").once("value").then(classSnap => {
+      const classData = classSnap.val();
+      if (!classData) {
+        body.innerHTML = '<tr><td colspan="14" style="text-align:center;">Tiada data kelas.</td></tr>';
+        return;
+      }
+
+      const classList = Object.keys(classData).sort();
+
+      // Load events
+      db.ref("events").once("value").then(eventSnap => {
+        const allEvents = eventSnap.val() || {};
+        const todayEvents = Object.values(allEvents).filter(ev => ev.date === formatDate(today));
+
+        // Load kawalan records
+        db.ref("kawalan").orderByChild("tarikh").equalTo(formatDate(today)).once("value").then(snap => {
+          const records = [];
+          snap.forEach(child => {
+            records.push(child.val());
+          });
+
+          // Build table body
+          let bodyHTML = "";
+          classList.forEach(kelas => {
+            bodyHTML += '<tr><td>' + kelas + '</td>';
+            const tahap = kelas.match(/^[1-3]/) ? 1 : 2;
+
+            periods.forEach(p => {
+              // Check if it's rehat
+              const isRehat = (tahap === 1 && p.code === 'W5') || (tahap === 2 && p.code === 'W7');
+              if (isRehat) {
+                bodyHTML += '<td class="cell-rehat">REHAT</td>';
+                return;
+              }
+
+              // Check for events
+              const hasEvent = todayEvents.find(ev =>
+                ev.kelas && ev.kelas.includes(kelas) &&
+                ev.waktu && ev.waktu.includes(p.code)
+              );
+              if (hasEvent) {
+                bodyHTML += '<td class="cell-event">' + hasEvent.name + '</td>';
+                return;
+              }
+
+              // Find records for this cell
+              const cellRecords = records.filter(r => r.kelas === kelas && r.waktu.includes(p.code));
+
+              // Check if monitored
+              const monitoredKey = kelas + "_" + p.code;
+              const isMonitored = lwData[monitoredKey];
+              const monitoredClass = isMonitored ? ' cell-monitored' : '';
+
+              if (cellRecords.length === 0) {
+                bodyHTML += '<td class="cell-empty' + monitoredClass + '" data-kelas="' + kelas + '" data-waktu="' + p.code + '" onclick="openLearningWalkObservation(\'' + kelas + '\', \'' + p.code + '\')">-</td>';
+              } else if (cellRecords.length === 1) {
+                const rec = cellRecords[0];
+                let content = '<span class="guru-name">' + rec.namaGuru + '</span>';
+                if (rec.tempat) content += '<span class="guru-tempat">' + rec.tempat + '</span>';
+                if (rec.guruGanti) content += '<div class="guru-ganti-badge">GANTI</div>';
+                if (rec.mataPelajaran) {
+                  const mpClass = rec.mataPelajaran === 'BC' ? 'pill-bc' :
+                                  rec.mataPelajaran === 'BA' ? 'pill-ba' :
+                                  rec.mataPelajaran === 'PEMULIHAN' ? 'pill-pemulihan' :
+                                  rec.mataPelajaran === 'MORAL' ? 'pill-moral' : '';
+                  content += '<div class="pill-mp ' + mpClass + '">' + rec.mataPelajaran + '</div>';
+                }
+                bodyHTML += '<td class="cell-filled' + monitoredClass + '" data-kelas="' + kelas + '" data-waktu="' + p.code + '" onclick="openLearningWalkObservation(\'' + kelas + '\', \'' + p.code + '\')">' + content + '</td>';
+              } else {
+                let content = '';
+                cellRecords.forEach((rec, idx) => {
+                  content += '<div class="multi-record">';
+                  content += '<span class="guru-name">' + rec.namaGuru + '</span>';
+                  if (rec.tempat) content += '<span class="guru-tempat">' + rec.tempat + '</span>';
+                  if (rec.guruGanti) content += '<div class="guru-ganti-badge">GANTI</div>';
+                  if (rec.mataPelajaran) {
+                    const mpClass = rec.mataPelajaran === 'BC' ? 'pill-bc' :
+                                    rec.mataPelajaran === 'BA' ? 'pill-ba' :
+                                    rec.mataPelajaran === 'PEMULIHAN' ? 'pill-pemulihan' :
+                                    rec.mataPelajaran === 'MORAL' ? 'pill-moral' : '';
+                    content += '<div class="pill-mp ' + mpClass + '">' + rec.mataPelajaran + '</div>';
+                  }
+                  content += '</div>';
+                });
+                bodyHTML += '<td class="cell-multi' + monitoredClass + '" data-kelas="' + kelas + '" data-waktu="' + p.code + '" onclick="openLearningWalkObservation(\'' + kelas + '\', \'' + p.code + '\')">' + content + '</td>';
+              }
+            });
+
+            bodyHTML += '</tr>';
+          });
+
+          body.innerHTML = bodyHTML;
+        });
+      });
+    });
+  });
+}
 
 // =====================================================
 // INIT
